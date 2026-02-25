@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "language": "es",
+    "lastUpdated": "2024-01-01"
+  },
+  "basics": {
+    "name": "José Alejandro Caal Choc",
+    "label": "Analista Programador",
+    "email": "alejandrocaal44@gmail.com",
+    "phones": ["3068 3865", "4154 7339"],
+    "summary": "+3 años de experiencia en desarrollo y análisis de sistemas web. He trabajado con equipos de ingeniería en proyectos para empresas, de forma independiente desarrollando software de puntos de venta, como consultor informático y con conocimientos en estructuración de redes.",
+    "location": {
+      "city": "Cobán",
+      "region": "Alta Verapaz",
+      "country": "Guatemala"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "thealejandro",
+        "url": "https://linkedin.com/in/thealejandro"
+      },
+      {
+        "network": "GitHub",
+        "username": "thealejandro",
+        "url": "https://github.com/thealejandro"
+      }
+    ]
+  },
+  "work": [
+    {
+      "company": "Hospital Nuestra Señora del Carmen",
+      "position": "Administrador",
+      "startDate": "2020-11",
+      "endDate": null,
+      "industry": "Salud",
+      "model": "B2C",
+      "highlights": [
+        "Supervisión de calidad de personal",
+        "Control de ingresos y egresos monetarios",
+        "Adquisición de insumos",
+        "Programación de reuniones",
+        "Consultor informático a personal de la empresa",
+        "Consultor de ciberseguridad en la empresa",
+        "Resolución de problemas relacionados con clientes",
+        "Administración de servicios brindados a aseguradoras",
+        "Administración de pagos salariales",
+        "Supervisión de licencias necesarias para brindar servicios"
+      ]
+    },
+    {
+      "company": "Megabyte",
+      "position": "Analista Programador",
+      "startDate": "2019-08",
+      "endDate": "2022-12",
+      "industry": "Software",
+      "model": "B2B",
+      "highlights": [
+        "Desarrollo de sistemas para la resolución y automatización de procesos internos",
+        "Análisis de problemas en empresas de clientes contratados",
+        "Modernización de sistemas en empresas de clientes",
+        "Consultoría informática y de ciberseguridad para clientes",
+        "Diseño de interfaces para proyectos"
+      ]
+    },
+    {
+      "company": "Hospital Nuestra Señora del Carmen",
+      "position": "Técnico, Analista, Programador y Desarrollador",
+      "startDate": "2018-11",
+      "endDate": "2020-02",
+      "industry": "Salud",
+      "model": null,
+      "highlights": [
+        "Administrador de equipos informáticos de todo el hospital",
+        "Respaldos en la nube de archivos físicos de años anteriores",
+        "Análisis de problemas con procesos manuales para digitalización y optimización",
+        "Consultoría informática a personal médico",
+        "Consultoría de seguridad avanzada para equipos privilegiados",
+        "Asesoría a personal para uso de nuevos sistemas"
+      ]
+    }
+  ],
+  "skills": {
+    "soft": [
+      "Aprendizaje rápido",
+      "Planeación de estrategias",
+      "Trabajo en equipo",
+      "Adaptabilidad",
+      "Principios ágiles",
+      "Resolución de problemas",
+      "Manejo de personal",
+      "Gestión de proyectos"
+    ],
+    "tech": [
+      "SQL",
+      "JavaScript",
+      "PHP",
+      "Laravel",
+      "Programación orientada a objetos (POO)",
+      "Visual Basic .NET"
+    ]
+  },
+  "education": [
+    {
+      "institution": "Universidad San Carlos de Guatemala (CUNOR)",
+      "area": "Ingeniería en Ciencias y Sistemas",
+      "startDate": "2020-01",
+      "endDate": "2021-01",
+      "status": "Sin concluir"
+    },
+    {
+      "institution": "Colegio de Informática (CENINFAV)",
+      "area": "Bachillerato en Computación con Orientación Científica",
+      "startDate": "2016-01",
+      "endDate": "2018-11",
+      "location": "Cobán, A.V."
+    },
+    {
+      "institution": "Instituto Normal Mixto del Norte (ERP)",
+      "area": "Educación Básica",
+      "startDate": "2012-01",
+      "endDate": "2015-11",
+      "location": "Cobán, A.V."
+    }
+  ],
+  "languages": [
+    { "language": "Español", "fluency": "Nativo" },
+    { "language": "Inglés", "fluency": "Básico (A1)" }
+  ]
+}

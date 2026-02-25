@@ -1,0 +1,183 @@
+---
+import Layout from '../../layouts/LayoutCV.astro';
+import cv from '../../data/cv.json';
+
+// ── helpers ──────────────────────────────────────────────────────
+function formatDate(str: string | null): string {
+  if (!str) return 'Presente';
+  const [year, month] = str.split('-');
+  const months: Record<string, string> = {
+    '01': 'Ene', '02': 'Feb', '03': 'Mar', '04': 'Abr',
+    '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Ago',
+    '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
+  };
+  return `${months[month] ?? month} ${year}`;
+}
+---
+
+<Layout title={`${cv.basics.name} — CV`}>
+  <div class="page-wrapper">
+    <!-- Download button -->
+    <div class="print-btn">
+      <button id="printBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        Descargar PDF
+      </button>
+    </div>
+
+    <div class="cv-card">
+      <!-- ── HEADER ──────────────────────────────────────────── -->
+      <header class="cv-header">
+        <h1 class="header-name">{cv.basics.name}</h1>
+        <span class="header-label">{cv.basics.label}</span>
+        <p class="header-summary">{cv.basics.summary}</p>
+
+        <div class="header-contact">
+          <!-- Email -->
+          <a href={`mailto:${cv.basics.email}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            {cv.basics.email}
+          </a>
+
+          <!-- Phones -->
+          {cv.basics.phones.map(p => (
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 5.55 5.55l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 15.63l.92 1.29z"/>
+              </svg>
+              {p}
+            </span>
+          ))}
+
+          <!-- Profiles -->
+          {cv.basics.profiles.map(p => (
+            <a href={p.url} target="_blank" rel="noopener noreferrer">
+              {p.network === 'LinkedIn' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                  <path d="M9 18c-4.51 2-5-2-7-2"/>
+                </svg>
+              )}
+              {p.url.replace('https://', '')}
+            </a>
+          ))}
+        </div>
+      </header>
+
+      <!-- ── BODY ────────────────────────────────────────────── -->
+      <div class="cv-body">
+
+        <!-- Main column -->
+        <main class="cv-main">
+
+          <!-- Experiencia -->
+          <section class="section">
+            <h2 class="section-title">Experiencia</h2>
+            {cv.work.map(job => (
+              <article class="work-entry">
+                <div class="work-header">
+                  <span class="work-position">{job.position}</span>
+                  <span class="work-date">
+                    {formatDate(job.startDate)} — {formatDate(job.endDate)}
+                  </span>
+                </div>
+                <div class="work-company-line">
+                  <span class="work-company">{job.company}</span>
+                  {job.model && (
+                    <span class={`work-badge badge-${job.model.toLowerCase()}`}>{job.model}</span>
+                  )}
+                  {job.industry && (
+                    <span style="font-size:12px; color:var(--muted); font-weight:300;">· {job.industry}</span>
+                  )}
+                </div>
+                <ul class="work-highlights">
+                  {job.highlights.map(h => <li>{h}</li>)}
+                </ul>
+              </article>
+            ))}
+          </section>
+
+          <!-- Educación -->
+          <section class="section">
+            <h2 class="section-title">Educación</h2>
+            {cv.education.map(edu => (
+              <div class="edu-entry">
+                <div class="edu-degree">{edu.area}</div>
+                <div class="edu-institution">{edu.institution}</div>
+                <div class="edu-meta">
+                  {formatDate(edu.startDate)} — {formatDate(edu.endDate)}
+                  {'location' in edu && edu.location ? ` · ${edu.location}` : ''}
+                  {'status' in edu && edu.status ? (
+                    <span class="edu-status">{edu.status}</span>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </section>
+
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="cv-sidebar">
+
+          <!-- Habilidades técnicas -->
+          <section class="section">
+            <h2 class="section-title">Habilidades</h2>
+
+            <div class="skills-group-label">Técnicas</div>
+            <div class="tags">
+              {cv.skills.tech.map(s => (
+                <span class="tag tag-tech">{s}</span>
+              ))}
+            </div>
+
+            <div class="skills-group-label">Blandas</div>
+            <div class="tags">
+              {cv.skills.soft.map(s => (
+                <span class="tag tag-soft">{s}</span>
+              ))}
+            </div>
+          </section>
+
+          <!-- Idiomas -->
+          <section class="section">
+            <h2 class="section-title">Idiomas</h2>
+            {cv.languages.map(l => (
+              <div class="lang-entry">
+                <span class="lang-name">{l.language}</span>
+                <span class="lang-level">{l.fluency}</span>
+              </div>
+            ))}
+          </section>
+
+          <!-- Ubicación -->
+          <section class="section">
+            <h2 class="section-title">Ubicación</h2>
+            <p style="font-size:13px; color:var(--muted);">
+              {cv.basics.location.city}, {cv.basics.location.region}<br/>
+              {cv.basics.location.country}
+            </p>
+          </section>
+
+        </aside>
+      </div>
+    </div>
+  </div>
+</Layout>
