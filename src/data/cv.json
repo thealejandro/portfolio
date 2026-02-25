@@ -1,14 +1,14 @@
 {
   "meta": {
     "language": "es",
-    "lastUpdated": "2024-01-01"
+    "lastUpdated": "2026-02-25"
   },
   "basics": {
     "name": "José Alejandro Caal Choc",
-    "label": "Analista Programador",
+    "label": "Full Stack Developer",
     "email": "alejandrocaal44@gmail.com",
-    "phones": ["3068 3865", "4154 7339"],
-    "summary": "+3 años de experiencia en desarrollo y análisis de sistemas web. He trabajado con equipos de ingeniería en proyectos para empresas, de forma independiente desarrollando software de puntos de venta, como consultor informático y con conocimientos en estructuración de redes.",
+    "phones": ["+502 3068 3865", "+502 4154 7339"],
+    "summary": "+5 años de experiencia en desarrollo y análisis de sistemas web. He trabajado con equipos de ingeniería en proyectos para empresas, de forma independiente desarrollando software de puntos de venta, como consultor informático y con conocimientos en estructuración de redes.",
     "location": {
       "city": "Cobán",
       "region": "Alta Verapaz",
@@ -24,6 +24,16 @@
         "network": "GitHub",
         "username": "thealejandro",
         "url": "https://github.com/thealejandro"
+      },
+      {
+        "network": "Facebook",
+        "username": "thealejandro",
+        "url": "https://facebook.com/thealejandroc44"
+      },
+      {
+        "network": "Instagram",
+        "username": "thealejandro",
+        "url": "https://instagram.com/thealejandro__"
       }
     ]
   },
@@ -31,7 +41,7 @@
     {
       "company": "Hospital Nuestra Señora del Carmen",
       "position": "Administrador",
-      "startDate": "2020-11",
+      "startDate": "2020-11-05",
       "endDate": null,
       "industry": "Salud",
       "model": "B2C",
@@ -59,8 +69,22 @@
         "Desarrollo de sistemas para la resolución y automatización de procesos internos",
         "Análisis de problemas en empresas de clientes contratados",
         "Modernización de sistemas en empresas de clientes",
-        "Consultoría informática y de ciberseguridad para clientes",
+        "Consultoría informática para clientes",
         "Diseño de interfaces para proyectos"
+      ]
+    },
+    {
+      "company": "Freelance",
+      "position": "Desarrollador de Software",
+      "startDate": "2018-01",
+      "endDate": null,
+      "industry": "Software",
+      "model": "B2C",
+      "highlights": [
+        "Desarrollo de software de punto de venta para negocios locales",
+        "Desarrollo de sistemas para la resolución y automatización de procesos internos en empresas locales",
+        "Consultoría informática a clientes",
+        "Consultoría e instalación de infraestructura de redes a clientes locales"
       ]
     },
     {
@@ -96,16 +120,39 @@
       "JavaScript",
       "PHP",
       "Laravel",
+      "HTML",
+      "CSS",
+      "Tailwind CSS",
+      "Bootstrap",
+      "Git",
+      "MySQL",
+      "PostgreSQL",
+      "Microsoft SQL Server",
+      "AWS EC2",
       "Programación orientada a objetos (POO)",
-      "Visual Basic .NET"
+      "Visual Basic .NET",
+      "Heroku",
+      "Docker",
+      "Linux",
+      "MacOS",
+      "Windows",
+      "Redes informáticas",
+      "Telecomunicaciones"
     ]
   },
   "education": [
     {
+      "institution": "Universidad Panamericana (UPANA)",
+      "area": "Ingeniería en Sistemas de Información",
+      "startDate": "2025-01",
+      "endDate": null,
+      "status": "En curso"
+    },
+    {
       "institution": "Universidad San Carlos de Guatemala (CUNOR)",
       "area": "Ingeniería en Ciencias y Sistemas",
       "startDate": "2020-01",
-      "endDate": "2021-01",
+      "endDate": "2021-08",
       "status": "Sin concluir"
     },
     {
