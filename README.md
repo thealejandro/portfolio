@@ -1,62 +1,54 @@
-# Astro Starter Kit: Blog
+# thealejandro.dev
 
-```sh
-npm create astro@latest -- --template blog
+Portfolio personal de José Alejandro Caal Choc — Analista Programador.  
+Construido con [Astro](https://astro.build) y desplegado en [Cloudflare Pages](https://pages.cloudflare.com).
+
+## Sitio
+
+🌐 [thealejandro.dev](https://thealejandro.dev)  
+📄 [thealejandro.dev/cv](https://thealejandro.dev/cv)
+
+## Stack
+
+- **Framework:** Astro
+- **Deploy:** Cloudflare Pages
+- **Dominio:** Porkbun → Cloudflare DNS
+
+## Estructura
+
+```
+src/
+├── components/       ← Header, Footer, BaseHead
+├── content/blog/     ← posts en Markdown/MDX
+├── data/
+│   └── cv.json       ← contenido del CV (editar aquí)
+├── layouts/          ← layouts base y CV
+└── pages/
+    ├── index.astro   ← inicio
+    └── cv/
+        └── index.astro ← /cv
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Desarrollo local
 
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```bash
+npm install
+npm run dev
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Abre `http://localhost:4321`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Editar el CV
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+Todo el contenido del CV vive en `src/data/cv.json`. Edita ese archivo y el cambio se refleja automáticamente en `/cv`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Deploy
 
-## 🧞 Commands
+Cloudflare Pages detecta cada push a `main` y hace el deploy automáticamente.
 
-All commands are run from the root of the project, from a terminal:
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Estado
 
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+🚧 Portfolio en construcción — actualmente solo disponible el CV.
