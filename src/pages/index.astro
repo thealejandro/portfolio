@@ -6,43 +6,80 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				min-height: 60vh;
+				text-align: center;
+				padding: 2rem;
+				gap: 1.5rem;
+			}
+
+			.badge {
+				display: inline-block;
+				font-size: 0.75rem;
+				font-weight: 600;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				padding: 4px 14px;
+				border-radius: 100px;
+				background: #f0f5ee;
+				color: #3d5c38;
+				border: 1px solid #c9dcc5;
+			}
+
+			h1 {
+				font-size: clamp(2rem, 5vw, 3.2rem);
+				line-height: 1.1;
+				margin: 0;
+			}
+
+			.subtitle {
+				font-size: 1rem;
+				color: #6b6560;
+				max-width: 420px;
+				line-height: 1.7;
+				margin: 0;
+			}
+
+			.cv-link {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				padding: 12px 28px;
+				background: #1a1a1a;
+				color: #fff;
+				border-radius: 8px;
+				text-decoration: none;
+				font-size: 0.9rem;
+				font-weight: 500;
+				transition: background 0.2s, transform 0.15s;
+				margin-top: 0.5rem;
+			}
+
+			.cv-link:hover {
+				background: #333;
+				transform: translateY(-2px);
+			}
+		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
+			<span class="badge">🚧 En construcción</span>
+			<h1>Hola, soy thealejandro</h1>
+			<p class="subtitle">
+				Mi portfolio está en camino. Mientras tanto, puedes ver mi CV con mi experiencia y habilidades.
 			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<a href="/cv" class="cv-link">
+				Ver mi CV →
+			</a>
 		</main>
 		<Footer />
 	</body>
