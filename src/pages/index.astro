@@ -3,27 +3,126 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import cv from '../data/cv.json';
+
+const projects = [
+	{
+		name: 'xaCare',
+		tag: 'SaaS · Salud',
+		url: 'https://care.xacode.dev',
+		desc: 'Plataforma de gestión hospitalaria: pacientes, ingresos, quirófano (QxLog), honorarios y cotizaciones de cirugía. Multi-hospital, con roles por institución.',
+		stack: ['Laravel 12', 'Livewire', 'Flux UI', 'Tailwind'],
+	},
+	{
+		name: 'xaTiende',
+		tag: 'SaaS · Atención al cliente',
+		url: 'https://xatiende.com',
+		desc: 'Bandeja compartida de WhatsApp para equipos, con bot de menús y flujos, asistente inteligente (Olmar), catálogo y pedidos. En beta con pilotos.',
+		stack: ['Laravel 13', 'Vue 3', 'PostgreSQL', 'Reverb'],
+	},
+	{
+		name: 'xaSeguros',
+		tag: 'SaaS · Salud',
+		url: 'https://seguros.xacode.dev',
+		desc: 'Tablero tipo Kanban para dar seguimiento a reclamos de aseguradoras: etapas, facturas, regla del 25, calculadora de participaciones y consolidaciones FEL.',
+		stack: ['Laravel 13', 'Livewire 4', 'Flux UI', 'Laravel Cloud'],
+	},
+	{
+		name: 'xaPedidos',
+		tag: 'SaaS · Comercio',
+		url: 'https://xacode.dev/es/#products',
+		desc: 'Tienda móvil con marca propia para cada negocio: el cliente arma su pedido, confirma por WhatsApp y le da seguimiento. Panel de comandas para cocina.',
+		stack: ['Laravel 13', 'Livewire 4', 'Tailwind 4'],
+	},
+	{
+		name: 'hospitalcoban.com',
+		tag: 'Web · Cliente',
+		url: 'https://hospitalcoban.com',
+		desc: 'Sitio institucional bilingüe del Hospital Nuestra Señora del Carmen. Migración de WordPress a Astro con CMS editable por el hospital. Lighthouse móvil 37 → 99.',
+		stack: ['Astro', 'Keystatic', 'Tailwind 4', 'Cloudflare'],
+	},
+	{
+		name: 'Pharmasys',
+		tag: 'Rescate · Farmacia',
+		url: 'https://pharmasys.xacode.dev',
+		desc: 'Sistema de farmacia y punto de venta rescatado de Heroku en 48 horas, con más de 270 mil ventas recuperadas y facturación electrónica FEL (SAT) integrada.',
+		stack: ['Laravel 6', 'MariaDB', 'HestiaCP', 'FEL'],
+	},
+];
+
+const stack = [
+	'PHP', 'Laravel', 'Livewire', 'Flux UI', 'Blade', 'Tailwind CSS', 'Astro',
+	'Vue 3', 'JavaScript', 'MySQL', 'PostgreSQL', 'Cloudflare', 'Linux', 'Docker',
+];
+
+const yearsExp = new Date().getFullYear() - 2018;
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} — Desarrollador full stack · XACode`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				min-height: 60vh;
-				text-align: center;
-				padding: 2rem;
-				gap: 1.5rem;
+				width: 960px;
+				max-width: calc(100% - 2em);
+				padding: 3em 1em 4em;
 			}
 
+			/* ── Hero ─────────────────────────────────── */
+			.hero {
+				display: grid;
+				grid-template-columns: minmax(0, 1fr) auto;
+				grid-template-areas:
+					'badge photo'
+					'title photo'
+					'lead photo'
+					'actions photo'
+					'facts facts';
+				align-items: start;
+				column-gap: 2.5rem;
+				row-gap: 1.25rem;
+				padding: 1.5rem 0 3rem;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			.hero .badge { grid-area: badge; }
+			.hero h1 { grid-area: title; }
+			.hero .lead { grid-area: lead; }
+			.hero .actions { grid-area: actions; }
+			.hero .facts { grid-area: facts; }
+			.photo {
+				grid-area: photo;
+				width: 168px;
+				height: 168px;
+				border-radius: 50%;
+				object-fit: cover;
+				border: 4px solid #fff;
+				box-shadow: var(--box-shadow);
+				align-self: center;
+			}
+			@media (max-width: 760px) {
+				.hero {
+					grid-template-columns: 1fr;
+					grid-template-areas:
+						'photo'
+						'badge'
+						'title'
+						'lead'
+						'actions'
+						'facts';
+				}
+				.photo {
+					width: 120px;
+					height: 120px;
+					justify-self: start;
+				}
+			}
 			.badge {
-				display: inline-block;
-				font-size: 0.75rem;
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				width: fit-content;
+				font-size: 0.72rem;
 				font-weight: 600;
 				letter-spacing: 0.1em;
 				text-transform: uppercase;
@@ -33,53 +132,332 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 				color: #3d5c38;
 				border: 1px solid #c9dcc5;
 			}
-
-			h1 {
-				font-size: clamp(2rem, 5vw, 3.2rem);
-				line-height: 1.1;
+			.badge::before {
+				content: '';
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: #3d9a4f;
+				box-shadow: 0 0 0 3px rgba(61, 154, 79, 0.2);
+			}
+			.hero h1 {
+				font-size: clamp(2.1rem, 5vw, 3.4rem);
+				line-height: 1.08;
+				margin: 0;
+				letter-spacing: -0.02em;
+			}
+			.hero h1 span {
+				color: var(--accent);
+			}
+			.lead {
+				font-size: 1.15rem;
+				color: rgb(var(--gray-dark));
+				max-width: 640px;
+				line-height: 1.6;
 				margin: 0;
 			}
-
-			.subtitle {
-				font-size: 1rem;
-				color: #6b6560;
-				max-width: 420px;
-				line-height: 1.7;
-				margin: 0;
+			.lead a {
+				font-weight: 700;
+				text-decoration: none;
 			}
-
-			.cv-link {
+			.actions {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				margin-top: 0.5rem;
+			}
+			.btn {
 				display: inline-flex;
 				align-items: center;
 				gap: 8px;
-				padding: 12px 28px;
-				background: #1a1a1a;
-				color: #fff;
+				padding: 11px 22px;
 				border-radius: 8px;
 				text-decoration: none;
-				font-size: 0.9rem;
-				font-weight: 500;
-				transition: background 0.2s, transform 0.15s;
+				font-size: 0.95rem;
+				font-weight: 600;
+				transition: transform 0.15s, background 0.2s;
+			}
+			.btn:hover {
+				transform: translateY(-2px);
+			}
+			.btn-dark {
+				background: #1a1a1a;
+				color: #fff;
+			}
+			.btn-dark:hover {
+				background: #333;
+				color: #fff;
+			}
+			.btn-light {
+				background: #fff;
+				color: rgb(var(--black));
+				border: 1px solid rgb(var(--gray-light));
+			}
+			.facts {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 1.5rem 2.5rem;
 				margin-top: 0.5rem;
+				font-size: 0.9rem;
+				color: rgb(var(--gray));
+			}
+			.facts strong {
+				display: block;
+				font-size: 1.5rem;
+				color: rgb(var(--black));
+				line-height: 1.1;
 			}
 
-			.cv-link:hover {
-				background: #333;
+			/* ── Secciones ────────────────────────────── */
+			section {
+				padding: 3rem 0 0;
+			}
+			.section-title {
+				font-size: 0.78rem;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+				margin: 0 0 1.25rem;
+			}
+			h2.big {
+				font-size: 1.8rem;
+				margin: 0 0 0.5rem;
+			}
+
+			/* ── Qué hago ─────────────────────────────── */
+			.what {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1rem;
+			}
+			.what article {
+				background: #fff;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				padding: 1.25rem;
+			}
+			.what h3 {
+				font-size: 1.05rem;
+				margin: 0 0 0.4rem;
+			}
+			.what p {
+				font-size: 0.92rem;
+				color: rgb(var(--gray-dark));
+				margin: 0;
+				line-height: 1.55;
+			}
+
+			/* ── Proyectos ────────────────────────────── */
+			.projects {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 1rem;
+			}
+			.project {
+				display: flex;
+				flex-direction: column;
+				gap: 0.6rem;
+				background: #fff;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				padding: 1.25rem;
+				text-decoration: none;
+				color: inherit;
+				transition: box-shadow 0.2s, transform 0.2s;
+			}
+			.project:hover {
+				box-shadow: var(--box-shadow);
 				transform: translateY(-2px);
+				color: inherit;
+			}
+			.project-head {
+				display: flex;
+				justify-content: space-between;
+				align-items: baseline;
+				gap: 8px;
+			}
+			.project h3 {
+				margin: 0;
+				font-size: 1.15rem;
+			}
+			.project .tag {
+				font-size: 0.7rem;
+				font-weight: 600;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				color: rgb(var(--gray));
+				white-space: nowrap;
+			}
+			.project p {
+				margin: 0;
+				font-size: 0.92rem;
+				line-height: 1.55;
+				color: rgb(var(--gray-dark));
+			}
+			.chips {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 6px;
+				margin-top: auto;
+				padding-top: 0.4rem;
+			}
+			.chip {
+				font-size: 0.72rem;
+				padding: 3px 9px;
+				border-radius: 100px;
+				background: #ede9f6;
+				color: #4a3870;
+				border: 1px solid #d9d0ee;
+			}
+			.chip.neutral {
+				background: rgb(var(--gray-light));
+				color: rgb(var(--gray-dark));
+				border-color: transparent;
+			}
+
+			/* ── Contacto ─────────────────────────────── */
+			.contact {
+				background: #1a1a1a;
+				color: #fff;
+				border-radius: 16px;
+				padding: 2rem;
+				display: grid;
+				gap: 0.75rem;
+			}
+			.contact h2 {
+				color: #fff;
+				margin: 0;
+				font-size: 1.6rem;
+			}
+			.contact p {
+				margin: 0;
+				color: #cfcfcf;
+				font-size: 0.98rem;
+			}
+			.contact-links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				margin-top: 0.5rem;
+			}
+			.contact-links a {
+				color: #fff;
+				text-decoration: none;
+				border: 1px solid #444;
+				border-radius: 8px;
+				padding: 8px 14px;
+				font-size: 0.9rem;
+			}
+			.contact-links a:hover {
+				border-color: #fff;
+			}
+
+			@media (max-width: 760px) {
+				.what,
+				.projects {
+					grid-template-columns: 1fr;
+				}
+				main {
+					padding: 1.5em 1em 3em;
+				}
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<span class="badge">🚧 En construcción</span>
-			<h1>Hola, soy thealejandro</h1>
-			<p class="subtitle">
-				Mi portfolio está en camino. Mientras tanto, puedes ver mi CV con mi experiencia y habilidades.
-			</p>
-			<a href="/cv" class="cv-link">
-				Ver mi CV →
-			</a>
+			<section class="hero">
+				<img class="photo" src="/avatar.jpg" alt="Foto de José Alejandro Caal Choc" width="400" height="400" />
+				<span class="badge">Disponible para proyectos</span>
+				<h1>Hola, soy <span>Alejandro</span>.<br />Construyo software que la gente usa todos los días.</h1>
+				<p class="lead">
+					Desarrollador full stack con Laravel, Livewire y Astro. Fundador de <a href="https://xacode.dev">XACode</a>,
+					donde hacemos sistemas a medida y productos SaaS para hospitales, farmacias y negocios en Guatemala.
+				</p>
+				<div class="actions">
+					<a href="#proyectos" class="btn btn-dark">Ver proyectos →</a>
+					<a href="/cv" class="btn btn-light">Ver mi CV</a>
+				</div>
+				<div class="facts">
+					<div><strong>+{yearsExp}</strong> años desarrollando</div>
+					<div><strong>5</strong> productos SaaS propios</div>
+					<div><strong>Cobán</strong> Alta Verapaz, Guatemala</div>
+				</div>
+			</section>
+
+			<section id="que-hago">
+				<p class="section-title">Qué hago</p>
+				<div class="what">
+					<article>
+						<h3>Sistemas a medida</h3>
+						<p>
+							Aplicaciones web con Laravel y Livewire: desde el modelo de datos hasta el
+							despliegue, con pruebas automatizadas y documentación para quien siga.
+						</p>
+					</article>
+					<article>
+						<h3>Sitios web rápidos</h3>
+						<p>
+							Sitios con Astro y Tailwind que cargan en segundos y que el cliente edita solo.
+							Migraciones desde WordPress sin perder tráfico.
+						</p>
+					</article>
+					<article>
+						<h3>Infraestructura y rescates</h3>
+						<p>
+							Hosting administrado, Cloudflare, respaldos, correo corporativo y recuperación
+							de sistemas que se quedaron sin servidor.
+						</p>
+					</article>
+				</div>
+			</section>
+
+			<section id="proyectos">
+				<p class="section-title">Proyectos</p>
+				<h2 class="big">Lo que he construido últimamente</h2>
+				<div class="projects">
+					{
+						projects.map((p) => (
+							<a class="project" href={p.url} target="_blank" rel="noopener noreferrer">
+								<div class="project-head">
+									<h3>{p.name}</h3>
+									<span class="tag">{p.tag}</span>
+								</div>
+								<p>{p.desc}</p>
+								<div class="chips">
+									{p.stack.map((s) => (
+										<span class="chip">{s}</span>
+									))}
+								</div>
+							</a>
+						))
+					}
+				</div>
+			</section>
+
+			<section id="stack">
+				<p class="section-title">Herramientas</p>
+				<div class="chips">
+					{stack.map((s) => <span class="chip neutral">{s}</span>)}
+				</div>
+			</section>
+
+			<section id="contacto">
+				<div class="contact">
+					<h2>¿Tienes un proyecto?</h2>
+					<p>
+						Escríbeme y platicamos. Respondo en menos de 24 horas hábiles. Para trabajo con
+						empresa, ve a XACode.
+					</p>
+					<div class="contact-links">
+						<a href={`mailto:${cv.basics.email}`}>{cv.basics.email}</a>
+						<a href="https://xacode.dev" target="_blank" rel="noopener noreferrer">xacode.dev</a>
+						<a href="https://github.com/thealejandro" target="_blank" rel="noopener noreferrer">GitHub</a>
+						<a href="https://linkedin.com/in/thealejandro" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					</div>
+				</div>
+			</section>
 		</main>
 		<Footer />
 	</body>

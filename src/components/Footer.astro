@@ -3,10 +3,10 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} thealejandro. All rights reserved.
+	&copy; {today.getFullYear()} José Alejandro Caal Choc · <a href="https://xacode.dev">XACode</a>
 	<div class="social-links">
 		<a href="https://x.com/thealejandro__" target="_blank">
-			<span class="sr-only">Follow thealejandro on Twitter</span>
+			<span class="sr-only">Perfil de thealejandro en X</span>
 			<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" astro-icon="social/twitter"
 				><path
 					fill="currentColor"
@@ -15,7 +15,7 @@ const today = new Date();
 			>
 		</a>
 		<a href="https://github.com/thealejandro" target="_blank">
-			<span class="sr-only">Go to My GitHub profile</span>
+			<span class="sr-only">Perfil de thealejandro en GitHub</span>
 			<svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32" astro-icon="social/github"
 				><path
 					fill="currentColor"
@@ -38,7 +38,8 @@ const today = new Date();
 		gap: 1em;
 		margin-top: 1em;
 	}
-	.social-links a {
+	.social-links a,
+	footer > a {
 		text-decoration: none;
 		color: rgb(var(--gray));
 	}
