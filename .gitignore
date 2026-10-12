@@ -25,6 +25,3 @@ pnpm-debug.log*
 
 # VSCode setting folder
 .vscode/
-
-# wrangler (config generada por el adaptador de Cloudflare)
-.wrangler/
