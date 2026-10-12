@@ -1,14 +1,14 @@
 {
   "meta": {
     "language": "es",
-    "lastUpdated": "2026-02-25"
+    "lastUpdated": "2026-10-12"
   },
   "basics": {
     "name": "José Alejandro Caal Choc",
-    "label": "Full Stack Developer",
+    "label": "Full Stack Developer · Fundador de XACode",
     "email": "alejandrocaal44@gmail.com",
     "phones": ["+502 3068 3865", "+502 4154 7339"],
-    "summary": "+5 años de experiencia en desarrollo y análisis de sistemas web. He trabajado con equipos de ingeniería en proyectos para empresas, de forma independiente desarrollando software de puntos de venta, como consultor informático y con conocimientos en estructuración de redes.",
+    "summary": "+8 años de experiencia en desarrollo y análisis de sistemas web. Fundador de XACode, donde construyo productos SaaS (xaCare, xaSeguros, xaTiende, xaPedidos) y sistemas a medida para hospitales, farmacias y negocios. He trabajado con equipos de ingeniería en proyectos para empresas, de forma independiente desarrollando software de puntos de venta, como consultor informático y en infraestructura de redes y hosting.",
     "location": {
       "city": "Cobán",
       "region": "Alta Verapaz",
@@ -38,6 +38,21 @@
     ]
   },
   "work": [
+    {
+      "company": "XACode",
+      "position": "Fundador y desarrollador full stack",
+      "startDate": "2020-01",
+      "endDate": null,
+      "industry": "Software",
+      "model": "B2B",
+      "highlights": [
+        "Diseño y desarrollo de productos SaaS propios: xaCare (gestión hospitalaria), xaSeguros (reclamos a aseguradoras), xaTiende (atención por WhatsApp con bot y asistente IA) y xaPedidos (pedidos en línea)",
+        "Sitios web institucionales con Astro y CMS editable; migración de hospitalcoban.com desde WordPress (Lighthouse móvil de 37 a 99)",
+        "Rescate y modernización de sistemas heredados: Pharmasys (Laravel 6) recuperado desde Heroku con facturación electrónica FEL integrada",
+        "Administración de infraestructura: VPS con HestiaCP, Cloudflare, Laravel Cloud, respaldos cifrados y correo corporativo",
+        "Flujo de trabajo con pruebas automatizadas (Pest/PHPUnit), CI/CD con GitHub Actions y runbooks de operación"
+      ]
+    },
     {
       "company": "Hospital Nuestra Señora del Carmen",
       "position": "Administrador",
@@ -116,26 +131,30 @@
       "Gestión de proyectos"
     ],
     "tech": [
-      "SQL",
-      "JavaScript",
       "PHP",
       "Laravel",
+      "Livewire",
+      "Flux UI",
+      "Blade",
+      "Tailwind CSS",
+      "Astro",
+      "Vue 3",
+      "JavaScript",
       "HTML",
       "CSS",
-      "Tailwind CSS",
-      "Bootstrap",
-      "Git",
+      "SQL",
       "MySQL",
       "PostgreSQL",
       "Microsoft SQL Server",
+      "Git y GitHub Actions",
+      "Pest / PHPUnit",
+      "Cloudflare",
+      "Laravel Cloud",
+      "Docker",
+      "Linux (Ubuntu, HestiaCP)",
       "AWS EC2",
       "Programación orientada a objetos (POO)",
       "Visual Basic .NET",
-      "Heroku",
-      "Docker",
-      "Linux",
-      "MacOS",
-      "Windows",
       "Redes informáticas",
       "Telecomunicaciones"
     ]
