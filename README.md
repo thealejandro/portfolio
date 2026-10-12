@@ -12,7 +12,7 @@ Construido con [Astro](https://astro.build) y desplegado en Cloudflare.
 ## Stack
 
 - **Framework:** Astro 7 + MDX + sitemap + RSS
-- **Deploy:** Cloudflare Workers (adapter `@astrojs/cloudflare` 14, ver `wrangler.jsonc`)
+- **Deploy:** Cloudflare Pages (sitio estático, sin adaptador)
 - **Dominio:** Porkbun → Cloudflare DNS
 
 ## Estructura
@@ -49,12 +49,10 @@ npm run preview
 
 ## Deploy
 
-Cloudflare detecta cada push a `main` y despliega automáticamente.
+Cloudflare Pages detecta cada push a `main` y despliega automáticamente.
 
 - **Build command:** `npm run build`
-- **Deploy command:** `npx wrangler deploy`
+- **Output directory:** `dist`
 
-Desde el adaptador 14 el build deja la salida en `dist/client` (estáticos) y `dist/server` (worker), y
-escribe `.wrangler/deploy/config.json` para que `wrangler deploy` encuentre la configuración generada.
-Si el proyecto de Cloudflare todavía tiene "Output directory: dist" (modo Pages), hay que cambiarlo al
-comando de deploy de arriba.
+El sitio es estático, así que no usa el adaptador `@astrojs/cloudflare` (ese adaptador, desde su
+versión 13, solo sirve para Workers y cambia la carpeta de salida a `dist/client`).
