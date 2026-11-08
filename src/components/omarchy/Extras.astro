@@ -1,221 +1,67 @@
 ---
-import { Image } from 'astro:assets';
 import CopyCommand from './CopyCommand.astro';
-import { ISLAND_LINES, ISLAND_REPO, THEMES_REPO } from './commands';
-import islandShot from '../../assets/omarchy/omarchy-island.png';
+import { THEMES_REPO } from './commands';
+
+const box = 'card flex flex-col gap-2.5 p-[1.4rem] text-[0.95rem] transition-[box-shadow,transform] duration-500 ease-apple hover:-translate-y-0.5 hover:shadow-card';
+const art = 'flex h-24 items-center justify-center gap-2 overflow-hidden rounded-[14px] border border-line bg-soft';
+const code = 'inline-code';
 ---
 
-<section id="hooks" class="om-section" aria-labelledby="hooks-title">
-	<div class="om-wrap">
-		<div class="om-head">
-			<p class="om-eyebrow">Los hooks</p>
-			<h2 id="hooks-title" class="om-h2">Lo que Omarchy no trae</h2>
-			<p class="om-lead">
-				Dos hooks <code>theme-set</code> pequeños que corren cada vez que cambias de tema, con cualquier tema. Solo
-				usan comandos públicos de Omarchy y nunca hacen fallar un cambio de tema.
+<section id="hooks" class="section" aria-labelledby="hooks-title">
+	<div class="wrap">
+		<div class="mb-8" data-reveal>
+			<p class="eyebrow">Los hooks</p>
+			<h2 id="hooks-title" class="title">Lo que Omarchy no trae</h2>
+			<p class="lead">
+				Dos hooks <code class={code}>theme-set</code> pequeños que corren cada vez que cambias de tema, con cualquier
+				tema. Solo usan comandos públicos de Omarchy y nunca hacen fallar un cambio de tema.
 			</p>
 		</div>
-		<div class="cards">
-			<article class="box">
-				<div class="art art-shape" aria-hidden="true"><span></span></div>
-				<h3>Esquinas redondeadas</h3>
-				<p class="hook-id"><code>40-theme-shape</code></p>
-				<p>
-					Omarchy descarta los archivos <code>.lua</code> de los temas instalados desde un repo, así que el radio de
-					las esquinas se pierde. Estos temas lo guardan en un <code>shape.toml</code> y el hook lo aplica. Sirve para
-					cualquier tema que lo incluya.
-				</p>
-			</article>
-			<article class="box">
-				<div class="art art-prompt" aria-hidden="true">
-					<span style="background:#0a84ff">~/proyecto</span><span style="background:#32d74b;color:#0f1219">main</span><span
-						style="background:#3a3a3c">14:54</span
-					>
+		<div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-5">
+			<article class={box} data-reveal>
+				<div class={art} aria-hidden="true">
+					<span
+						class="h-16 w-30 rounded-2xl border-2 border-transparent shadow-[0_6px_18px_rgb(15_18_25/0.12)]"
+						style="background:linear-gradient(#fff,#fff) padding-box,linear-gradient(45deg,#ff7eb6,#7c8cff) border-box"
+					></span>
 				</div>
-				<h3>Prompt a juego</h3>
-				<p class="hook-id"><code>30-tide-colors</code></p>
-				<p>
-					Recolorea el prompt <a href="https://github.com/IlanCosman/tide" target="_blank" rel="noopener noreferrer"
-						>Tide</a
-					> de fish con la paleta de cada tema. Guarda tus colores originales la primera vez y se quita con
-					<code>install.sh --uninstall</code>.
+				<h3 class="mt-1.5 text-[1.2rem]">Esquinas redondeadas</h3>
+				<p class="m-0 text-[0.85rem] text-muted"><code class={code}>40-theme-shape</code></p>
+				<p class="m-0">
+					Omarchy descarta los archivos <code class={code}>.lua</code> de los temas instalados desde un repo, así que
+					el radio de las esquinas se pierde. Estos temas lo guardan en un <code class={code}>shape.toml</code> y el hook
+					lo aplica. Sirve para cualquier tema que lo incluya.
 				</p>
 			</article>
-			<article class="box">
-				<div class="art art-lig" aria-hidden="true"><span>=&gt;</span><span>!==</span><span>&gt;=</span></div>
-				<h3>Ligaduras</h3>
-				<p class="hook-id">Consejo</p>
-				<p>
-					Para ver <code>=&gt;</code>, <code>!==</code> o <code>&gt;=</code> como un solo símbolo, usa Ghostty o Kitty
-					con una fuente con ligaduras. Alacritty no las soporta.
+			<article class={box} data-reveal style="--i:1">
+				<div class:list={[art, 'gap-0 bg-[#1c1c1e] font-mono text-xs text-white']} aria-hidden="true">
+					<span class="rounded-l-md bg-[#0060df] px-2.5 py-1">~/proyecto</span><span
+						class="bg-[#32d74b] px-2.5 py-1 text-ink">main</span
+					><span class="rounded-r-md bg-[#3a3a3c] px-2.5 py-1">14:54</span>
+				</div>
+				<h3 class="mt-1.5 text-[1.2rem]">Prompt a juego</h3>
+				<p class="m-0 text-[0.85rem] text-muted"><code class={code}>30-tide-colors</code></p>
+				<p class="m-0">
+					Recolorea el prompt <a href="https://github.com/IlanCosman/tide" target="_blank" rel="noopener noreferrer">Tide</a> de
+					fish con la paleta de cada tema. Guarda tus colores originales la primera vez y se quita con{" "}
+					<code class={code}>install.sh --uninstall</code>.
 				</p>
-				<CopyCommand command={'omarchy font set "FiraCode Nerd Font"'} label="Comando de la fuente" />
+			</article>
+			<article class={box} data-reveal style="--i:2">
+				<div class:list={[art, 'gap-5 font-mono text-[1.4rem] font-bold text-ink']} aria-hidden="true">
+					<span>=&gt;</span><span>!==</span><span>&gt;=</span>
+				</div>
+				<h3 class="mt-1.5 text-[1.2rem]">Ligaduras</h3>
+				<p class="m-0 text-[0.85rem] text-muted">Consejo</p>
+				<p class="m-0">
+					Para ver <code class={code}>=&gt;</code>, <code class={code}>!==</code> o <code class={code}>&gt;=</code> como
+					un solo símbolo, usa Ghostty o Kitty con una fuente con ligaduras. Alacritty no las soporta.
+				</p>
+				<CopyCommand command={'omarchy font set "FiraCode Nerd Font"'} label="Comando de la fuente" class="mt-auto" />
 			</article>
 		</div>
-		<p class="more">
+		<p class="mt-5 text-[0.9rem] text-muted">
 			Código y detalles en <a href={THEMES_REPO} target="_blank" rel="noopener noreferrer">omarchy-themes</a>.
 		</p>
 	</div>
 </section>
-
-<section id="isla" class="om-section" aria-labelledby="isla-title">
-	<div class="om-wrap">
-		<div class="island">
-			<div class="island-text">
-				<p class="om-eyebrow">También para Omarchy</p>
-				<h2 id="isla-title" class="om-h2">omarchy-island</h2>
-				<p>
-					Una isla dinámica que sale del centro de la barra: lo que suena con sus controles, calendario, temporizador
-					de enfoque, clima, accesos rápidos y avisos de volumen, brillo y batería. Toma los colores y las esquinas del
-					tema que tengas.
-				</p>
-				<p class="req">Requiere Omarchy 4 o posterior, con la barra arriba.</p>
-				<CopyCommand command={ISLAND_LINES.join('\n')} label="Comandos de omarchy-island" />
-				<p class="links">
-					<a class="om-btn om-btn--ghost" href={ISLAND_REPO} target="_blank" rel="noopener noreferrer"
-						>Ver en GitHub <span aria-hidden="true">↗</span></a
-					>
-				</p>
-			</div>
-			<figure class="island-shot">
-				<Image
-					src={islandShot}
-					alt="La isla abierta: reproductor con portada y controles, calendario del mes, temporizador de enfoque, accesos rápidos y el clima"
-					widths={[480, 640]}
-					sizes="(max-width: 860px) calc(100vw - 32px), 560px"
-					loading="lazy"
-				/>
-			</figure>
-		</div>
-	</div>
-</section>
-
-<style>
-	.cards {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-		gap: 1.25rem;
-	}
-	.box {
-		display: flex;
-		flex-direction: column;
-		gap: 0.6rem;
-		padding: 1.4rem;
-		border-radius: var(--om-radius);
-		background: var(--om-surface);
-		border: 1px solid var(--om-line);
-		font-size: 0.95rem;
-	}
-	.box h3 {
-		margin: 0.4rem 0 0;
-		font-size: 1.2rem;
-	}
-	.box p {
-		margin: 0;
-	}
-	.hook-id {
-		font-size: 0.85rem;
-		color: var(--om-muted);
-	}
-	.box :global(.om-cmd) {
-		margin-top: auto;
-	}
-	.art {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.4rem;
-		height: 96px;
-		border-radius: 14px;
-		background: var(--om-soft);
-		border: 1px solid var(--om-line);
-		overflow: hidden;
-	}
-	.art-shape span {
-		width: 120px;
-		height: 64px;
-		border-radius: 16px;
-		background: #fff;
-		border: 2px solid transparent;
-		background:
-			linear-gradient(#fff, #fff) padding-box,
-			linear-gradient(45deg, #ff7eb6, #7c8cff) border-box;
-		box-shadow: 0 6px 18px rgba(15, 18, 25, 0.12);
-	}
-	.art-prompt {
-		gap: 0;
-		background: #1c1c1e;
-		font-family: var(--om-mono);
-		font-size: 0.75rem;
-		color: #fff;
-	}
-	.art-prompt span {
-		padding: 0.2em 0.6em;
-	}
-	.art-prompt span:first-child {
-		border-radius: 6px 0 0 6px;
-	}
-	.art-prompt span:last-child {
-		border-radius: 0 6px 6px 0;
-	}
-	.art-lig {
-		gap: 1.2rem;
-		font-family: var(--om-mono);
-		font-size: 1.4rem;
-		font-weight: 700;
-		color: var(--om-ink);
-	}
-	.more {
-		margin: 1.25rem 0 0;
-		font-size: 0.9rem;
-		color: var(--om-muted);
-	}
-	.island {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-		gap: clamp(1.5rem, 4vw, 3.5rem);
-		align-items: center;
-		padding: clamp(1.25rem, 4vw, 3rem);
-		border-radius: calc(var(--om-radius) + 8px);
-		background: var(--om-surface);
-		border: 1px solid var(--om-line);
-	}
-	.island-text {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		gap: 0.9rem;
-	}
-	.island-text p {
-		margin: 0;
-	}
-	.island-text .om-h2 {
-		margin: 0;
-	}
-	.island-text .om-eyebrow {
-		margin: 0;
-	}
-	.req {
-		font-size: 0.9rem;
-		color: var(--om-muted);
-	}
-	.island-shot {
-		margin: 0;
-		border-radius: 18px;
-		overflow: hidden;
-		background: #0f1325;
-		box-shadow: var(--om-shadow-lg);
-	}
-	.island-shot img {
-		display: block;
-		width: 100%;
-		height: auto;
-	}
-	@media (max-width: 860px) {
-		.island {
-			grid-template-columns: minmax(0, 1fr);
-		}
-		.island-shot {
-			order: -1;
-		}
-	}
-</style>

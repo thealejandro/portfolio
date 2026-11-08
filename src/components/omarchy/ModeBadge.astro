@@ -5,7 +5,7 @@ interface Props {
 const { mode } = Astro.props;
 ---
 
-<span class:list={['om-badge', mode === 'dark' && 'om-badge--dark']}>
+<span class:list={['badge', mode === 'dark' && 'badge-dark']}>
 	{
 		mode === 'dark' ? (
 			<svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
