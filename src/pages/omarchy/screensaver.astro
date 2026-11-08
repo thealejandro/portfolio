@@ -119,6 +119,34 @@ const promises = [
 		</div>
 	</section>
 
+	<section class="om-section" aria-labelledby="reel-title">
+		<div class="om-wrap ss-reel">
+			<div>
+				<p class="om-eyebrow">Compártelo</p>
+				<h2 id="reel-title" class="om-h2">También en vertical</h2>
+				<p class="om-lead">
+					Treinta segundos en formato 9:16 para reels, historias y estados de WhatsApp. Lleva una pista de audio en
+					silencio para que le pongas música desde la app.
+				</p>
+				<a class="ss-download" href={`${MEDIA}/reel-es.mp4`} download="screensaver-fx-reel.mp4">Descargar el reel (MP4, 1,5&nbsp;MB)</a>
+			</div>
+			<video
+				controls
+				muted
+				loop
+				playsinline
+				preload="none"
+				poster={`${MEDIA}/reel-poster-es.webp`}
+				width="1080"
+				height="1920"
+				aria-label="Reel vertical de Screensaver FX"
+			>
+				<source src={`${MEDIA}/reel-es.webm`} type="video/webm" />
+				<source src={`${MEDIA}/reel-es.mp4`} type="video/mp4" />
+			</video>
+		</div>
+	</section>
+
 	<section class="om-section" aria-labelledby="upd-title">
 		<div class="om-wrap">
 			<div class="om-head">
@@ -286,6 +314,35 @@ const promises = [
 		border-radius: var(--om-radius);
 		background: #000;
 		box-shadow: var(--om-shadow-lg);
+	}
+	.ss-reel {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2rem;
+		align-items: center;
+	}
+	@media (min-width: 760px) {
+		.ss-reel {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+		}
+	}
+	.ss-reel video {
+		display: block;
+		width: 100%;
+		max-width: 340px;
+		height: auto;
+		aspect-ratio: 9 / 16;
+		justify-self: center;
+		border-radius: clamp(14px, 2vw, 24px);
+		background: #000;
+		box-shadow: var(--om-shadow-lg);
+	}
+	.ss-download {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		margin-top: 1rem;
+		font-weight: 600;
 	}
 	.ss-promises {
 		list-style: none;
