@@ -1,0 +1,380 @@
+---
+import { Image } from 'astro:assets';
+import islandFallback from '../../assets/omarchy/omarchy-island.png';
+import CopyCommand from '../../components/omarchy/CopyCommand.astro';
+import IslandVideo from '../../components/omarchy/IslandVideo.astro';
+import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
+import ShotLink from '../../components/omarchy/ShotLink.astro';
+import {
+	ISLAND_AGENDA,
+	ISLAND_BIND,
+	ISLAND_JSON,
+	ISLAND_LINES,
+	ISLAND_OSD,
+	ISLAND_REMOVE,
+	ISLAND_REPO,
+	ISLAND_SET_EXAMPLE,
+	ISLAND_VERSION,
+} from '../../components/omarchy/commands';
+import { ISLAND_FEATURES, ISLAND_SETTINGS, ticks } from '../../components/omarchy/island';
+import { shotOf, themes } from '../../components/omarchy/themes';
+import { SITE_TITLE } from '../../consts';
+
+const withIsland = themes
+	.map((t) => ({ t, top: shotOf(t, 'island'), bottom: shotOf(t, 'island-bottom') }))
+	.filter((x) => x.top || x.bottom);
+const initial = withIsland.find((x) => x.t.slug === 'tahoe') ?? withIsland[0];
+const og = initial?.top?.img ?? islandFallback;
+
+const title = `omarchy-island, una isla dinámica para Omarchy · ${SITE_TITLE}`;
+const description =
+	'Plugin para la barra de Omarchy: música, calendario con agenda y recordatorios, hora mundial, clima, temporizador de enfoque y el OSD de volumen y brillo, con los colores de tu tema.';
+const code = 'inline-code';
+---
+
+<OmarchyLayout title={title} description={description} image={og} current="isla">
+	<!-- Hero oscuro -->
+	<section class="relative isolate overflow-hidden bg-[#07081a] text-[#c9cde0]" aria-labelledby="isla-h1">
+		<div
+			class="pointer-events-none absolute top-[-30%] left-1/2 -z-10 aspect-square w-[min(1200px,170%)] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(99_102_241/0.4),transparent)]"
+			aria-hidden="true"
+		>
+		</div>
+		<div class="wrap flex flex-col items-center pt-[clamp(3rem,8vw,6rem)] text-center">
+			<p class="eyebrow text-[#a5b4fc]" data-enter style="--i:0">Plugin para Omarchy · v{ISLAND_VERSION}</p>
+			<h1 id="isla-h1" class="mb-4 text-display font-bold text-white" data-enter style="--i:1">omarchy-island</h1>
+			<p class="mx-auto mb-7 max-w-180 text-lead" data-enter style="--i:2">
+				Una isla dinámica que sale de la barra de Omarchy, justo donde está el reloj, en el borde que tenga la barra.
+				Lo que suena, tu agenda, la hora en el mundo, el clima, un temporizador de enfoque y los toggles de Omarchy, con
+				los colores de tu tema.
+			</p>
+			<div class="flex flex-wrap justify-center gap-3" data-enter style="--i:3">
+				<a class="btn bg-white text-ink hover:bg-[#e8eaff] hover:text-ink" href="#instalar">Instalar</a>
+				<a class="btn border-white/25 text-white hover:border-white/60 hover:text-white" href={ISLAND_REPO} target="_blank" rel="noopener noreferrer">
+					Ver en GitHub <span aria-hidden="true">↗</span>
+				</a>
+			</div>
+			<p class="mt-4 text-[0.85rem] text-[#9aa1bd]" data-enter style="--i:4">
+				Omarchy 4 o posterior · barra en cualquier borde · licencia MIT
+			</p>
+		</div>
+		<div class="wrap max-w-190 pt-[clamp(2.5rem,6vw,4rem)] pb-[clamp(3rem,7vw,5rem)]" data-enter style="--i:5">
+			<div class="scroll-zoom">
+				<IslandVideo class="[&_figcaption]:text-[#9aa1bd]" />
+			</div>
+		</div>
+	</section>
+
+	<!-- Funciones -->
+	<section id="funciones" class="section" aria-labelledby="funciones-title">
+		<div class="wrap">
+			<div class="mb-8" data-reveal>
+				<p class="eyebrow">Funciones</p>
+				<h2 id="funciones-title" class="title">Todo a un gesto del reloj</h2>
+				<p class="lead">
+					Es un plugin normal del shell de Omarchy: corre dentro de <code class={code}>omarchy-shell</code>, sin
+					procesos extra, y no reemplaza ni modifica nada. Si lo quitas, tu escritorio queda como estaba.
+				</p>
+			</div>
+			<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
+				{
+					ISLAND_FEATURES.map((f, i) => (
+						<li
+							class="card group p-5 transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-[#d5dbe6] hover:shadow-lift"
+							data-reveal
+							style={`--i:${i % 4}`}
+						>
+							<span class="mb-4 grid size-11 place-items-center rounded-xl bg-[#eef0ff] text-[#3b3fd8] transition-transform duration-500 ease-spring group-hover:scale-110">
+								<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+									<path d={f.icon} />
+								</svg>
+							</span>
+							<h3 class="mb-1.5 text-[1.05rem]">{f.title}</h3>
+							<p class="m-0 text-[0.92rem] leading-normal text-muted">{f.text}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<!-- Galería por tema -->
+	<section id="galeria" class="section" aria-labelledby="galeria-title" data-island-gallery>
+		<div class="wrap">
+			<div class="mb-6" data-reveal>
+				<p class="eyebrow">Galería</p>
+				<h2 id="galeria-title" class="title">Con cada tema</h2>
+				<p class="lead">
+					La isla toma la paleta, la fuente y las esquinas del tema activo, y se funde con la barra opaca o de cristal.
+					{withIsland.length > 1 && <span data-js-only> Elige un tema para verla.</span>}
+				</p>
+			</div>
+
+			{
+				withIsland.length > 0 ? (
+					<>
+						{withIsland.length > 1 && (
+							<div class="pill-row mb-6" role="group" aria-label="Tema de la isla" data-picker data-js-only>
+								{withIsland.map(({ t }) => (
+									<button type="button" class="pill" data-slug={t.slug} aria-pressed={t === initial.t ? 'true' : 'false'}>
+										<span class="pill-dot" style={`background:${t.palette.accent}`} aria-hidden="true" />
+										{t.name}
+									</button>
+								))}
+							</div>
+						)}
+						<div data-lb-group>
+							{withIsland.map(({ t, top, bottom }) => (
+								<div
+									class="island-slide grid gap-5 md:grid-cols-2 motion-safe:animate-fade"
+									data-slug={t.slug}
+									hidden={t !== initial.t ? true : undefined}
+									data-reveal={t === initial.t ? 'zoom' : undefined}
+								>
+									{[top, bottom].map(
+										(s) =>
+											s && (
+												<figure class="m-0">
+													<ShotLink
+														shot={s}
+														label={`${t.name} · ${s.label}`}
+														widths={[480, 800, 1200]}
+														sizes="(max-width: 768px) calc(100vw - 32px), 590px"
+														loading="lazy"
+														class="rounded-2xl shadow-card"
+													/>
+													<figcaption class="mt-2.5 text-[0.9rem] text-muted">
+														<span class="font-bold text-ink">{t.name}</span> · {s.kind === 'island' ? 'barra arriba' : 'barra abajo'}
+													</figcaption>
+												</figure>
+											),
+									)}
+								</div>
+							))}
+						</div>
+						<p class="mt-6">
+							<a class="inline-flex min-h-11 items-center gap-1 font-bold no-underline hover:underline" href="/omarchy/galeria?tipo=island">
+								Todas las capturas de la isla <span aria-hidden="true">→</span>
+							</a>
+						</p>
+					</>
+				) : (
+					<figure class="m-0 max-w-160 overflow-hidden rounded-2xl bg-[#0f1325] shadow-lift">
+						<Image
+							src={islandFallback}
+							alt="La isla abierta: reproductor con portada y controles, calendario del mes, temporizador de enfoque, accesos rápidos y el clima"
+							widths={[480, 640]}
+							sizes="(max-width: 672px) calc(100vw - 32px), 640px"
+							loading="lazy"
+							class="block h-auto w-full"
+						/>
+					</figure>
+				)
+			}
+		</div>
+	</section>
+
+	<!-- Instalación -->
+	<section id="instalar" class="section" aria-labelledby="instalar-title">
+		<div class="wrap">
+			<div class="mb-8" data-reveal>
+				<p class="eyebrow">Instalación</p>
+				<h2 id="instalar-title" class="title">En dos comandos</h2>
+				<p class="lead">
+					Requiere Omarchy 4 o posterior (<code class={code}>omarchy-shell</code> basado en Quickshell). La barra puede
+					estar en cualquier borde.
+				</p>
+			</div>
+			<ol class="grid gap-5 lg:grid-cols-2" role="list">
+				<li class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal>
+					<span class="step">1</span>
+					<h3 class="m-0 text-[1.15rem]">Añade el plugin</h3>
+					<p class="m-0 text-[0.95rem]">Lo descarga y lo habilita en el shell de Omarchy.</p>
+					<CopyCommand command={ISLAND_LINES[0]} label="Comando para añadir omarchy-island" class="mt-auto" />
+				</li>
+				<li class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:1">
+					<span class="step">2</span>
+					<h3 class="m-0 text-[1.15rem]">Ponla junto al reloj</h3>
+					<p class="m-0 text-[0.95rem]">
+						Ahí no ocupa sitio: oculta los indicadores que la isla ya lleva y así encuentra el reloj para colgar
+						exactamente de él.
+					</p>
+					<CopyCommand command={ISLAND_LINES[1]} label="Comando para poner la isla en la barra" class="mt-auto" />
+				</li>
+			</ol>
+
+			<div class="mt-5 grid gap-5 lg:grid-cols-3">
+				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal>
+					<h3 class="m-0 text-[1.05rem]">Abrirla con una tecla</h3>
+					<p class="m-0 text-[0.92rem]">En <code class={code}>~/.config/hypr/bindings.lua</code>:</p>
+					<CopyCommand command={ISLAND_BIND} label="Atajo de teclado" class="mt-auto" />
+				</div>
+				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:1">
+					<h3 class="m-0 text-[1.05rem]">Usarla como OSD</h3>
+					<p class="m-0 text-[0.92rem]">
+						Solo un plugin puede ser el dueño del OSD; el botón <strong>Usar como OSD</strong> de Ajustes hace los dos
+						pasos. A mano:
+					</p>
+					<CopyCommand command={ISLAND_OSD.join('\n')} label="Comandos para usar la isla como OSD" class="mt-auto" />
+				</div>
+				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:2">
+					<h3 class="m-0 text-[1.05rem]">Quitarla</h3>
+					<p class="m-0 text-[0.92rem]">Tu escritorio queda exactamente como estaba.</p>
+					<CopyCommand command={ISLAND_REMOVE} label="Comando para quitar omarchy-island" class="mt-auto" />
+				</div>
+			</div>
+			<p class="mt-5 text-[0.95rem] text-muted">
+				¿También quieres los temas? Márcala en <a href="/omarchy#instalar">Arma tu instalación</a>.
+			</p>
+		</div>
+	</section>
+
+	<!-- Ajustes -->
+	<section id="ajustes" class="section" aria-labelledby="ajustes-title">
+		<div class="wrap">
+			<div class="mb-8" data-reveal>
+				<p class="eyebrow">Ajustes</p>
+				<h2 id="ajustes-title" class="title">Todo desde la propia isla</h2>
+				<p class="lead">
+					La página Ajustes tiene interruptores, opciones y botones +/− para cada clave. Los valores viven en la entrada
+					de la isla en <code class={code}>~/.config/omarchy/shell.json</code>, y solo se escribe lo que cambias.
+				</p>
+			</div>
+			<div class="grid gap-5 lg:grid-cols-2">
+				<div class="min-w-0" data-reveal>
+					<p class="mb-2 text-[0.9rem] font-bold text-ink">En shell.json</p>
+					<CopyCommand command={ISLAND_JSON} label="Ejemplo de shell.json" />
+				</div>
+				<div class="min-w-0" data-reveal style="--i:1">
+					<p class="mb-2 text-[0.9rem] font-bold text-ink">O por línea de comandos</p>
+					<CopyCommand command={ISLAND_SET_EXAMPLE} label="Ejemplo de omarchy bar set" />
+				</div>
+			</div>
+
+			<div class="mt-8 overflow-hidden rounded-card border border-line bg-white" data-reveal>
+				<table class="settings w-full border-collapse text-left text-[0.92rem]">
+					<caption class="sr-only">Ajustes de omarchy-island</caption>
+					<thead class="bg-soft text-[0.8rem] tracking-[0.04em] text-muted uppercase max-md:sr-only">
+						<tr>
+							<th scope="col" class="px-4 py-3">Clave</th>
+							<th scope="col" class="px-4 py-3">Valores</th>
+							<th scope="col" class="px-4 py-3">Por defecto</th>
+							<th scope="col" class="px-4 py-3">Qué hace</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							ISLAND_SETTINGS.map((s) => (
+								<tr class="border-t border-line max-md:grid max-md:grid-cols-1 max-md:gap-y-1 max-md:px-4 max-md:py-3.5 max-md:first:border-t-0">
+									<th scope="row" class="px-4 py-3 align-top font-mono text-[0.85rem] font-bold text-ink max-md:p-0 [overflow-wrap:anywhere]">
+										{s.key}
+									</th>
+									<td class="px-4 py-3 align-top max-md:p-0" data-label="Valores" set:html={ticks(s.values)} />
+									<td class="px-4 py-3 align-top max-md:p-0" data-label="Por defecto" set:html={ticks(s.def)} />
+									<td class="px-4 py-3 align-top text-muted max-md:p-0" set:html={ticks(s.desc)} />
+								</tr>
+							))
+						}
+					</tbody>
+				</table>
+			</div>
+			<p class="mt-4 text-[0.9rem] text-muted">
+				<code class={code}>toggles</code> decide dónde viven los toggles rápidos de Omarchy: <code class={code}>island</code>
+				(en la isla; la barra muestra solo los activos), <code class={code}>both</code> (también en la barra al pasar
+				por su centro) o <code class={code}>bar</code> (solo en la barra). <strong>Restablecer</strong>, en la sección
+				Sistema, quita solo las claves propias de la isla.
+			</p>
+		</div>
+	</section>
+
+	<!-- Agenda -->
+	<section id="agenda" class="section" aria-labelledby="agenda-title">
+		<div class="wrap grid items-start gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-2">
+			<div class="min-w-0" data-reveal>
+				<p class="eyebrow">Agenda</p>
+				<h2 id="agenda-title" class="title">Tus eventos, y los de otro calendario</h2>
+				<p class="mb-4">
+					Los eventos se guardan en <code class={code}>~/.local/state/omarchy/island/events.json</code>, aparte de los
+					ajustes. Pueden repetirse cada semana, mes o año, y la isla se asoma y manda una notificación antes de cada uno.
+					La campana de un evento de hoy lo pasa a <code class={code}>omarchy reminder</code>.
+				</p>
+				<p class="m-0">
+					Con <code class={code}>agendaCommand</code> la isla ejecuta un comando al arrancar y cada 15 minutos; cada línea
+					<code class={code}>AAAA-MM-DD⇥HH:MM⇥título</code> aparece como un evento de solo lectura. Por ejemplo, con khal
+					(comprueba las opciones de formato de tu versión):
+				</p>
+			</div>
+			<div class="min-w-0 lg:pt-20" data-reveal style="--i:1">
+				<CopyCommand command={ISLAND_AGENDA} label="agendaCommand con khal" />
+			</div>
+		</div>
+	</section>
+
+	<section class="section" aria-label="Más">
+		<div class="wrap" data-reveal>
+			<div class="flex flex-col items-start justify-between gap-5 rounded-[28px] bg-soft p-[clamp(1.5rem,4vw,2.5rem)] md:flex-row md:items-center">
+				<div>
+					<h2 class="mb-1.5 text-[1.4rem]">¿Le buscas un tema?</h2>
+					<p class="m-0 text-muted">Once temas inspirados en macOS y Windows, con la isla ya a juego.</p>
+				</div>
+				<div class="flex flex-wrap gap-3">
+					<a class="btn btn-primary" href="/omarchy#temas">Ver los temas</a>
+					<a class="btn btn-ghost" href={ISLAND_REPO} target="_blank" rel="noopener noreferrer">
+						README completo <span aria-hidden="true">↗</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+</OmarchyLayout>
+
+<style>
+	@reference '../../styles/global.css';
+	.step {
+		@apply grid size-8 place-items-center rounded-full bg-ink text-[0.85rem] font-bold text-white;
+	}
+	@media (max-width: 767px) {
+		.settings td[data-label]::before {
+			content: attr(data-label) ': ';
+			@apply text-[0.8rem] text-muted;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-island-gallery]');
+	const picker = root?.querySelector<HTMLElement>('[data-picker]');
+	if (root && picker) {
+		const slides = [...root.querySelectorAll<HTMLElement>('.island-slide')];
+		const buttons = [...picker.querySelectorAll<HTMLButtonElement>('button[data-slug]')];
+		const warm = (slug?: string) =>
+			slides
+				.find((s) => s.dataset.slug === slug)
+				?.querySelectorAll('img')
+				.forEach((i) => (i.loading = 'eager'));
+		const select = (slug: string, scroll: boolean) => {
+			const btn = buttons.find((b) => b.dataset.slug === slug);
+			if (!btn) return;
+			for (const b of buttons) b.setAttribute('aria-pressed', String(b === btn));
+			for (const s of slides) {
+				s.hidden = s.dataset.slug !== slug;
+				if (!s.hidden) s.classList.add('is-in');
+			}
+			if (scroll && picker.scrollWidth > picker.clientWidth) {
+				picker.scrollTo({ left: btn.offsetLeft - picker.clientWidth / 2 + btn.offsetWidth / 2, behavior: 'smooth' });
+			}
+		};
+		picker.addEventListener('pointerover', (e) => warm((e.target as Element).closest<HTMLElement>('[data-slug]')?.dataset.slug));
+		picker.addEventListener('focusin', (e) => warm((e.target as HTMLElement).dataset.slug));
+		picker.addEventListener('click', (e) => {
+			const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-slug]');
+			if (!btn) return;
+			select(btn.dataset.slug!, true);
+			const q = new URLSearchParams(location.search);
+			q.set('tema', btn.dataset.slug!);
+			history.replaceState(null, '', `?${q}${location.hash}`);
+		});
+		const fromUrl = new URLSearchParams(location.search).get('tema');
+		if (fromUrl) select(fromUrl, true);
+	}
+</script>
