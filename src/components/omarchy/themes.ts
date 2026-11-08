@@ -19,6 +19,23 @@ export const SHOT_KINDS = [
 
 export type ShotKind = (typeof SHOT_KINDS)[number]['id'];
 
+/** Grupos para filtrar la galería global. */
+export const SHOT_GROUPS = [
+	{ id: 'desktop', label: 'Escritorio', kinds: ['desktop'] },
+	{ id: 'island', label: 'Isla', kinds: ['island', 'island-bottom'] },
+	{ id: 'launcher', label: 'Lanzador', kinds: ['launcher'] },
+	{ id: 'notification', label: 'Notificación', kinds: ['notification'] },
+	{ id: 'bar', label: 'Barra', kinds: ['bar-opaque', 'bar-glassy', 'bar-clear'] },
+] as const satisfies readonly { id: string; label: string; kinds: readonly ShotKind[] }[];
+
+export type ShotGroup = (typeof SHOT_GROUPS)[number]['id'];
+
+export const groupOf = (kind: ShotKind): ShotGroup =>
+	SHOT_GROUPS.find((g) => (g.kinds as readonly ShotKind[]).includes(kind))!.id;
+
+export const BAR_KINDS = ['bar-opaque', 'bar-glassy', 'bar-clear'] as const;
+export const isBar = (kind: ShotKind) => (BAR_KINDS as readonly string[]).includes(kind);
+
 const files = import.meta.glob<{ default: ImageMetadata }>(
 	'/src/assets/omarchy/*/*.{png,jpg,jpeg,webp}',
 	{ eager: true },
@@ -41,6 +58,29 @@ const ALT: Record<ShotKind, (n: string) => string> = {
 	'bar-glassy': (n) => `La barra superior con efecto cristal, tema ${n}`,
 	'bar-clear': (n) => `La barra superior transparente con el tema ${n}`,
 };
+
+/** Fondos de pantalla: src/assets/omarchy/<slug>/fondos/<n>-<nombre>.webp */
+const wallFiles = import.meta.glob<{ default: ImageMetadata }>(
+	'/src/assets/omarchy/*/fondos/*.{png,jpg,jpeg,webp}',
+	{ eager: true },
+);
+export interface Wall {
+	label: string;
+	alt: string;
+	img: ImageMetadata;
+}
+const wallsOf = (slug: string, name: string): Wall[] =>
+	Object.entries(wallFiles)
+		.filter(([path]) => path.includes(`/omarchy/${slug}/fondos/`))
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([path, mod]) => {
+			const raw = path.match(/\/(?:\d+-)?([^/]+)\.\w+$/)![1].replace(/-/g, ' ');
+			const nice = raw.charAt(0).toUpperCase() + raw.slice(1);
+			return { label: `Fondo «${nice}»`, alt: `Fondo de pantalla «${nice}» del tema ${name}`, img: mod.default };
+		});
+
+/** Lo mínimo que necesita una miniatura del visor. */
+export type Media = Pick<Shot, 'label' | 'alt' | 'img'>;
 
 export interface Shot {
 	kind: ShotKind;
@@ -95,6 +135,7 @@ function build(t: Raw) {
 		repo: t.repo || themeRepo(t.slug),
 		palette: t.palette as Record<string, string>,
 		shots,
+		walls: wallsOf(t.slug, t.name),
 		cover: shots[0] as Shot | undefined,
 		borderCss: borderCss(t.border),
 	};
@@ -102,3 +143,8 @@ function build(t: Raw) {
 
 export type Theme = ReturnType<typeof build>;
 export const themes: Theme[] = data.map(build);
+
+export const shotOf = (t: Theme, kind: ShotKind) => t.shots.find((s) => s.kind === kind);
+
+/** Nombre compartido de View Transition para la captura principal de un tema. */
+export const vtName = (slug: string) => `shot-${slug}`;

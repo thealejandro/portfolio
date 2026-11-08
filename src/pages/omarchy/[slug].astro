@@ -1,11 +1,13 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import BarCompare from '../../components/omarchy/BarCompare.astro';
 import CopyCommand from '../../components/omarchy/CopyCommand.astro';
-import Gallery from '../../components/omarchy/Gallery.astro';
 import ModeBadge from '../../components/omarchy/ModeBadge.astro';
 import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
+import ShotLink from '../../components/omarchy/ShotLink.astro';
 import { themeInstall, themeWithHooks } from '../../components/omarchy/commands';
-import { PALETTE_LABELS, themes, type Theme } from '../../components/omarchy/themes';
+import { isBar, PALETTE_LABELS, shotOf, themes, vtName, type Theme } from '../../components/omarchy/themes';
 import { SITE_TITLE } from '../../consts';
 
 export const getStaticPaths = (() =>
@@ -42,32 +44,41 @@ const windowStyle = [
 	`--k:${t.roundingPower / 2}`,
 	`--border:${t.borderCss ?? t.palette.muted}`,
 ].join(';');
+
+const lead = t.cover;
+const more = t.shots.filter((s) => s !== lead && !isBar(s.kind));
+const bars = t.shots.filter((s) => isBar(s.kind));
+const island = shotOf(t, 'island');
 ---
 
-<OmarchyLayout title={title} description={description} image={t.cover?.img}>
-	<article class="theme">
-		<div class="om-wrap">
-			<nav class="crumbs" aria-label="Ruta">
-				<a href="/omarchy#temas"><span aria-hidden="true">←</span> Todos los temas</a>
+<OmarchyLayout title={title} description={description} image={t.cover?.img} current="tema">
+	<article data-lb-group>
+		<div class="wrap">
+			<nav class="pt-5 text-[0.9rem]" aria-label="Ruta">
+				<a href="/omarchy#temas" class="inline-flex min-h-11 items-center gap-1.5 font-bold no-underline hover:underline">
+					<span aria-hidden="true">←</span> Todos los temas
+				</a>
 			</nav>
 
-			<header class="intro">
-				<div class="intro-text">
-					<p class="om-eyebrow kicker">{t.tag}</p>
-					<h1>{t.name}</h1>
-					<p class="desc">{t.description}</p>
-					<div class="badges">
+			<header
+				class="grid items-end gap-x-[clamp(2rem,5vw,4rem)] gap-y-8 pt-[clamp(1rem,3vw,2rem)] pb-[clamp(2rem,4vw,3rem)] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]"
+			>
+				<div class="min-w-0">
+					<p class="mb-2 text-base font-bold text-accent" data-enter style="--i:0">{t.tag}</p>
+					<h1 class="mb-3 text-display font-bold" data-enter style="--i:1">{t.name}</h1>
+					<p class="mb-4 max-w-160 text-lead text-muted" data-enter style="--i:2">{t.description}</p>
+					<div class="flex flex-wrap gap-1.5" data-enter style="--i:3">
 						<ModeBadge mode={t.mode} />
-						<span class="om-badge">Esquinas de {t.rounding} px</span>
-						<span class="om-badge">{t.shots.length} {t.shots.length === 1 ? 'captura' : 'capturas'}</span>
+						<span class="badge">Esquinas de {t.rounding} px</span>
+						<span class="badge">{t.shots.length} {t.shots.length === 1 ? 'captura' : 'capturas'}</span>
 					</div>
 				</div>
-				<div class="intro-install">
-					<p class="label">Instalar solo el tema</p>
+				<div class="grid min-w-0 gap-3" data-enter style="--i:3">
+					<p class="m-0 text-[0.85rem] font-bold text-ink">Instalar solo el tema</p>
 					<CopyCommand command={themeInstall(t.slug)} label={`Comando para instalar ${t.name}`} />
-					<div class="actions">
-						<a class="om-btn om-btn--primary" href="#instalar">Más opciones</a>
-						<a class="om-btn om-btn--ghost" href={t.repo} target="_blank" rel="noopener noreferrer">
+					<div class="flex flex-wrap gap-2.5">
+						<a class="btn btn-primary" href="#instalar">Más opciones</a>
+						<a class="btn btn-ghost" href={t.repo} target="_blank" rel="noopener noreferrer">
 							Ver en GitHub <span aria-hidden="true">↗</span>
 						</a>
 					</div>
@@ -75,33 +86,167 @@ const windowStyle = [
 			</header>
 		</div>
 
-		<section class="om-wrap gallery-wrap" aria-label="Capturas">
-			{t.shots.length ? <Gallery shots={t.shots} name={t.name} /> : <p class="om-lead">Aún no hay capturas.</p>}
+		<section class="wrap" aria-label="Captura del escritorio">
+			{
+				lead ? (
+					<div class="scroll-zoom">
+						<ShotLink
+							shot={lead}
+							label={`${t.name} · ${lead.label}`}
+							widths={[640, 960, 1280, 1600]}
+							sizes="(max-width: 1232px) calc(100vw - 32px), 1200px"
+							loading="eager"
+							fetchpriority="high"
+							class="rounded-[clamp(12px,1.6vw,22px)] shadow-screen"
+							vt={vtName(t.slug)}
+						/>
+					</div>
+				) : (
+					<p class="lead">Aún no hay capturas.</p>
+				)
+			}
 		</section>
 
-		<section class="om-section" aria-labelledby="paleta-title">
-			<div class="om-wrap">
-				<div class="om-head">
-					<p class="om-eyebrow">Paleta</p>
-					<h2 id="paleta-title" class="om-h2">Diez colores</h2>
-					<p class="om-lead">
+		{
+			more.length > 0 && (
+				<section class="section" aria-labelledby="capturas-title">
+					<div class="wrap">
+						<div class="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
+							<div>
+								<p class="eyebrow">Capturas</p>
+								<h2 id="capturas-title" class="title">
+									{t.name}, pieza a pieza
+								</h2>
+								<p class="lead">La isla, el lanzador y las notificaciones con la paleta y las esquinas del tema.</p>
+							</div>
+							<a class="btn btn-ghost" href={`/omarchy/galeria?tema=${t.slug}`}>
+								Ver en la galería <span aria-hidden="true">→</span>
+							</a>
+						</div>
+						<ul class="grid gap-x-5 gap-y-7 sm:grid-cols-2" role="list">
+							{more.map((s, i) => (
+								<li data-reveal="zoom" style={`--i:${i % 2}`}>
+									<figure class="m-0">
+										<ShotLink
+											shot={s}
+											label={`${t.name} · ${s.label}`}
+											widths={[480, 800, 1200]}
+											sizes="(max-width: 640px) calc(100vw - 32px), 590px"
+											class="rounded-2xl shadow-card"
+										/>
+										<figcaption class="mt-2.5 text-[0.9rem] text-muted">{s.label}</figcaption>
+									</figure>
+								</li>
+							))}
+						</ul>
+					</div>
+				</section>
+			)
+		}
+
+		{bars.length > 1 && <BarCompare bars={bars} name={t.name} />}
+
+		{
+			t.walls.length > 0 && (
+				<section class="section" aria-labelledby="fondos-title">
+					<div class="wrap">
+						<div class="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
+							<div>
+								<p class="eyebrow">Fondos</p>
+								<h2 id="fondos-title" class="title">
+									{t.walls.length} fondos de pantalla
+								</h2>
+								<p class="lead">Vienen con el tema; elige uno con Super + Ctrl + Espacio.</p>
+							</div>
+							<a class="btn btn-ghost" href={`/omarchy/galeria?tipo=fondo&tema=${t.slug}`}>
+								Ver en la galería <span aria-hidden="true">→</span>
+							</a>
+						</div>
+						<ul class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4" role="list">
+							{t.walls.map((w, i) => (
+								<li data-reveal="zoom" style={`--i:${i}`}>
+									<ShotLink
+										shot={w}
+										label={`${t.name} · ${w.label}`}
+										widths={[320, 480, 640]}
+										sizes="(max-width: 1024px) calc(50vw - 24px), 290px"
+										class="rounded-xl shadow-card"
+										imgClass="aspect-video object-cover"
+										icon={false}
+									/>
+									<p class="mt-2 mb-0 text-[0.85rem] text-muted">{w.label.replace('Fondo ', '')}</p>
+								</li>
+							))}
+						</ul>
+					</div>
+				</section>
+			)
+		}
+
+		<section class="section" aria-labelledby="isla-title">
+			<div class="wrap">
+				<a
+					href={`/omarchy/island?tema=${t.slug}#galeria`}
+					class="group grid items-center gap-6 overflow-hidden rounded-[28px] bg-[#07081a] p-[clamp(1.25rem,4vw,2.5rem)] text-[#c9cde0] no-underline transition-transform duration-500 ease-apple hover:text-[#c9cde0] active:scale-[0.99] md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]"
+					data-reveal
+				>
+					<div>
+						<p class="eyebrow text-[#a5b4fc]">También para Omarchy</p>
+						<h2 id="isla-title" class="mb-3 text-title font-bold text-white">La isla con {t.name}</h2>
+						<p class="m-0 max-w-[46ch]">
+							omarchy-island toma los colores y las esquinas de este tema: música, agenda, hora mundial y clima,
+							junto al reloj de la barra.
+						</p>
+						<span class="mt-5 inline-flex min-h-11 items-center gap-1.5 font-bold text-white">
+							Conoce la isla
+							<span aria-hidden="true" class="transition-transform duration-300 ease-apple group-hover:translate-x-1">→</span>
+						</span>
+					</div>
+					{
+						island && (
+							<div class="overflow-hidden rounded-xl shadow-[0_0_0_1px_rgb(255_255_255/0.1)]">
+								<Image
+									src={island.img}
+									alt={island.alt}
+									widths={[480, 800, 1200]}
+									sizes="(max-width: 768px) calc(100vw - 72px), 640px"
+									loading="lazy"
+									class="block h-auto w-full transition-transform duration-700 ease-apple group-hover:scale-[1.03]"
+								/>
+							</div>
+						)
+					}
+				</a>
+			</div>
+		</section>
+
+		<section class="section" aria-labelledby="paleta-title">
+			<div class="wrap">
+				<div class="mb-8" data-reveal>
+					<p class="eyebrow">Paleta</p>
+					<h2 id="paleta-title" class="title">Diez colores</h2>
+					<p class="lead">
 						De aquí salen la terminal, Neovim, btop y la barra. <span data-js-only>Pulsa un color para copiar su código.</span>
 					</p>
 				</div>
-				<ul class="swatches" role="list">
+				<ul class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,100px),1fr))] gap-3 lg:grid-cols-5" role="list">
 					{
-						swatches.map((s) => (
-							<li>
+						swatches.map((s, i) => (
+							<li data-reveal style={`--i:${i % 5}`}>
 								<button
 									type="button"
-									class="swatch"
+									class="swatch group grid w-full cursor-pointer gap-0.5 rounded-2xl border border-line bg-white px-2 pt-2 pb-3 text-left text-ink transition-[border-color,box-shadow,transform] duration-300 ease-apple hover:-translate-y-0.5 hover:border-line-strong hover:shadow-card active:scale-[0.97]"
 									data-copy={s.hex}
 									data-copy-label={`${s.label} ${s.hex}`}
 									aria-label={`${s.label}, ${s.hex}. Copiar`}
 								>
-									<span class="chip" style={`background:${s.hex}`} aria-hidden="true" />
-									<span class="sw-name">{s.label}</span>
-									<span class="sw-hex om-copy-label">{s.hex}</span>
+									<span
+										class="mb-2 h-[clamp(52px,8vw,72px)] rounded-[10px] shadow-[inset_0_0_0_1px_rgb(15_18_25/0.1)]"
+										style={`background:${s.hex}`}
+										aria-hidden="true"
+									/>
+									<span class="px-1 text-[0.9rem] font-bold">{s.label}</span>
+									<span class="copy-label px-1 font-mono text-[0.82rem] text-muted group-[.is-copied]:text-[#15803d]">{s.hex}</span>
 								</button>
 							</li>
 						))
@@ -110,23 +255,29 @@ const windowStyle = [
 			</div>
 		</section>
 
-		<section class="om-section" aria-labelledby="detalles-title">
-			<div class="om-wrap details">
-				<div>
-					<p class="om-eyebrow">Detalles</p>
-					<h2 id="detalles-title" class="om-h2">Forma y acabado</h2>
-					<dl>
-						<div>
-							<dt>Esquinas</dt>
-							<dd>{t.rounding} px, {shape} <span class="mono">(rounding_power {t.roundingPower})</span></dd>
+		<section class="section" aria-labelledby="detalles-title">
+			<div class="wrap grid items-center gap-[clamp(2rem,5vw,4rem)] lg:grid-cols-2">
+				<div class="min-w-0" data-reveal>
+					<p class="eyebrow">Detalles</p>
+					<h2 id="detalles-title" class="title">Forma y acabado</h2>
+					<dl class="mt-6 border-t border-line">
+						<div class="grid gap-x-4 gap-y-0.5 border-b border-line py-3 sm:grid-cols-[minmax(8rem,0.4fr)_1fr]">
+							<dt class="font-bold text-ink">Esquinas</dt>
+							<dd class="m-0 min-w-0">
+								{t.rounding} px, {shape} <span class="mono">(rounding_power {t.roundingPower})</span>
+							</dd>
 						</div>
-						<div>
-							<dt>Borde de ventana</dt>
-							<dd>
+						<div class="grid gap-x-4 gap-y-0.5 border-b border-line py-3 sm:grid-cols-[minmax(8rem,0.4fr)_1fr]">
+							<dt class="font-bold text-ink">Borde de ventana</dt>
+							<dd class="m-0 min-w-0">
 								{
 									t.borderCss ? (
 										<>
-											<span class="border-chip" style={`background:${t.borderCss}`} aria-hidden="true" />
+											<span
+												class="mr-1.5 inline-block h-[0.8em] w-[2.2em] rounded-full align-[-0.05em]"
+												style={`background:${t.borderCss}`}
+												aria-hidden="true"
+											/>
 											{t.borderCss.startsWith('linear') ? 'Degradado' : 'Color sólido'}{' '}
 											<span class="mono">{t.border}</span>
 										</>
@@ -136,234 +287,97 @@ const windowStyle = [
 								}
 							</dd>
 						</div>
-						<div>
-							<dt>Iconos</dt>
-							<dd><span class="mono">{t.icons}</span></dd>
+						<div class="grid gap-x-4 gap-y-0.5 border-b border-line py-3 sm:grid-cols-[minmax(8rem,0.4fr)_1fr]">
+							<dt class="font-bold text-ink">Iconos</dt>
+							<dd class="m-0 min-w-0"><span class="mono">{t.icons}</span></dd>
 						</div>
-						<div>
-							<dt>Modo</dt>
-							<dd>{t.modeLabel}</dd>
+						<div class="grid gap-x-4 gap-y-0.5 border-b border-line py-3 sm:grid-cols-[minmax(8rem,0.4fr)_1fr]">
+							<dt class="font-bold text-ink">Modo</dt>
+							<dd class="m-0 min-w-0">{t.modeLabel}</dd>
 						</div>
 					</dl>
-					<p class="note">
-						Las esquinas las aplica el hook <code>40-theme-shape</code>; sin él, las ventanas quedan rectas.
+					<p class="mt-4 text-[0.9rem] text-muted">
+						Las esquinas las aplica el hook <code class="inline-code">40-theme-shape</code>; sin él, las ventanas quedan rectas.
 					</p>
 				</div>
-				<div class="sample-wrap" aria-hidden="true">
+				<div
+					class="grid place-items-center rounded-card border border-line bg-soft bg-[radial-gradient(circle_at_30%_20%,rgb(255_255_255/0.9),transparent_60%)] p-[clamp(1.5rem,5vw,3.5rem)]"
+					aria-hidden="true"
+					data-reveal="zoom"
+					style="--i:1"
+				>
 					<div class="sample" style={windowStyle}>
-						<p><span class="p-accent">~/proyecto</span> <span class="p-muted">main</span></p>
-						<p><span class="p-accent">❯</span> omarchy theme set {t.slug}</p>
-						<p class="p-muted">Radio {t.rounding} px</p>
+						<p><span class="text-(--accent-t)">~/proyecto</span> <span class="text-(--muted-t)">main</span></p>
+						<p><span class="text-(--accent-t)">❯</span> omarchy theme set {t.slug}</p>
+						<p class="text-(--muted-t)">Radio {t.rounding} px</p>
 					</div>
 				</div>
 			</div>
 		</section>
 
-		<section id="instalar" class="om-section" aria-labelledby="instalar-title">
-			<div class="om-wrap">
-				<div class="om-head">
-					<p class="om-eyebrow">Instalación</p>
-					<h2 id="instalar-title" class="om-h2">Instalar {t.name}</h2>
+		<section id="instalar" class="section" aria-labelledby="instalar-title">
+			<div class="wrap">
+				<div class="mb-8" data-reveal>
+					<p class="eyebrow">Instalación</p>
+					<h2 id="instalar-title" class="title">Instalar {t.name}</h2>
 				</div>
-				<div class="install">
-					<div class="opt">
-						<h3>Solo el tema</h3>
-						<p>Lo instala y lo aplica. Se actualiza con <code>omarchy theme update</code>.</p>
-						<CopyCommand command={themeInstall(t.slug)} label={`Comando para instalar ${t.name}`} />
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,340px),1fr))] gap-5">
+					<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal>
+						<h3 class="m-0 text-[1.15rem]">Solo el tema</h3>
+						<p class="m-0 text-[0.95rem]">
+							Lo instala y lo aplica. Se actualiza con <code class="inline-code">omarchy theme update</code>.
+						</p>
+						<CopyCommand command={themeInstall(t.slug)} label={`Comando para instalar ${t.name}`} class="mt-auto" />
 					</div>
-					<div class="opt">
-						<h3>Con esquinas y prompt a juego</h3>
-						<p>Instala el tema y los dos hooks: esquinas redondeadas y colores del prompt Tide.</p>
-						<CopyCommand command={themeWithHooks(t.slug)} label={`Comandos para instalar ${t.name} con los hooks`} />
+					<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:1">
+						<h3 class="m-0 text-[1.15rem]">Con esquinas y prompt a juego</h3>
+						<p class="m-0 text-[0.95rem]">Instala el tema y los dos hooks: esquinas redondeadas y colores del prompt Tide.</p>
+						<CopyCommand
+							command={themeWithHooks(t.slug)}
+							label={`Comandos para instalar ${t.name} con los hooks`}
+							class="mt-auto"
+						/>
 					</div>
 				</div>
-				<p class="more">
-					¿Varios temas o la isla? Usa <a href="/omarchy#instalar">Arma tu instalación</a>.
+				<p class="mt-5 text-[0.95rem] text-muted">
+					¿Varios temas o la isla? Usa <a href="/omarchy#instalar">Arma tu instalación</a> o mira{" "}
+					<a href="/omarchy/island#instalar">cómo instalar omarchy-island</a>.
 				</p>
 			</div>
 		</section>
 
-		<nav class="om-wrap pager" aria-label="Otros temas">
-			<a class="pg prev" href={`/omarchy/${prev.slug}`} rel="prev">
-				<span class="pg-dir"><span aria-hidden="true">←</span> Anterior</span>
-				<span class="pg-name">{prev.name}</span>
+		<nav class="wrap mt-[clamp(3.5rem,8vw,5rem)] grid grid-cols-2 gap-3 sm:gap-4" aria-label="Otros temas">
+			<a class="pg" href={`/omarchy/${prev.slug}`} rel="prev">
+				<span class="text-[0.85rem] text-muted"><span aria-hidden="true">←</span> Anterior</span>
+				<span class="text-[1.05rem] font-bold sm:text-[1.2rem]">{prev.name}</span>
 			</a>
-			<a class="pg next" href={`/omarchy/${next.slug}`} rel="next">
-				<span class="pg-dir">Siguiente <span aria-hidden="true">→</span></span>
-				<span class="pg-name">{next.name}</span>
+			<a class="pg text-right" href={`/omarchy/${next.slug}`} rel="next">
+				<span class="text-[0.85rem] text-muted">Siguiente <span aria-hidden="true">→</span></span>
+				<span class="text-[1.05rem] font-bold sm:text-[1.2rem]">{next.name}</span>
 			</a>
 		</nav>
 	</article>
 </OmarchyLayout>
 
 <style>
-	.crumbs {
-		padding-top: 1.5rem;
-		font-size: 0.9rem;
+	@reference '../../styles/global.css';
+	.mono {
+		@apply font-mono text-[0.85em] text-muted;
+		overflow-wrap: anywhere;
 	}
-	.crumbs a {
-		text-decoration: none;
-		font-weight: 700;
-	}
-	.crumbs a:hover {
-		text-decoration: underline;
-	}
-	.intro {
-		display: grid;
-		grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-		gap: 2rem clamp(2rem, 5vw, 4rem);
-		align-items: end;
-		padding-block: clamp(1.5rem, 4vw, 2.5rem) clamp(2rem, 4vw, 3rem);
-	}
-	h1 {
-		margin: 0 0 0.75rem;
-		font-size: clamp(2.4rem, 1.5rem + 4vw, 4.25rem);
-		letter-spacing: -0.035em;
-		line-height: 1.02;
-	}
-	.desc {
-		margin: 0 0 1rem;
-		max-width: 40rem;
-		font-size: clamp(1.05rem, 1rem + 0.35vw, 1.2rem);
-		color: var(--om-muted);
-	}
-	.kicker {
-		text-transform: none;
-		letter-spacing: 0;
-		font-size: 1rem;
-	}
-	.badges {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-	}
-	.intro-install {
-		display: grid;
-		gap: 0.75rem;
-	}
-	.label {
-		margin: 0;
-		font-size: 0.85rem;
-		font-weight: 700;
-		color: var(--om-ink);
-	}
-	.actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.6rem;
-	}
-
-	.swatches {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(min(100%, 100px), 1fr));
-		gap: 0.75rem;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-	@media (min-width: 900px) {
-		.swatches {
-			grid-template-columns: repeat(5, minmax(0, 1fr));
-		}
-	}
-	.swatch {
-		display: grid;
-		width: 100%;
-		gap: 0.1rem;
-		padding: 0.5rem 0.5rem 0.7rem;
-		border-radius: 16px;
-		border: 1px solid var(--om-line);
-		background: var(--om-surface);
-		color: var(--om-ink);
-		font: inherit;
-		text-align: left;
-		cursor: pointer;
+	.pg {
+		@apply grid min-w-0 gap-0.5 rounded-card border border-line bg-white px-5 py-4 text-ink no-underline;
 		transition:
-			border-color 0.15s,
-			box-shadow 0.2s;
+			border-color 0.2s,
+			box-shadow 0.3s var(--ease-apple),
+			transform 0.4s var(--ease-apple);
+	}
+	.pg:hover {
+		@apply -translate-y-0.5 border-line-strong text-ink shadow-card;
 	}
 	html:not(.js) .swatch {
 		cursor: text;
 		user-select: text;
-	}
-	.swatch:hover {
-		border-color: #c3cad8;
-		box-shadow: var(--om-shadow);
-	}
-	.chip {
-		height: clamp(52px, 8vw, 72px);
-		margin-bottom: 0.5rem;
-		border-radius: 10px;
-		box-shadow: inset 0 0 0 1px rgba(15, 18, 25, 0.1);
-	}
-	.sw-name {
-		padding-inline: 0.25rem;
-		font-size: 0.9rem;
-		font-weight: 700;
-	}
-	.sw-hex {
-		padding-inline: 0.25rem;
-		font-family: var(--om-mono);
-		font-size: 0.82rem;
-		color: var(--om-muted);
-	}
-	.swatch.is-copied .sw-hex {
-		color: #15803d;
-	}
-
-	.details {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-		gap: clamp(2rem, 5vw, 4rem);
-		align-items: center;
-	}
-	dl {
-		margin: 1.5rem 0 0;
-		border-top: 1px solid var(--om-line);
-	}
-	dl > div {
-		display: grid;
-		grid-template-columns: minmax(8rem, 0.4fr) 1fr;
-		gap: 1rem;
-		padding: 0.8rem 0;
-		border-bottom: 1px solid var(--om-line);
-	}
-	dt {
-		font-weight: 700;
-		color: var(--om-ink);
-	}
-	dd {
-		margin: 0;
-		min-width: 0;
-	}
-	.mono {
-		font-family: var(--om-mono);
-		font-size: 0.85em;
-		color: var(--om-muted);
-		overflow-wrap: anywhere;
-	}
-	.border-chip {
-		display: inline-block;
-		width: 2.2em;
-		height: 0.8em;
-		margin-right: 0.4em;
-		border-radius: 999px;
-		vertical-align: -0.05em;
-	}
-	.note {
-		margin: 1rem 0 0;
-		font-size: 0.9rem;
-		color: var(--om-muted);
-	}
-	.sample-wrap {
-		display: grid;
-		place-items: center;
-		padding: clamp(1.5rem, 5vw, 3.5rem);
-		border-radius: var(--om-radius);
-		background:
-			radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), transparent 60%),
-			var(--om-soft);
-		border: 1px solid var(--om-line);
 	}
 	.sample {
 		width: min(100%, 360px);
@@ -375,98 +389,10 @@ const windowStyle = [
 			linear-gradient(var(--bg), var(--bg)) padding-box,
 			var(--border) border-box;
 		color: var(--fg);
-		font-family: var(--om-mono);
+		font-family: var(--font-mono);
 		font-size: 0.85rem;
 		line-height: 1.8;
-		box-shadow: 0 18px 40px rgba(15, 18, 25, 0.22);
-	}
-	.sample p {
-		margin: 0;
-	}
-	.p-accent {
-		color: var(--accent-t);
-	}
-	.p-muted {
-		color: var(--muted-t);
-	}
-
-	.install {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-		gap: 1.25rem;
-	}
-	.opt {
-		display: flex;
-		flex-direction: column;
-		gap: 0.6rem;
-		padding: 1.4rem;
-		border-radius: var(--om-radius);
-		background: var(--om-surface);
-		border: 1px solid var(--om-line);
-	}
-	.opt h3 {
-		margin: 0;
-		font-size: 1.15rem;
-	}
-	.opt p {
-		margin: 0;
-		font-size: 0.95rem;
-	}
-	.opt :global(.om-cmd) {
-		margin-top: auto;
-	}
-	.more {
-		margin: 1.25rem 0 0;
-		font-size: 0.95rem;
-		color: var(--om-muted);
-	}
-
-	.pager {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
-		margin-top: clamp(3.5rem, 8vw, 5rem);
-	}
-	.pg {
-		display: grid;
-		gap: 0.15rem;
-		padding: 1.1rem 1.3rem;
-		border-radius: var(--om-radius);
-		border: 1px solid var(--om-line);
-		background: var(--om-surface);
-		text-decoration: none;
-		color: var(--om-ink);
-		transition:
-			border-color 0.15s,
-			box-shadow 0.2s;
-	}
-	.pg:hover {
-		color: var(--om-ink);
-		border-color: #c3cad8;
-		box-shadow: var(--om-shadow);
-	}
-	.next {
-		text-align: right;
-	}
-	.pg-dir {
-		font-size: 0.85rem;
-		color: var(--om-muted);
-	}
-	.pg-name {
-		font-size: 1.2rem;
-		font-weight: 700;
-	}
-
-	@media (max-width: 860px) {
-		.intro,
-		.details {
-			grid-template-columns: minmax(0, 1fr);
-		}
-	}
-	@media (max-width: 480px) {
-		dl > div {
-			grid-template-columns: 1fr;
-			gap: 0.1rem;
-		}
+		box-shadow: 0 18px 40px rgb(15 18 25 / 0.22);
+		overflow-wrap: anywhere;
 	}
 </style>

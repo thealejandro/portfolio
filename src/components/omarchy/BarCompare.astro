@@ -1,0 +1,117 @@
+---
+// Comparativa de la barra opaca / cristal / transparente.
+// Sin JS: las tres franjas una debajo de otra. Con JS: un selector las funde en el mismo sitio.
+import ShotLink from './ShotLink.astro';
+import type { Shot } from './themes';
+
+interface Props {
+	bars: Shot[];
+	name: string;
+}
+const { bars, name } = Astro.props;
+const short: Record<string, string> = { 'bar-opaque': 'Opaca', 'bar-glassy': 'Cristal', 'bar-clear': 'Transparente' };
+---
+
+<section class="section" aria-labelledby="barra-title" data-bars>
+	<div class="wrap">
+		<div class="mb-6 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
+			<div>
+				<p class="eyebrow">Barra</p>
+				<h2 id="barra-title" class="title">Opaca, cristal o transparente</h2>
+				<p class="lead">El mismo tema con los tres acabados de la barra de Omarchy. La isla los respeta.</p>
+			</div>
+			<div
+				class="inline-flex rounded-full border border-line bg-soft p-1"
+				role="group"
+				aria-label="Acabado de la barra"
+				data-js-only
+			>
+				{
+					bars.map((b, i) => (
+						<button
+							type="button"
+							class="seg relative min-h-10 cursor-pointer rounded-full px-4 text-[0.9rem] text-ink sm:px-5"
+							aria-pressed={i === 0 ? 'true' : 'false'}
+							data-kind={b.kind}
+						>
+							{short[b.kind] ?? b.label}
+						</button>
+					))
+				}
+			</div>
+		</div>
+
+		<div class="stack grid gap-4" data-reveal="zoom">
+			{
+				bars.map((b, i) => (
+					<figure class="layer m-0" data-kind={b.kind} data-active={i === 0 ? '' : undefined}>
+						<ShotLink
+							shot={b}
+							label={`${name} · ${b.label}`}
+							widths={[800, 1200, 1600]}
+							sizes="(max-width: 1232px) calc(100vw - 32px), 1200px"
+							class="rounded-2xl shadow-card"
+							icon={false}
+						/>
+						<figcaption class="mt-2 text-[0.85rem] text-muted">{b.label}</figcaption>
+					</figure>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.seg {
+		transition:
+			background-color 0.25s,
+			color 0.25s,
+			box-shadow 0.3s;
+	}
+	.seg[aria-pressed='true'] {
+		background: #fff;
+		font-weight: 700;
+		box-shadow:
+			0 1px 2px rgb(15 18 25 / 0.08),
+			0 4px 12px rgb(15 18 25 / 0.08);
+	}
+	/* Con JS: las tres franjas en la misma celda, fundidas. */
+	:global(html.js) .stack {
+		grid-template-areas: 'only';
+		gap: 0;
+	}
+	:global(html.js) .layer {
+		grid-area: only;
+		transition:
+			opacity 0.5s var(--ease-apple),
+			transform 0.6s var(--ease-apple);
+	}
+	:global(html.js) .layer:not([data-active]) {
+		opacity: 0;
+		transform: scale(0.99);
+		pointer-events: none;
+		visibility: hidden;
+		transition:
+			opacity 0.5s var(--ease-apple),
+			transform 0.6s var(--ease-apple),
+			visibility 0s 0.5s;
+	}
+</style>
+
+<script>
+	for (const root of document.querySelectorAll<HTMLElement>('[data-bars]')) {
+		const buttons = [...root.querySelectorAll<HTMLButtonElement>('.seg')];
+		const layers = [...root.querySelectorAll<HTMLElement>('.layer')];
+		// Precarga las otras franjas al acercarse al selector.
+		const warm = () => layers.forEach((l) => l.querySelectorAll('img').forEach((i) => (i.loading = 'eager')));
+		root.querySelector('[role="group"]')?.addEventListener('pointerover', warm, { once: true });
+		root.querySelector('[role="group"]')?.addEventListener('focusin', warm, { once: true });
+		root.addEventListener('click', (e) => {
+			const btn = (e.target as Element).closest<HTMLButtonElement>('.seg');
+			if (!btn) return;
+			warm();
+			for (const b of buttons) b.setAttribute('aria-pressed', String(b === btn));
+			for (const l of layers) l.toggleAttribute('data-active', l.dataset.kind === btn.dataset.kind);
+		});
+	}
+</script>
