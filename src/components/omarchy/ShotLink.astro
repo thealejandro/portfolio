@@ -1,0 +1,72 @@
+---
+// Miniatura que abre el visor (Lightbox). Sin JS es un enlace a la imagen grande.
+import { getImage, Image } from 'astro:assets';
+import type { Media } from './themes';
+
+interface Props {
+	shot: Media;
+	/** Texto del visor; por defecto la etiqueta de la captura. */
+	label?: string;
+	widths?: number[];
+	sizes: string;
+	loading?: 'eager' | 'lazy';
+	fetchpriority?: 'high' | 'auto';
+	class?: string;
+	imgClass?: string;
+	/** view-transition-name compartido entre páginas. */
+	vt?: string;
+	icon?: boolean;
+}
+
+const {
+	shot,
+	label = shot.label,
+	widths = [480, 800],
+	sizes,
+	loading = 'lazy',
+	fetchpriority = 'auto',
+	class: cls,
+	imgClass,
+	vt,
+	icon = true,
+} = Astro.props;
+const full = await getImage({ src: shot.img, width: Math.min(shot.img.width, 1920), format: 'webp' });
+---
+
+<a
+	class:list={[
+		'group/shot relative block cursor-zoom-in overflow-hidden bg-soft shadow-[0_0_0_1px_rgb(15_18_25/0.08)] [transform:translateZ(0)]',
+		cls,
+	]}
+	href={full.src}
+	data-lb
+	data-full={full.src}
+	data-alt={shot.alt}
+	data-label={label}
+>
+	<Image
+		src={shot.img}
+		alt={shot.alt}
+		widths={widths}
+		sizes={sizes}
+		loading={loading}
+		fetchpriority={fetchpriority}
+		class:list={[
+			'block h-auto w-full transition-transform duration-700 ease-apple group-hover/shot:scale-[1.025]',
+			imgClass,
+		]}
+		style={vt ? `view-transition-name:${vt}` : undefined}
+	/>
+	{
+		icon && (
+			<span
+				class="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-ink/75 text-white opacity-0 backdrop-blur transition-[opacity,transform] duration-300 ease-apple group-hover/shot:opacity-100 group-focus-visible/shot:opacity-100 pointer-coarse:opacity-100 scale-90 group-hover/shot:scale-100"
+				aria-hidden="true"
+			>
+				<svg viewBox="0 0 16 16" class="size-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+					<path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" />
+				</svg>
+			</span>
+		)
+	}
+</a>
