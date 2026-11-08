@@ -1,0 +1,30 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`Página no encontrada — ${SITE_TITLE}`} description="Esta página no existe o cambió de dirección." />
+		<meta name="robots" content="noindex" />
+	</head>
+	<body>
+		<Header />
+		<main class="mx-auto flex w-[min(720px,100%-32px)] flex-col items-center py-[clamp(4rem,14vw,9rem)] text-center">
+			<p class="eyebrow" data-enter style="--i:0">Error 404</p>
+			<h1 class="mb-4 text-display font-bold" data-enter style="--i:1">Aquí no hay nada</h1>
+			<p class="lead mx-auto mb-8" data-enter style="--i:2">
+				La página que buscas no existe o cambió de dirección. Si llegaste desde un enlace antiguo, prueba desde el
+				inicio.
+			</p>
+			<div class="flex flex-wrap justify-center gap-3" data-enter style="--i:3">
+				<a class="btn btn-primary" href="/">Ir al inicio</a>
+				<a class="btn btn-ghost" href="/omarchy">Temas para Omarchy</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

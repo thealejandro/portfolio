@@ -1,0 +1,170 @@
+---
+import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
+import ShotLink from '../../components/omarchy/ShotLink.astro';
+import VideoLink from '../../components/omarchy/VideoLink.astro';
+import { VIDEOS, type Video } from '../../components/omarchy/media';
+import { groupOf, isBar, SHOT_GROUPS, SHOT_KINDS, themes, type Media, type Theme } from '../../components/omarchy/themes';
+import { SITE_TITLE } from '../../consts';
+
+type Item =
+	| { type: 'img'; t: Theme; s: Media; group: string; wide: boolean }
+	| { type: 'video'; v: Video; t?: Theme; group: string };
+
+// Primero los vídeos; luego por tipo y, dentro de cada tipo, por tema; al final los fondos.
+const shots: Item[] = SHOT_KINDS.flatMap((k) =>
+	themes.flatMap((t) => {
+		const s = t.shots.find((x) => x.kind === k.id);
+		return s ? [{ type: 'img' as const, t, s, group: groupOf(s.kind), wide: isBar(s.kind) }] : [];
+	}),
+);
+const walls: Item[] = themes.flatMap((t) => t.walls.map((s) => ({ type: 'img' as const, t, s, group: 'fondo', wide: false })));
+const videos: Item[] = VIDEOS.map((v) => ({ type: 'video' as const, v, t: themes.find((t) => t.slug === v.theme), group: 'video' }));
+const items = [...videos, ...shots, ...walls];
+
+const GROUPS = [{ id: 'video', label: 'Vídeo' }, ...SHOT_GROUPS, { id: 'fondo', label: 'Fondos' }];
+const groups = GROUPS.map((g) => ({ ...g, count: items.filter((i) => i.group === g.id).length })).filter((g) => g.count > 0);
+const withShots = themes.filter((t) => t.shots.length || t.walls.length);
+const nImg = items.length - videos.length;
+
+const title = `Galería de temas para Omarchy · ${SITE_TITLE}`;
+const description = `${nImg} imágenes y ${videos.length} vídeos de los temas para Omarchy: escritorio, isla, lanzador, notificaciones, barra y fondos de pantalla, filtrables por tipo y por tema.`;
+---
+
+<OmarchyLayout title={title} description={description} image={themes[0].cover?.img} current="galeria">
+	<section class="pt-[clamp(2.5rem,6vw,4.5rem)]" aria-labelledby="g-title" data-gallery-page>
+		<div class="wrap">
+			<div class="flex flex-col items-center text-center">
+				<p class="eyebrow" data-enter style="--i:0">Galería</p>
+				<h1 id="g-title" class="mb-4 text-display font-bold" data-enter style="--i:1">Todo, en imágenes</h1>
+				<p class="lead mx-auto" data-enter style="--i:2">
+					{items.length} capturas de {withShots.length} temas. Filtra por tipo o por tema y abre cualquiera para verla a
+					tamaño completo; las flechas del teclado o deslizar pasan a la siguiente.
+				</p>
+			</div>
+
+			<div
+				class="sticky top-12 z-10 -mx-4 mt-8 border-b border-line/70 bg-white/85 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-2xl sm:border sm:px-3"
+				data-js-only
+				data-enter
+				style="--i:3"
+			>
+				<div class="grid gap-2">
+					<div class="pill-row" role="group" aria-label="Filtrar por tipo">
+						<button type="button" class="pill" data-type="all" aria-pressed="true">
+							Todo <span class="n" aria-hidden="true">{items.length}</span>
+						</button>
+						{
+							groups.map((g) => (
+								<button type="button" class="pill" data-type={g.id} aria-pressed="false">
+									{g.label} <span class="n" aria-hidden="true">{g.count}</span>
+								</button>
+							))
+						}
+					</div>
+					<div class="pill-row" role="group" aria-label="Filtrar por tema">
+						<button type="button" class="pill" data-theme="all" aria-pressed="true">Todos los temas</button>
+						{
+							withShots.map((t) => (
+								<button type="button" class="pill" data-theme={t.slug} aria-pressed="false">
+									<span class="pill-dot" style={`background:${t.palette.accent}`} aria-hidden="true" />
+									{t.name}
+								</button>
+							))
+						}
+					</div>
+				</div>
+			</div>
+			<p class="mt-4 text-[0.9rem] text-muted" aria-live="polite" data-status data-js-only></p>
+
+			<ul class="mt-4 columns-1 gap-4 sm:columns-2 lg:columns-3" role="list" data-lb-group>
+				{
+					items.map((it, i) => (
+						<li
+							class="mb-4 break-inside-avoid [&[hidden]]:hidden"
+							data-group={it.group}
+							data-theme={it.t?.slug ?? ''}
+						>
+							{it.type === 'video' ? (
+								<VideoLink video={it.v} class="rounded-xl" loading={i < 3 ? 'eager' : 'lazy'} />
+							) : (
+								<ShotLink
+									shot={it.s}
+									label={`${it.t.name} · ${it.s.label}`}
+									widths={it.wide ? [600, 800, 1200] : [400, 640, 800]}
+									sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 390px"
+									loading={i < 3 ? 'eager' : 'lazy'}
+									class="rounded-xl"
+								/>
+							)}
+							<p class="mt-2 mb-0 flex items-center gap-2 text-[0.82rem] text-muted">
+								{it.type === 'img' ? (
+									<>
+										<span class="pill-dot size-2.5" style={`background:${it.t.palette.accent}`} aria-hidden="true" />
+										<a href={`/omarchy/${it.t.slug}`} class="-my-3 py-3 font-bold text-ink no-underline hover:underline">
+											{it.t.name}
+										</a>
+										· {it.s.label}
+									</>
+								) : (
+									<span class="font-bold text-ink">{it.v.label}</span>
+								)}
+							</p>
+						</li>
+					))
+				}
+			</ul>
+			<p class="hidden py-16 text-center text-muted" data-empty>No hay nada con esa combinación.</p>
+		</div>
+	</section>
+</OmarchyLayout>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-gallery-page]');
+	if (root) {
+		const items = [...root.querySelectorAll<HTMLLIElement>('li[data-group]')];
+		const typeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-type]')];
+		const themeBtns = [...root.querySelectorAll<HTMLButtonElement>('button[data-theme]')];
+		const status = root.querySelector<HTMLElement>('[data-status]')!;
+		const empty = root.querySelector<HTMLElement>('[data-empty]')!;
+		const params = new URLSearchParams(location.search);
+		let type = typeBtns.some((b) => b.dataset.type === params.get('tipo')) ? params.get('tipo')! : 'all';
+		let theme = themeBtns.some((b) => b.dataset.theme === params.get('tema')) ? params.get('tema')! : 'all';
+
+		const apply = (push: boolean) => {
+			typeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.type === type)));
+			themeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === theme)));
+			let n = 0;
+			for (const li of items) {
+				const show = (type === 'all' || li.dataset.group === type) && (theme === 'all' || li.dataset.theme === theme);
+				li.hidden = !show;
+				if (show) n++;
+			}
+			empty.classList.toggle('hidden', n > 0);
+			status.textContent = `${n} ${n === 1 ? 'elemento' : 'elementos'}`;
+			if (push) {
+				const q = new URLSearchParams();
+				if (type !== 'all') q.set('tipo', type);
+				if (theme !== 'all') q.set('tema', theme);
+				const qs = q.toString();
+				history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+			}
+		};
+		const center = (btn: HTMLElement) => {
+			const row = btn.parentElement!;
+			if (row.scrollWidth > row.clientWidth)
+				row.scrollTo({ left: btn.offsetLeft - row.clientWidth / 2 + btn.offsetWidth / 2, behavior: 'smooth' });
+		};
+
+		root.addEventListener('click', (e) => {
+			const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-type], button[data-theme]');
+			if (!btn) return;
+			if (btn.dataset.type) type = btn.dataset.type;
+			else theme = btn.dataset.theme!;
+			apply(true);
+			center(btn);
+		});
+		apply(false);
+		const pressed = themeBtns.find((b) => b.dataset.theme === theme);
+		if (pressed) center(pressed);
+	}
+</script>

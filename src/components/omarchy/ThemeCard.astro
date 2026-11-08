@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import ModeBadge from './ModeBadge.astro';
-import type { Theme } from './themes';
+import { vtName, type Theme } from './themes';
 
 interface Props {
 	theme: Theme;
@@ -11,119 +11,40 @@ const { theme: t, eager = false } = Astro.props;
 const strip = ['background', 'foreground', 'accent', 'red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
 ---
 
-<a class="card" href={`/omarchy/${t.slug}`}>
-	<div class="media" style={`--bg:${t.palette.background}`}>
+<a
+	class="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-white text-inherit no-underline transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-[#d5dbe6] hover:text-inherit hover:shadow-lift focus-visible:outline-offset-4 active:scale-[0.985] active:duration-150"
+	href={`/omarchy/${t.slug}`}
+>
+	<div class="relative aspect-video overflow-hidden border-b border-line" style={`background:${t.palette.background}`}>
 		{
 			t.cover && (
 				<Image
 					src={t.cover.img}
 					alt=""
-					widths={[480, 800, 1280]}
+					widths={[480, 800]}
 					sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1000px) calc(50vw - 28px), 380px"
 					loading={eager ? 'eager' : 'lazy'}
+					class="block size-full object-cover transition-transform duration-700 ease-apple group-hover:scale-[1.04]"
+					style={`view-transition-name:${vtName(t.slug)}`}
 				/>
 			)
 		}
-		{t.shots.length > 1 && <span class="count">{t.shots.length} capturas</span>}
+		{
+			t.shots.length > 1 && (
+				<span class="absolute bottom-2.5 left-2.5 rounded-full bg-ink/80 px-2 py-0.5 text-[0.72rem] font-bold text-white backdrop-blur">
+					{t.shots.length} capturas
+				</span>
+			)
+		}
 	</div>
-	<div class="body">
-		<div class="row">
-			<h3>{t.name}</h3>
+	<div class="grid gap-1.5 px-[1.15rem] pt-4 pb-[1.15rem]">
+		<div class="flex items-center justify-between gap-3">
+			<h3 class="m-0 text-[1.2rem] tracking-[-0.01em]">{t.name}</h3>
 			<ModeBadge mode={t.mode} />
 		</div>
-		<p class="tag">{t.tag}</p>
-		<div class="strip" aria-hidden="true">
-			{strip.map((k) => <span style={`background:${t.palette[k]}`} />)}
+		<p class="m-0 text-[0.9rem] text-muted">{t.tag}</p>
+		<div class="mt-2 flex h-2.5 overflow-hidden rounded-full border border-ink/10" aria-hidden="true">
+			{strip.map((k, i) => <span class:list={[i === 0 ? 'flex-2' : 'flex-1']} style={`background:${t.palette[k]}`} />)}
 		</div>
 	</div>
 </a>
-
-<style>
-	.card {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		border-radius: var(--om-radius);
-		background: var(--om-surface);
-		border: 1px solid var(--om-line);
-		color: inherit;
-		text-decoration: none;
-		overflow: hidden;
-		transition:
-			box-shadow 0.25s var(--om-ease),
-			transform 0.25s var(--om-ease),
-			border-color 0.25s;
-	}
-	.card:hover {
-		color: inherit;
-		box-shadow: var(--om-shadow-lg);
-		transform: translateY(-2px);
-		border-color: #d5dbe6;
-	}
-	.card:focus-visible {
-		outline-offset: 4px;
-	}
-	.media {
-		position: relative;
-		aspect-ratio: 16 / 9;
-		background: var(--bg);
-		border-bottom: 1px solid var(--om-line);
-		overflow: hidden;
-	}
-	.media img {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		transition: transform 0.5s var(--om-ease);
-	}
-	.card:hover .media img {
-		transform: scale(1.02);
-	}
-	.count {
-		position: absolute;
-		left: 0.6rem;
-		bottom: 0.6rem;
-		padding: 0.1em 0.55em;
-		border-radius: 999px;
-		background: rgba(15, 18, 25, 0.78);
-		color: #fff;
-		font-size: 0.72rem;
-		font-weight: 700;
-	}
-	.body {
-		padding: 1rem 1.15rem 1.15rem;
-		display: grid;
-		gap: 0.35rem;
-	}
-	.row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-	}
-	h3 {
-		margin: 0;
-		font-size: 1.2rem;
-		letter-spacing: -0.01em;
-	}
-	.tag {
-		margin: 0;
-		font-size: 0.9rem;
-		color: var(--om-muted);
-	}
-	.strip {
-		display: flex;
-		height: 10px;
-		margin-top: 0.5rem;
-		border-radius: 999px;
-		overflow: hidden;
-		border: 1px solid rgba(15, 18, 25, 0.1);
-	}
-	.strip span {
-		flex: 1;
-	}
-	.strip span:first-child {
-		flex: 2;
-	}
-</style>

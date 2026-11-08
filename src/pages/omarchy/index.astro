@@ -1,7 +1,9 @@
 ---
 import Extras from '../../components/omarchy/Extras.astro';
+import GalleryTeaser from '../../components/omarchy/GalleryTeaser.astro';
 import Hero from '../../components/omarchy/Hero.astro';
 import InstallBuilder from '../../components/omarchy/InstallBuilder.astro';
+import IslandShowcase from '../../components/omarchy/IslandShowcase.astro';
 import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
 import ThemeBrowser from '../../components/omarchy/ThemeBrowser.astro';
 import { themes } from '../../components/omarchy/themes';
@@ -12,12 +14,14 @@ const og = themes.find((t) => t.slug === initial)?.cover?.img;
 
 const title = 'Temas para Omarchy — macOS y Windows, claro y oscuro';
 const description =
-	'Once temas minimalistas para Omarchy inspirados en macOS (Big Sur, Ventura, Tahoe) y Windows (11, Vista/7), con esquinas redondeadas y prompt a juego.';
+	'Once temas minimalistas para Omarchy inspirados en macOS (Big Sur, Ventura, Tahoe) y Windows (11, Vista/7), con esquinas redondeadas y prompt a juego, y omarchy-island, una isla dinámica para la barra.';
 ---
 
-<OmarchyLayout title={`${title} · ${SITE_TITLE}`} description={description} image={og}>
+<OmarchyLayout title={`${title} · ${SITE_TITLE}`} description={description} image={og} current="temas">
 	<Hero themes={themes} initial={initial} />
 	<ThemeBrowser themes={themes} />
+	<IslandShowcase themes={themes} />
+	<GalleryTeaser themes={themes} />
 	<InstallBuilder themes={themes} />
 	<Extras />
 </OmarchyLayout>

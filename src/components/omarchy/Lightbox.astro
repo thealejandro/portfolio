@@ -1,0 +1,358 @@
+---
+// Visor único por página. Abre cualquier enlace a[data-lb]; las flechas recorren
+// los enlaces visibles del mismo [data-lb-group] (respeta los filtros activos).
+const icon = 'size-[18px]';
+---
+
+<dialog
+	class="lb fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-[rgb(10_12_18/0.97)] p-0 text-white backdrop:bg-[rgb(10_12_18/0.6)]"
+	aria-label="Visor de imágenes y vídeos"
+	data-lightbox
+>
+	<div class="flex h-full flex-col">
+		<div class="flex items-center justify-between gap-3 px-3 py-2 sm:px-4">
+			<p class="m-0 min-w-0 truncate text-[0.95rem] font-bold">
+				<span class="lb-label"></span>
+				<span class="lb-count ml-2 font-normal text-[#c5cbd8] tabular-nums"></span>
+			</p>
+			<div class="flex shrink-0 gap-2">
+				<button type="button" class="lb-btn lb-zoom" aria-pressed="false" aria-label="Ampliar">
+					<svg viewBox="0 0 16 16" aria-hidden="true" class={icon} fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+						><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3M5 7h4M7 5v4" class="lb-plus"></path></svg
+					>
+				</button>
+				<button type="button" class="lb-btn lb-close" aria-label="Cerrar">
+					<svg viewBox="0 0 16 16" aria-hidden="true" class={icon} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+						><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"></path></svg
+					>
+				</button>
+			</div>
+		</div>
+		<div class="lb-stage relative grid min-h-0 flex-1 place-items-center overflow-hidden px-3 sm:px-[clamp(1rem,6vw,5rem)]">
+			<img class="lb-img max-h-full max-w-full rounded-xl shadow-[0_20px_60px_rgb(0_0_0/0.5)]" alt="" decoding="async" />
+			<video
+				class="lb-video max-h-full max-w-full rounded-xl bg-black shadow-[0_20px_60px_rgb(0_0_0/0.5)]"
+				controls
+				muted
+				playsinline
+				preload="none"
+				hidden></video>
+		</div>
+		<div class="lb-foot flex items-center gap-3 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-4">
+		<div class="lb-nav flex shrink-0 gap-2">
+			<button type="button" class="lb-btn lb-prev" aria-label="Anterior">
+				<svg viewBox="0 0 16 16" aria-hidden="true" class={icon} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+					><path d="M10 3 5 8l5 5"></path></svg
+				>
+			</button>
+			<button type="button" class="lb-btn lb-next" aria-label="Siguiente">
+				<svg viewBox="0 0 16 16" aria-hidden="true" class={icon} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+					><path d="m6 3 5 5-5 5"></path></svg
+				>
+			</button>
+		</div>
+		<div class="lb-thumbs flex min-w-0 flex-1 gap-2 overflow-x-auto py-1" aria-hidden="true"></div>
+		</div>
+	</div>
+</dialog>
+
+<style is:global>
+	.lb:not([open]) {
+		display: none;
+	}
+	.lb[open] {
+		animation: lb-in 0.3s var(--ease-apple);
+	}
+	.lb-btn {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		border: 1px solid rgb(255 255 255 / 0.25);
+		background: rgb(255 255 255 / 0.08);
+		color: #fff;
+		cursor: pointer;
+		transition:
+			background-color 0.15s,
+			transform 0.35s var(--ease-spring);
+	}
+	.lb-btn:hover {
+		background: rgb(255 255 255 / 0.18);
+	}
+	.lb-btn:active {
+		transform: scale(0.92);
+	}
+	.lb-btn:focus-visible {
+		outline: 2px solid #9db0ff;
+		outline-offset: 2px;
+	}
+	.lb-btn[aria-pressed='true'] .lb-plus {
+		d: path('m10.5 10.5 3 3M5 7h4');
+	}
+	.lb-img {
+		cursor: zoom-in;
+		transition:
+			opacity 0.3s var(--ease-apple),
+			transform 0.45s var(--ease-apple);
+	}
+	.lb-img.is-swapping {
+		opacity: 0;
+		transform: scale(0.97);
+	}
+	/* Ampliada: tamaño real con desplazamiento dentro del visor. */
+	.lb.is-zoomed .lb-stage {
+		place-items: start;
+		overflow: auto;
+		overscroll-behavior: contain;
+	}
+	.lb.is-zoomed .lb-img {
+		max-width: none;
+		max-height: none;
+		margin: auto;
+		cursor: zoom-out;
+		border-radius: 0;
+	}
+	.lb.is-video .lb-zoom {
+		visibility: hidden;
+	}
+	.lb.is-single .lb-foot {
+		display: none;
+	}
+	.lb-thumbs {
+		scrollbar-width: none;
+		mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+		padding-inline: 8px;
+	}
+	.lb-thumbs::-webkit-scrollbar {
+		display: none;
+	}
+	.lb-thumb {
+		flex: none;
+		height: 44px;
+		padding: 0;
+		border: 0;
+		border-radius: 8px;
+		overflow: hidden;
+		background: rgb(255 255 255 / 0.06);
+		opacity: 0.45;
+		cursor: pointer;
+		outline: 2px solid transparent;
+		outline-offset: 1px;
+		transition:
+			opacity 0.2s,
+			outline-color 0.2s,
+			transform 0.35s var(--ease-spring);
+	}
+	.lb-thumb:hover {
+		opacity: 0.8;
+	}
+	.lb-thumb[aria-current='true'] {
+		opacity: 1;
+		outline-color: #fff;
+	}
+	.lb-thumb img {
+		display: block;
+		height: 100%;
+		width: auto;
+		max-width: none;
+	}
+	@media (max-width: 480px) {
+		.lb-thumb {
+			height: 36px;
+		}
+	}
+	@keyframes lb-in {
+		from {
+			opacity: 0;
+			transform: scale(1.02);
+		}
+	}
+</style>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+	if (dialog && typeof dialog.showModal === 'function') {
+		const img = dialog.querySelector<HTMLImageElement>('.lb-img')!;
+		const video = dialog.querySelector<HTMLVideoElement>('.lb-video')!;
+		const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+		// Suelta el vídeo para no dejar memoria ni descargas abiertas.
+		const stopVideo = () => {
+			video.pause();
+			video.removeAttribute('poster');
+			video.replaceChildren();
+			video.load();
+			video.hidden = true;
+		};
+		const playVideo = (a: HTMLAnchorElement) => {
+			const sources = JSON.parse(a.dataset.video!) as { src: string; type: string }[];
+			video.replaceChildren(
+				...sources.map((x) => Object.assign(document.createElement('source'), { src: x.src, type: x.type })),
+			);
+			video.poster = a.dataset.poster ?? '';
+			video.setAttribute('aria-label', a.dataset.alt ?? '');
+			video.muted = true;
+			video.hidden = false;
+			video.load();
+			if (!reduced()) video.play().catch(() => {});
+		};
+		const label = dialog.querySelector('.lb-label')!;
+		const count = dialog.querySelector('.lb-count')!;
+		const zoomBtn = dialog.querySelector<HTMLButtonElement>('.lb-zoom')!;
+		const stage = dialog.querySelector<HTMLElement>('.lb-stage')!;
+		let list: HTMLAnchorElement[] = [];
+		let index = 0;
+		let opener: HTMLElement | null = null;
+
+		const visible = (a: HTMLElement) => a.getClientRects().length > 0;
+
+		const setZoom = (on: boolean) => {
+			dialog.classList.toggle('is-zoomed', on);
+			zoomBtn.setAttribute('aria-pressed', String(on));
+			zoomBtn.setAttribute('aria-label', on ? 'Ajustar a la pantalla' : 'Ampliar');
+			if (on) {
+				stage.scrollTo({
+					left: (stage.scrollWidth - stage.clientWidth) / 2,
+					top: 0,
+				});
+			}
+		};
+
+		const thumbs = dialog.querySelector<HTMLElement>('.lb-thumbs')!;
+		const buildThumbs = () => {
+			thumbs.replaceChildren(
+				...list.map((a, i) => {
+					const b = document.createElement('button');
+					b.type = 'button';
+					b.tabIndex = -1;
+					b.className = 'lb-thumb';
+					const src = a.querySelector('img');
+					const t = document.createElement('img');
+					t.alt = '';
+					t.loading = 'lazy';
+					t.decoding = 'async';
+					t.src = src?.currentSrc || src?.src || a.dataset.poster || a.dataset.full!;
+					b.append(t);
+					b.addEventListener('click', () => show(i));
+					return b;
+				}),
+			);
+		};
+		const markThumb = () => {
+			[...thumbs.children].forEach((b, i) => {
+				b.setAttribute('aria-current', String(i === index));
+				if (i === index) {
+					const el = b as HTMLElement;
+					thumbs.scrollTo({
+						left: el.offsetLeft - thumbs.clientWidth / 2 + el.offsetWidth / 2,
+						behavior: reduced() ? 'auto' : 'smooth',
+					});
+				}
+			});
+		};
+
+		const show = (i: number, animate = true) => {
+			index = (i + list.length) % list.length;
+			const a = list[index];
+			setZoom(false);
+			markThumb();
+			const isVideo = 'video' in a.dataset;
+			dialog.classList.toggle('is-video', isVideo);
+			stopVideo();
+			const apply = () => {
+				img.hidden = isVideo;
+				if (isVideo) {
+					img.removeAttribute('src');
+					playVideo(a);
+				} else {
+					img.src = a.dataset.full!;
+				}
+				img.alt = a.dataset.alt ?? '';
+				label.textContent = a.dataset.label ?? '';
+				count.textContent = list.length > 1 ? `${index + 1} de ${list.length}` : '';
+			};
+			if (!animate || isVideo || reduced()) return apply();
+			img.classList.add('is-swapping');
+			setTimeout(() => {
+				apply();
+				const done = () => img.classList.remove('is-swapping');
+				if (img.complete) requestAnimationFrame(done);
+				else img.addEventListener('load', done, { once: true });
+				img.addEventListener('error', done, { once: true });
+			}, 140);
+		};
+
+		document.addEventListener('click', (e) => {
+			if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+			const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lb]');
+			if (!a) return;
+			e.preventDefault();
+			const group = a.closest('[data-lb-group]') ?? document;
+			list = [...group.querySelectorAll<HTMLAnchorElement>('a[data-lb]')].filter(visible);
+			if (!list.includes(a)) list = [a];
+			opener = a;
+			dialog.classList.toggle('is-single', list.length < 2);
+			buildThumbs();
+			dialog.showModal();
+			show(list.indexOf(a), false);
+			dialog.querySelector<HTMLElement>('.lb-close')?.focus();
+		});
+
+		dialog.querySelector('.lb-close')?.addEventListener('click', () => dialog.close());
+		dialog.querySelector('.lb-prev')?.addEventListener('click', () => show(index - 1));
+		dialog.querySelector('.lb-next')?.addEventListener('click', () => show(index + 1));
+		zoomBtn.addEventListener('click', () => setZoom(!dialog.classList.contains('is-zoomed')));
+		img.addEventListener('click', (e) => {
+			e.stopPropagation();
+			setZoom(!dialog.classList.contains('is-zoomed'));
+		});
+		stage.addEventListener('click', (e) => {
+			if (e.target === stage && !dialog.classList.contains('is-zoomed')) dialog.close();
+		});
+		dialog.addEventListener('close', () => {
+			setZoom(false);
+			stopVideo();
+			img.removeAttribute('src');
+			thumbs.replaceChildren();
+			opener?.focus();
+		});
+
+		// Deslizar en pantallas táctiles.
+		let x0: number | null = null;
+		stage.addEventListener('pointerdown', (e) => {
+			if (e.pointerType !== 'mouse' && !dialog.classList.contains('is-zoomed') && e.target !== video) x0 = e.clientX;
+		});
+		stage.addEventListener('pointerup', (e) => {
+			if (x0 === null) return;
+			const dx = e.clientX - x0;
+			x0 = null;
+			if (Math.abs(dx) > 50 && list.length > 1) show(index + (dx < 0 ? 1 : -1));
+		});
+
+		dialog.addEventListener('keydown', (e) => {
+			// Con el foco en el vídeo, las flechas avanzan o retroceden la reproducción.
+			if (e.target === video && e.key.startsWith('Arrow')) return;
+			if (e.key === 'ArrowLeft' && list.length > 1 && !dialog.classList.contains('is-zoomed')) {
+				e.preventDefault();
+				show(index - 1);
+			} else if (e.key === 'ArrowRight' && list.length > 1 && !dialog.classList.contains('is-zoomed')) {
+				e.preventDefault();
+				show(index + 1);
+			} else if (e.key === 'Tab') {
+				// Mantiene el foco dentro del diálogo.
+				const f = [...dialog.querySelectorAll<HTMLElement>('button, video:not([hidden])')].filter(
+					(el) => visible(el) && !el.closest('.lb-thumbs') && getComputedStyle(el).visibility !== 'hidden',
+				);
+				const first = f[0];
+				const last = f[f.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		});
+	}
+</script>

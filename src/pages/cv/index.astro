@@ -2,6 +2,8 @@
 import Layout from '../../layouts/LayoutCV.astro';
 import cv from '../../data/cv.json';
 
+const description = `CV de ${cv.basics.name}: ${cv.basics.label}. Experiencia, educación y habilidades.`;
+
 // ── helpers ──────────────────────────────────────────────────────
 function formatDate(str: string | null): string {
   if (!str) return 'Presente';
@@ -30,146 +32,168 @@ function getSocialIcon(network: string): string {
 }
 ---
 
-<Layout title={`${cv.basics.name} — CV`}>
-  <div class="page-wrapper">
-    <!-- Download button -->
-    <div class="print-btn">
-      <button id="printBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 6 2 18 2 18 9"/>
-          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-          <rect x="6" y="14" width="12" height="8"/>
-        </svg>
-        Descargar PDF
-      </button>
-    </div>
+<Layout title={`${cv.basics.name} — CV`} description={description}>
+	<div class="cv mx-auto my-[clamp(16px,5vw,48px)] w-[min(860px,100%-32px)] print:m-0 print:w-full">
+		<nav class="mb-5 flex items-center justify-between gap-3 print:hidden" aria-label="Acciones del CV" data-enter>
+			<a href="/" class="inline-flex min-h-11 items-center gap-1.5 text-sm text-cv-muted no-underline hover:text-[#1a1a1a]">
+				<span aria-hidden="true">←</span> Inicio
+			</a>
+			<button
+				id="printBtn"
+				type="button"
+				class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg bg-[#1a1a1a] px-5 text-sm font-medium tracking-[0.01em] text-white transition-[background-color,transform] duration-200 hover:-translate-y-px hover:bg-[#333] active:scale-[0.97]"
+			>
+				<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<polyline points="6 9 6 2 18 2 18 9"></polyline>
+					<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+					<rect x="6" y="14" width="12" height="8"></rect>
+				</svg>
+				Descargar PDF
+			</button>
+		</nav>
 
-    <div class="cv-card">
-      <!-- ── HEADER ──────────────────────────────────────────── -->
-      <header class="cv-header">
-        <h1 class="header-name">{cv.basics.name}</h1>
-        <span class="header-label">{cv.basics.label}</span>
-        <p class="header-summary">{cv.basics.summary}</p>
+		<div class="overflow-hidden rounded-2xl border border-cv-line bg-white shadow-[0_2px_24px_rgb(0_0_0/0.06)] print:rounded-none print:border-0 print:shadow-none">
+			<!-- Cabecera -->
+			<header class="relative overflow-hidden border-b border-cv-line px-[clamp(20px,6vw,48px)] pt-[clamp(28px,6vw,44px)] pb-9 print:border-b-[1.5px] print:border-[#ccc] print:px-0 print:pt-0 print:pb-5">
+				<div class="pointer-events-none absolute -top-10 -right-10 size-55 rounded-full bg-[radial-gradient(circle,#c9b8d840_0%,transparent_70%)] print:hidden" aria-hidden="true"></div>
+				<div class="pointer-events-none absolute -bottom-7.5 left-15 size-40 rounded-full bg-[radial-gradient(circle,#b5c4b130_0%,transparent_70%)] print:hidden" aria-hidden="true"></div>
+				<h1 class="m-0 font-cv-serif text-[clamp(2rem,6vw,2.5rem)] leading-[1.1] font-normal tracking-[-0.5px] text-[#1a1a1a]">{cv.basics.name}</h1>
+				<span class="mt-2 inline-block rounded-full border border-cv-line bg-[#eef4f7] px-3 py-0.5 text-[13px] font-medium tracking-[0.08em] text-cv-muted uppercase">{cv.basics.label}</span>
+				<p class="mt-4 mb-0 max-w-155 text-sm leading-[1.7] font-light text-cv-muted">{cv.basics.summary}</p>
 
-        <div class="header-contact">
-          <!-- Email -->
-          <a href={`mailto:${cv.basics.email}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-            </svg>
-            {cv.basics.email}
-          </a>
+				<div class="mt-5 flex flex-wrap gap-x-4 gap-y-1.5">
+					<a class="contact" href={`mailto:${cv.basics.email}`}>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<rect x="2" y="4" width="20" height="16" rx="2"></rect>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+						</svg>
+						{cv.basics.email}
+					</a>
+					{
+						cv.basics.profiles.map((p) => (
+							<a class="contact" href={p.url} target="_blank" rel="noopener noreferrer">
+								<span class="contents" aria-hidden="true" set:html={getSocialIcon(p.network)} />
+								{p.url.replace('https://', '')}
+							</a>
+						))
+					}
+				</div>
+			</header>
 
-          <!-- Profiles -->
-          {cv.basics.profiles.map(p => (
-            <a href={p.url} target="_blank" rel="noopener noreferrer">
-              <span set:html={getSocialIcon(p.network)}></span>
-              {p.url.replace('https://', '')}
-            </a>
-          ))}
-        </div>
-      </header>
+			<div class="grid md:grid-cols-[1fr_280px] print:grid-cols-[1fr_230px]">
+				<main class="border-cv-line px-[clamp(20px,6vw,48px)] py-10 md:border-r print:py-6 print:pr-6 print:pl-0">
+					<section class="mb-10">
+						<h2 class="sec">Experiencia</h2>
+						{
+							cv.work.map((job) => (
+								<article class="relative mb-7 pl-3.5 before:absolute before:top-1.75 before:left-0 before:size-1.25 before:rounded-full before:bg-[#b5c4b1] last:mb-0">
+									<div class="flex flex-wrap items-baseline justify-between gap-x-3">
+										<h3 class="m-0 text-[15px] font-semibold text-[#1a1a1a]">{job.position}</h3>
+										<span class="text-xs font-light whitespace-nowrap text-cv-muted">
+											{formatDate(job.startDate)} — {formatDate(job.endDate)}
+										</span>
+									</div>
+									<div class="mt-0.5 flex flex-wrap items-center gap-x-2">
+										<span class="text-[13px] text-cv-muted italic">{job.company}</span>
+										{job.model && (
+											<span
+												class:list={[
+													'rounded-full px-1.75 py-px text-[10px] font-medium tracking-[0.05em]',
+													job.model === 'B2C' ? 'bg-[#fde8d8] text-[#8a4317]' : 'bg-[#dcedf5] text-[#255a73]',
+												]}
+											>
+												{job.model}
+											</span>
+										)}
+										{job.industry && <span class="text-xs font-light text-cv-muted">· {job.industry}</span>}
+									</div>
+									<ul class="mt-2.5 list-none p-0">
+										{job.highlights.map((h) => (
+											<li class="relative py-0.5 pl-3.5 text-[13.5px] font-light text-cv-muted before:absolute before:left-0 before:text-cv-line before:content-['–'] print:text-xs">
+												{h}
+											</li>
+										))}
+									</ul>
+								</article>
+							))
+						}
+					</section>
 
-      <!-- ── BODY ────────────────────────────────────────────── -->
-      <div class="cv-body">
+					<section>
+						<h2 class="sec">Educación</h2>
+						{
+							cv.education.map((edu) => (
+								<div class="mb-5 last:mb-0">
+									<div class="text-sm font-medium">{edu.area}</div>
+									<div class="mt-0.5 text-[13px] text-cv-muted italic">{edu.institution}</div>
+									<div class="mt-0.5 text-xs font-light text-cv-muted">
+										{formatDate(edu.startDate)} — {formatDate(edu.endDate)}
+										{'location' in edu && edu.location ? ` · ${edu.location}` : ''}
+										{'status' in edu && edu.status ? (
+											<span class="ml-1 inline-block rounded-full bg-[#fff3d4] px-1.75 py-px text-[10px] font-medium text-[#7a5900]">{edu.status}</span>
+										) : null}
+									</div>
+								</div>
+							))
+						}
+					</section>
+				</main>
 
-        <!-- Main column -->
-        <main class="cv-main">
+				<aside class="border-t border-cv-line px-[clamp(20px,6vw,32px)] py-10 md:border-t-0 print:border-t-0 print:py-6 print:pr-0 print:pl-6">
+					<section class="mb-10">
+						<h2 class="sec">Habilidades</h2>
+						<h3 class="sub">Técnicas</h3>
+						<ul class="tags">
+							{cv.skills.tech.map((s) => <li class="tag border-[#c9bcec] bg-[#ede9f6] text-[#4a3870]">{s}</li>)}
+						</ul>
+						<h3 class="sub mt-4.5">Blandas</h3>
+						<ul class="tags">
+							{cv.skills.soft.map((s) => <li class="tag border-[#c9dcc5] bg-[#f0f5ee] text-[#3d5c38]">{s}</li>)}
+						</ul>
+					</section>
 
-          <!-- Experiencia -->
-          <section class="section">
-            <h2 class="section-title">Experiencia</h2>
-            {cv.work.map(job => (
-              <article class="work-entry">
-                <div class="work-header">
-                  <span class="work-position">{job.position}</span>
-                  <span class="work-date">
-                    {formatDate(job.startDate)} — {formatDate(job.endDate)}
-                  </span>
-                </div>
-                <div class="work-company-line">
-                  <span class="work-company">{job.company}</span>
-                  {job.model && (
-                    <span class={`work-badge badge-${job.model.toLowerCase()}`}>{job.model}</span>
-                  )}
-                  {job.industry && (
-                    <span style="font-size:12px; color:var(--muted); font-weight:300;">· {job.industry}</span>
-                  )}
-                </div>
-                <ul class="work-highlights">
-                  {job.highlights.map(h => <li>{h}</li>)}
-                </ul>
-              </article>
-            ))}
-          </section>
+					<section class="mb-10">
+						<h2 class="sec">Idiomas</h2>
+						<dl class="m-0">
+							{
+								cv.languages.map((l) => (
+									<div class="flex items-center justify-between border-b border-cv-line py-2 last:border-b-0">
+										<dt class="text-[13px] font-medium">{l.language}</dt>
+										<dd class="m-0 text-xs text-cv-muted">{l.fluency}</dd>
+									</div>
+								))
+							}
+						</dl>
+					</section>
 
-          <!-- Educación -->
-          <section class="section">
-            <h2 class="section-title">Educación</h2>
-            {cv.education.map(edu => (
-              <div class="edu-entry">
-                <div class="edu-degree">{edu.area}</div>
-                <div class="edu-institution">{edu.institution}</div>
-                <div class="edu-meta">
-                  {formatDate(edu.startDate)} — {formatDate(edu.endDate)}
-                  {'location' in edu && edu.location ? ` · ${edu.location}` : ''}
-                  {'status' in edu && edu.status ? (
-                    <span class="edu-status">{edu.status}</span>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </section>
-
-        </main>
-
-        <!-- Sidebar -->
-        <aside class="cv-sidebar">
-
-          <!-- Habilidades técnicas -->
-          <section class="section">
-            <h2 class="section-title">Habilidades</h2>
-
-            <div class="skills-group-label">Técnicas</div>
-            <div class="tags">
-              {cv.skills.tech.map(s => (
-                <span class="tag tag-tech">{s}</span>
-              ))}
-            </div>
-
-            <div class="skills-group-label">Blandas</div>
-            <div class="tags">
-              {cv.skills.soft.map(s => (
-                <span class="tag tag-soft">{s}</span>
-              ))}
-            </div>
-          </section>
-
-          <!-- Idiomas -->
-          <section class="section">
-            <h2 class="section-title">Idiomas</h2>
-            {cv.languages.map(l => (
-              <div class="lang-entry">
-                <span class="lang-name">{l.language}</span>
-                <span class="lang-level">{l.fluency}</span>
-              </div>
-            ))}
-          </section>
-
-          <!-- Ubicación -->
-          <section class="section">
-            <h2 class="section-title">Ubicación</h2>
-            <p style="font-size:13px; color:var(--muted);">
-              {cv.basics.location.city}, {cv.basics.location.region}<br/>
-              {cv.basics.location.country}
-            </p>
-          </section>
-
-        </aside>
-      </div>
-    </div>
-  </div>
+					<section>
+						<h2 class="sec">Ubicación</h2>
+						<p class="m-0 text-[13px] text-cv-muted">
+							{cv.basics.location.city}, {cv.basics.location.region}<br />
+							{cv.basics.location.country}
+						</p>
+					</section>
+				</aside>
+			</div>
+		</div>
+	</div>
 </Layout>
+
+<style>
+	@reference '../../styles/global.css';
+	.sec {
+		@apply mb-5 border-b border-cv-line pb-2 font-cv text-[11px] font-semibold tracking-[0.12em] text-cv-muted uppercase;
+	}
+	.sub {
+		@apply mb-2.5 font-cv text-[11px] font-semibold tracking-[0.08em] text-cv-muted uppercase;
+	}
+	.tags {
+		@apply m-0 flex list-none flex-wrap gap-1.5 p-0;
+	}
+	.tag {
+		@apply rounded-full border px-2.75 py-1 text-xs print:px-2 print:py-0.5 print:text-[11px];
+	}
+	.contact {
+		@apply inline-flex min-h-8 items-center gap-1.25 text-[13px] text-cv-muted no-underline hover:text-[#1a1a1a] [&_svg]:size-3.5 [&_svg]:opacity-70;
+	}
+</style>

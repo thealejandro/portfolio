@@ -1,0 +1,21 @@
+# Cloudflare Pages: cabeceras por ruta.
+# Los recursos de /_astro llevan hash en el nombre: se pueden guardar para siempre.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Vídeo y póster de la isla: sin hash, una semana.
+/omarchy/*.mp4
+  Cache-Control: public, max-age=604800
+/omarchy/*.webm
+  Cache-Control: public, max-age=604800
+/omarchy/*.webp
+  Cache-Control: public, max-age=604800
+
+# Seguridad básica en todo el sitio (sin tocar Cache-Control para no mezclarlo con lo anterior).
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN

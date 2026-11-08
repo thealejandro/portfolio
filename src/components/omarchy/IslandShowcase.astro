@@ -1,0 +1,108 @@
+---
+import IslandVideo from './IslandVideo.astro';
+import ShotLink from './ShotLink.astro';
+import { ISLAND_VERSION } from './commands';
+import { ISLAND_FEATURES } from './island';
+import { shotOf, type Theme } from './themes';
+
+interface Props {
+	themes: Theme[];
+}
+const { themes } = Astro.props;
+const highlights = ISLAND_FEATURES.filter((f) => ['borde', 'paginas', 'agenda', 'tema'].includes(f.id));
+// Tres capturas de la isla con temas distintos (claro, oscuro, Windows).
+const picks = ['tahoe', 'cupertino', 'fluent-light', 'aero-night', 'big-sur', 'obsidiana']
+	.map((slug) => themes.find((t) => t.slug === slug))
+	.flatMap((t) => {
+		const s = t && shotOf(t, 'island');
+		return t && s ? [{ t, s }] : [];
+	})
+	.slice(0, 3);
+---
+
+<section
+	id="isla"
+	class="section scroll-mt-12"
+	aria-labelledby="isla-title"
+>
+	<div class="relative isolate overflow-hidden bg-[#07081a] pt-[clamp(4rem,9vw,7rem)] pb-[clamp(3.5rem,8vw,6rem)] text-[#c9cde0]">
+		<div
+			class="pointer-events-none absolute top-[-20%] left-1/2 -z-10 aspect-square w-[min(1100px,160%)] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(99_102_241/0.35),transparent)]"
+			aria-hidden="true"
+		></div>
+		<div class="wrap flex flex-col items-center text-center">
+			<p class="eyebrow text-[#a5b4fc]" data-reveal>Plugin para Omarchy · v{ISLAND_VERSION}</p>
+			<h2 id="isla-title" class="mb-4 text-display font-bold text-white" data-reveal style="--i:1">
+				omarchy-island
+			</h2>
+			<p class="mx-auto mb-7 max-w-176 text-lead text-[#c9cde0]" data-reveal style="--i:2">
+				Una isla dinámica que sale de la barra, justo donde está el reloj: lo que suena, tu agenda, la hora en el
+				mundo, el clima, un temporizador de enfoque y los toggles de Omarchy. Se aparta cuando terminas.
+			</p>
+			<div class="flex flex-wrap justify-center gap-3" data-reveal style="--i:3">
+				<a class="btn bg-white text-ink hover:bg-[#e8eaff] hover:text-ink" href="/omarchy/island">Conoce la isla</a>
+				<a class="btn border-white/25 text-white hover:border-white/60 hover:text-white" href="/omarchy/island#instalar">
+					Instalar
+				</a>
+			</div>
+		</div>
+
+		<div class="wrap mt-[clamp(2.5rem,6vw,4rem)] max-w-190">
+			<div class="scroll-zoom">
+				<IslandVideo class="[&_figcaption]:text-[#9aa1bd]" />
+			</div>
+		</div>
+
+		<ul class="wrap mt-[clamp(2.5rem,6vw,4rem)] grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
+			{
+				highlights.map((f, i) => (
+					<li
+						class="rounded-card border border-white/10 bg-white/[0.04] p-5 transition-[background-color,transform] duration-500 ease-apple hover:-translate-y-1 hover:bg-white/[0.07]"
+						data-reveal
+						style={`--i:${i}`}
+					>
+						<svg
+							viewBox="0 0 24 24"
+							class="mb-3 size-7 text-[#a5b4fc]"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.6"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path d={f.icon} />
+						</svg>
+						<h3 class="mb-1.5 text-[1.05rem] text-white">{f.title}</h3>
+						<p class="m-0 text-[0.92rem] leading-normal text-[#aeb4cc]">{f.text}</p>
+					</li>
+				))
+			}
+		</ul>
+
+		{
+			picks.length > 0 && (
+				<div class="wrap mt-[clamp(2.5rem,6vw,4rem)]" data-lb-group>
+					<ul class="grid gap-4 sm:grid-cols-3" role="list">
+						{picks.map(({ t, s }, i) => (
+							<li data-reveal="zoom" style={`--i:${i}`}>
+								<ShotLink
+									shot={s}
+									label={`${t.name} · ${s.label}`}
+									sizes="(max-width: 640px) calc(100vw - 32px), 390px"
+									class="rounded-xl shadow-[0_0_0_1px_rgb(255_255_255/0.1)]"
+								/>
+								<p class="mt-2 text-center text-[0.85rem] text-[#9aa1bd]">Con {t.name}</p>
+							</li>
+						))}
+					</ul>
+					<p class="mt-6 text-center">
+						<a class="inline-flex min-h-11 items-center gap-1 font-bold text-[#a5b4fc] no-underline hover:underline" href="/omarchy/island#galeria">
+							La isla con los {themes.filter((t) => shotOf(t, 'island')).length} temas <span aria-hidden="true">→</span>
+						</a>
+					</p>
+				</div>
+			)
+		}
+	</div>
+</section>

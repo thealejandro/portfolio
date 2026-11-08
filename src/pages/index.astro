@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -58,7 +60,7 @@ const projects = [
 	{
 		name: 'omarchy-island',
 		tag: 'Open source · Linux',
-		url: 'https://github.com/thealejandro/omarchy-island',
+		url: '/omarchy/island',
 		desc: 'Isla dinámica para la barra de Omarchy: música con controles, calendario, temporizador de enfoque, clima, accesos rápidos y avisos de volumen, brillo y batería.',
 		stack: ['QML', 'Quickshell', 'JavaScript'],
 	},
@@ -76,399 +78,137 @@ const yearsExp = new Date().getFullYear() - 2018;
 <html lang="es">
 	<head>
 		<BaseHead title={`${SITE_TITLE} — Desarrollador full stack · XACode`} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-				max-width: calc(100% - 2em);
-				padding: 3em 1em 4em;
-			}
-
-			/* ── Hero ─────────────────────────────────── */
-			.hero {
-				display: grid;
-				grid-template-columns: minmax(0, 1fr) auto;
-				grid-template-areas:
-					'badge photo'
-					'title photo'
-					'lead photo'
-					'actions photo'
-					'facts facts';
-				align-items: start;
-				column-gap: 2.5rem;
-				row-gap: 1.25rem;
-				padding: 1.5rem 0 3rem;
-				border-bottom: 1px solid rgb(var(--gray-light));
-			}
-			.hero .badge { grid-area: badge; }
-			.hero h1 { grid-area: title; }
-			.hero .lead { grid-area: lead; }
-			.hero .actions { grid-area: actions; }
-			.hero .facts { grid-area: facts; }
-			.photo {
-				grid-area: photo;
-				width: 168px;
-				height: 168px;
-				border-radius: 50%;
-				object-fit: cover;
-				border: 4px solid #fff;
-				box-shadow: var(--box-shadow);
-				align-self: center;
-			}
-			@media (max-width: 760px) {
-				.hero {
-					grid-template-columns: 1fr;
-					grid-template-areas:
-						'photo'
-						'badge'
-						'title'
-						'lead'
-						'actions'
-						'facts';
-				}
-				.photo {
-					width: 120px;
-					height: 120px;
-					justify-self: start;
-				}
-			}
-			.badge {
-				display: inline-flex;
-				align-items: center;
-				gap: 8px;
-				width: fit-content;
-				font-size: 0.72rem;
-				font-weight: 600;
-				letter-spacing: 0.1em;
-				text-transform: uppercase;
-				padding: 4px 14px;
-				border-radius: 100px;
-				background: #f0f5ee;
-				color: #3d5c38;
-				border: 1px solid #c9dcc5;
-			}
-			.badge::before {
-				content: '';
-				width: 7px;
-				height: 7px;
-				border-radius: 50%;
-				background: #3d9a4f;
-				box-shadow: 0 0 0 3px rgba(61, 154, 79, 0.2);
-			}
-			.hero h1 {
-				font-size: clamp(2.1rem, 5vw, 3.4rem);
-				line-height: 1.08;
-				margin: 0;
-				letter-spacing: -0.02em;
-			}
-			.hero h1 span {
-				color: var(--accent);
-			}
-			.lead {
-				font-size: 1.15rem;
-				color: rgb(var(--gray-dark));
-				max-width: 640px;
-				line-height: 1.6;
-				margin: 0;
-			}
-			.lead a {
-				font-weight: 700;
-				text-decoration: none;
-			}
-			.actions {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 10px;
-				margin-top: 0.5rem;
-			}
-			.btn {
-				display: inline-flex;
-				align-items: center;
-				gap: 8px;
-				padding: 11px 22px;
-				border-radius: 8px;
-				text-decoration: none;
-				font-size: 0.95rem;
-				font-weight: 600;
-				transition: transform 0.15s, background 0.2s;
-			}
-			.btn:hover {
-				transform: translateY(-2px);
-			}
-			.btn-dark {
-				background: #1a1a1a;
-				color: #fff;
-			}
-			.btn-dark:hover {
-				background: #333;
-				color: #fff;
-			}
-			.btn-light {
-				background: #fff;
-				color: rgb(var(--black));
-				border: 1px solid rgb(var(--gray-light));
-			}
-			.facts {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 1.5rem 2.5rem;
-				margin-top: 0.5rem;
-				font-size: 0.9rem;
-				color: rgb(var(--gray));
-			}
-			.facts strong {
-				display: block;
-				font-size: 1.5rem;
-				color: rgb(var(--black));
-				line-height: 1.1;
-			}
-
-			/* ── Secciones ────────────────────────────── */
-			section {
-				padding: 3rem 0 0;
-			}
-			.section-title {
-				font-size: 0.78rem;
-				font-weight: 700;
-				letter-spacing: 0.12em;
-				text-transform: uppercase;
-				color: rgb(var(--gray));
-				margin: 0 0 1.25rem;
-			}
-			h2.big {
-				font-size: 1.8rem;
-				margin: 0 0 0.5rem;
-			}
-
-			/* ── Qué hago ─────────────────────────────── */
-			.what {
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				gap: 1rem;
-			}
-			.what article {
-				background: #fff;
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: 12px;
-				padding: 1.25rem;
-			}
-			.what h3 {
-				font-size: 1.05rem;
-				margin: 0 0 0.4rem;
-			}
-			.what p {
-				font-size: 0.92rem;
-				color: rgb(var(--gray-dark));
-				margin: 0;
-				line-height: 1.55;
-			}
-
-			/* ── Proyectos ────────────────────────────── */
-			.projects {
-				display: grid;
-				grid-template-columns: repeat(2, 1fr);
-				gap: 1rem;
-			}
-			.project {
-				display: flex;
-				flex-direction: column;
-				gap: 0.6rem;
-				background: #fff;
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: 12px;
-				padding: 1.25rem;
-				text-decoration: none;
-				color: inherit;
-				transition: box-shadow 0.2s, transform 0.2s;
-			}
-			.project:hover {
-				box-shadow: var(--box-shadow);
-				transform: translateY(-2px);
-				color: inherit;
-			}
-			.project-head {
-				display: flex;
-				justify-content: space-between;
-				align-items: baseline;
-				gap: 8px;
-			}
-			.project h3 {
-				margin: 0;
-				font-size: 1.15rem;
-			}
-			.project .tag {
-				font-size: 0.7rem;
-				font-weight: 600;
-				letter-spacing: 0.06em;
-				text-transform: uppercase;
-				color: rgb(var(--gray));
-				white-space: nowrap;
-			}
-			.project p {
-				margin: 0;
-				font-size: 0.92rem;
-				line-height: 1.55;
-				color: rgb(var(--gray-dark));
-			}
-			.chips {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 6px;
-				margin-top: auto;
-				padding-top: 0.4rem;
-			}
-			.chip {
-				font-size: 0.72rem;
-				padding: 3px 9px;
-				border-radius: 100px;
-				background: #ede9f6;
-				color: #4a3870;
-				border: 1px solid #d9d0ee;
-			}
-			.chip.neutral {
-				background: rgb(var(--gray-light));
-				color: rgb(var(--gray-dark));
-				border-color: transparent;
-			}
-
-			/* ── Contacto ─────────────────────────────── */
-			.contact {
-				background: #1a1a1a;
-				color: #fff;
-				border-radius: 16px;
-				padding: 2rem;
-				display: grid;
-				gap: 0.75rem;
-			}
-			.contact h2 {
-				color: #fff;
-				margin: 0;
-				font-size: 1.6rem;
-			}
-			.contact p {
-				margin: 0;
-				color: #cfcfcf;
-				font-size: 0.98rem;
-			}
-			.contact-links {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 10px;
-				margin-top: 0.5rem;
-			}
-			.contact-links a {
-				color: #fff;
-				text-decoration: none;
-				border: 1px solid #444;
-				border-radius: 8px;
-				padding: 8px 14px;
-				font-size: 0.9rem;
-			}
-			.contact-links a:hover {
-				border-color: #fff;
-			}
-
-			@media (max-width: 760px) {
-				.what,
-				.projects {
-					grid-template-columns: 1fr;
-				}
-				main {
-					padding: 1.5em 1em 3em;
-				}
-			}
-		</style>
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section class="hero">
-				<img class="photo" src="/avatar.jpg" alt="Foto de José Alejandro Caal Choc" width="400" height="400" />
-				<span class="badge">Disponible para proyectos</span>
-				<h1>Hola, soy <span>Alejandro</span>.<br />Construyo software que la gente usa todos los días.</h1>
-				<p class="lead">
-					Desarrollador full stack con Laravel, Livewire y Astro. Fundador de <a href="https://xacode.dev">XACode</a>,
+		<main class="mx-auto w-[min(960px,100%-32px)] pt-[clamp(1.5rem,5vw,3rem)] pb-16">
+			<section
+				class="grid items-start gap-x-10 gap-y-5 border-b border-line pt-6 pb-12 [grid-template-areas:'photo''badge''title''lead''actions''facts'] md:grid-cols-[minmax(0,1fr)_auto] md:[grid-template-areas:'badge_photo''title_photo''lead_photo''actions_photo''facts_facts']"
+				aria-labelledby="hola"
+			>
+				<Image
+					src={avatar}
+					alt="Foto de José Alejandro Caal Choc"
+					widths={[120, 240, 336]}
+					sizes="(max-width: 767px) 120px, 168px"
+					loading="eager"
+					fetchpriority="high"
+					class="size-30 self-center rounded-full border-4 border-white object-cover shadow-card [grid-area:photo] md:size-42"
+					data-enter
+					style="--i:0"
+				/>
+				<span
+					class="inline-flex w-fit items-center gap-2 rounded-full border border-[#c9dcc5] bg-[#f0f5ee] px-3.5 py-1 text-[0.72rem] font-bold tracking-widest text-[#3d5c38] uppercase [grid-area:badge]"
+					data-enter
+					style="--i:1"
+				>
+					<span class="size-1.75 rounded-full bg-[#3d9a4f] shadow-[0_0_0_3px_rgb(61_154_79/0.2)] motion-safe:animate-pulse" aria-hidden="true"></span>
+					Disponible para proyectos
+				</span>
+				<h1 id="hola" class="m-0 text-[clamp(2.1rem,5vw,3.4rem)] leading-[1.08] tracking-[-0.02em] [grid-area:title]" data-enter style="--i:2">
+					Hola, soy <span class="text-accent">Alejandro</span>.<br />Construyo software que la gente usa todos los días.
+				</h1>
+				<p class="m-0 max-w-160 text-[1.15rem] leading-relaxed text-body [grid-area:lead]" data-enter style="--i:3">
+					Desarrollador full stack con Laravel, Livewire y Astro. Fundador de <a class="font-bold no-underline hover:underline" href="https://xacode.dev">XACode</a>,
 					donde hacemos sistemas a medida y productos SaaS para hospitales, farmacias y negocios en Guatemala.
 				</p>
-				<div class="actions">
-					<a href="#proyectos" class="btn btn-dark">Ver proyectos →</a>
-					<a href="/cv" class="btn btn-light">Ver mi CV</a>
+				<div class="mt-2 flex flex-wrap gap-2.5 [grid-area:actions]" data-enter style="--i:4">
+					<a href="#proyectos" class="btn btn-primary">Ver proyectos <span aria-hidden="true">→</span></a>
+					<a href="/cv" class="btn btn-ghost">Ver mi CV</a>
 				</div>
-				<div class="facts">
-					<div><strong>+{yearsExp}</strong> años desarrollando</div>
-					<div><strong>5</strong> productos SaaS propios</div>
-					<div><strong>Cobán</strong> Alta Verapaz, Guatemala</div>
-				</div>
+				<dl class="mt-2 flex flex-wrap gap-x-10 gap-y-6 text-[0.9rem] text-muted [grid-area:facts]" data-enter style="--i:5">
+					<div class="flex flex-col-reverse"><dt>años desarrollando</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">+{yearsExp}</dd></div>
+					<div class="flex flex-col-reverse"><dt>productos SaaS propios</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">5</dd></div>
+					<div class="flex flex-col-reverse"><dt>Alta Verapaz, Guatemala</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">Cobán</dd></div>
+				</dl>
 			</section>
 
-			<section id="que-hago">
-				<p class="section-title">Qué hago</p>
-				<div class="what">
-					<article>
-						<h3>Sistemas a medida</h3>
-						<p>
-							Aplicaciones web con Laravel y Livewire: desde el modelo de datos hasta el
-							despliegue, con pruebas automatizadas y documentación para quien siga.
-						</p>
-					</article>
-					<article>
-						<h3>Sitios web rápidos</h3>
-						<p>
-							Sitios con Astro y Tailwind que cargan en segundos y que el cliente edita solo.
-							Migraciones desde WordPress sin perder tráfico.
-						</p>
-					</article>
-					<article>
-						<h3>Infraestructura y rescates</h3>
-						<p>
-							Hosting administrado, Cloudflare, respaldos, correo corporativo y recuperación
-							de sistemas que se quedaron sin servidor.
-						</p>
-					</article>
-				</div>
-			</section>
-
-			<section id="proyectos">
-				<p class="section-title">Proyectos</p>
-				<h2 class="big">Lo que he construido últimamente</h2>
-				<div class="projects">
+			<section id="que-hago" class="scroll-mt-20 pt-12" aria-labelledby="que-hago-t">
+				<h2 id="que-hago-t" class="label" data-reveal>Qué hago</h2>
+				<div class="grid gap-4 md:grid-cols-3">
 					{
-						projects.map((p) => (
-							<a class="project" href={p.url} target={p.url.startsWith('/') ? undefined : '_blank'} rel={p.url.startsWith('/') ? undefined : 'noopener noreferrer'}>
-								<div class="project-head">
-									<h3>{p.name}</h3>
-									<span class="tag">{p.tag}</span>
-								</div>
-								<p>{p.desc}</p>
-								<div class="chips">
-									{p.stack.map((s) => (
-										<span class="chip">{s}</span>
-									))}
-								</div>
-							</a>
+						[
+							['Sistemas a medida', 'Aplicaciones web con Laravel y Livewire: desde el modelo de datos hasta el despliegue, con pruebas automatizadas y documentación para quien siga.'],
+							['Sitios web rápidos', 'Sitios con Astro y Tailwind que cargan en segundos y que el cliente edita solo. Migraciones desde WordPress sin perder tráfico.'],
+							['Infraestructura y rescates', 'Hosting administrado, Cloudflare, respaldos, correo corporativo y recuperación de sistemas que se quedaron sin servidor.'],
+						].map(([h, p], i) => (
+							<article class="rounded-xl border border-line bg-white p-5" data-reveal style={`--i:${i}`}>
+								<h3 class="mb-1.5 text-[1.05rem]">{h}</h3>
+								<p class="m-0 text-[0.92rem] leading-normal text-body">{p}</p>
+							</article>
 						))
 					}
 				</div>
 			</section>
 
-			<section id="stack">
-				<p class="section-title">Herramientas</p>
-				<div class="chips">
-					{stack.map((s) => <span class="chip neutral">{s}</span>)}
-				</div>
+			<section id="proyectos" class="scroll-mt-20 pt-12" aria-labelledby="proyectos-t">
+				<p class="label" data-reveal>Proyectos</p>
+				<h2 id="proyectos-t" class="mb-5 text-[1.8rem]" data-reveal>Lo que he construido últimamente</h2>
+				<ul class="grid gap-4 md:grid-cols-2" role="list">
+					{
+						projects.map((p, i) => {
+							const local = p.url.startsWith('/');
+							return (
+								<li class="flex" data-reveal style={`--i:${i % 2}`}>
+									<a
+										class="group flex w-full flex-col gap-2.5 rounded-xl border border-line bg-white p-5 text-inherit no-underline transition-[box-shadow,transform] duration-500 ease-apple hover:-translate-y-1 hover:text-inherit hover:shadow-lift active:scale-[0.99]"
+										href={p.url}
+										target={local ? undefined : '_blank'}
+										rel={local ? undefined : 'noopener noreferrer'}
+									>
+										<div class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+											<h3 class="m-0 text-[1.15rem]">
+												{p.name}
+												{!local && <span class="sr-only"> (se abre en otra pestaña)</span>}
+											</h3>
+											<span class="text-[0.7rem] font-bold tracking-[0.06em] text-muted uppercase">{p.tag}</span>
+										</div>
+										<p class="m-0 text-[0.92rem] leading-normal text-body">{p.desc}</p>
+										<div class="mt-auto flex flex-wrap gap-1.5 pt-1.5">
+											{p.stack.map((s) => (
+												<span class="rounded-full border border-[#d9d0ee] bg-[#ede9f6] px-2.5 py-0.5 text-[0.72rem] text-[#4a3870]">{s}</span>
+											))}
+										</div>
+									</a>
+								</li>
+							);
+						})
+					}
+				</ul>
 			</section>
 
-			<section id="contacto">
-				<div class="contact">
-					<h2>¿Tienes un proyecto?</h2>
-					<p>
+			<section id="stack" class="scroll-mt-20 pt-12" aria-labelledby="stack-t">
+				<h2 id="stack-t" class="label" data-reveal>Herramientas</h2>
+				<ul class="flex flex-wrap gap-1.5" role="list" data-reveal>
+					{stack.map((s) => <li class="rounded-full bg-line px-2.5 py-0.5 text-[0.78rem] text-body">{s}</li>)}
+				</ul>
+			</section>
+
+			<section id="contacto" class="scroll-mt-20 pt-12" aria-labelledby="contacto-t">
+				<div class="grid gap-3 rounded-2xl bg-[#1a1a1a] p-[clamp(1.5rem,4vw,2rem)] text-white" data-reveal="zoom">
+					<h2 id="contacto-t" class="m-0 text-[1.6rem] text-white">¿Tienes un proyecto?</h2>
+					<p class="m-0 text-[0.98rem] text-[#cfcfcf]">
 						Escríbeme y platicamos. Respondo en menos de 24 horas hábiles. Para trabajo con
 						empresa, ve a XACode.
 					</p>
-					<div class="contact-links">
-						<a href={`mailto:${cv.basics.email}`}>{cv.basics.email}</a>
-						<a href="https://xacode.dev" target="_blank" rel="noopener noreferrer">xacode.dev</a>
-						<a href="https://github.com/thealejandro" target="_blank" rel="noopener noreferrer">GitHub</a>
-						<a href="https://linkedin.com/in/thealejandro" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+					<div class="mt-2 flex flex-wrap gap-2.5">
+						{
+							[
+								[`mailto:${cv.basics.email}`, cv.basics.email],
+								['https://xacode.dev', 'xacode.dev'],
+								['https://github.com/thealejandro', 'GitHub'],
+								['https://linkedin.com/in/thealejandro', 'LinkedIn'],
+							].map(([href, label]) => (
+								<a
+									class="inline-flex min-h-11 items-center rounded-lg border border-[#444] px-3.5 text-[0.9rem] text-white no-underline transition-colors hover:border-white hover:text-white [overflow-wrap:anywhere]"
+									href={href}
+									target={href.startsWith('http') ? '_blank' : undefined}
+									rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+								>
+									{label}
+								</a>
+							))
+						}
 					</div>
 				</div>
 			</section>
@@ -476,3 +216,10 @@ const yearsExp = new Date().getFullYear() - 2018;
 		<Footer />
 	</body>
 </html>
+
+<style>
+	@reference '../styles/global.css';
+	.label {
+		@apply mb-5 text-[0.78rem] font-bold tracking-[0.12em] text-muted uppercase;
+	}
+</style>

@@ -1,0 +1,92 @@
+---
+import { PROMO, VIDEOS } from './media';
+import ShotLink from './ShotLink.astro';
+import VideoLink from './VideoLink.astro';
+import { shotOf, type Shot, type ShotKind, type Theme } from './themes';
+
+interface Props {
+	themes: Theme[];
+}
+const { themes } = Astro.props;
+
+// Un mosaico variado: cada hueco pide un tipo de captura a un tema distinto.
+// Si ese tipo aún no existe, cae al escritorio de otro tema.
+const wanted: [string, ShotKind][] = [
+	['ventura', 'desktop'],
+	['cupertino-light', 'launcher'],
+	['fluent', 'notification'],
+	['obsidiana', 'island-bottom'],
+	['aero', 'desktop'],
+];
+const used = new Set<string>();
+const picks: { t: Theme; s: Shot }[] = [];
+for (const [slug, kind] of wanted) {
+	const t = themes.find((x) => x.slug === slug && !used.has(x.slug)) ?? themes.find((x) => !used.has(x.slug));
+	if (!t) continue;
+	const s = shotOf(t, kind) ?? t.cover;
+	if (!s) continue;
+	used.add(t.slug);
+	picks.push({ t, s });
+}
+const bar = themes.map((t) => ({ t, s: shotOf(t, 'bar-glassy') })).find((x) => x.s && !used.has(x.t.slug));
+const total = themes.reduce((n, t) => n + t.shots.length + t.walls.length, 0) + VIDEOS.length;
+// El hueco grande es para el vídeo promocional; las capturas ocupan los pequeños.
+const small = picks.slice(0, 4);
+---
+
+<section id="galeria" class="section" aria-labelledby="galeria-title">
+	<div class="wrap">
+		<div class="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
+			<div>
+				<p class="eyebrow">Galería</p>
+				<h2 id="galeria-title" class="title">{total} imágenes y vídeos, sin retoques</h2>
+				<p class="lead">Escritorio, isla, lanzador, notificaciones, la barra en sus tres acabados y los fondos de cada tema.</p>
+			</div>
+			<a class="btn btn-ghost" href="/omarchy/galeria">Abrir la galería <span aria-hidden="true">→</span></a>
+		</div>
+
+		<ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" role="list" data-lb-group>
+			<li class="col-span-2 row-span-2" data-reveal="zoom">
+				<VideoLink video={PROMO} class="rounded-xl sm:rounded-2xl" imgClass="aspect-video object-cover" />
+				<p class="mt-2 truncate text-[0.82rem] text-muted">
+					<span class="font-bold text-ink">{PROMO.label}</span>
+				</p>
+			</li>
+			{
+				small.map(({ t, s }, i) => (
+					<li data-reveal="zoom" style={`--i:${i + 1}`}>
+						<ShotLink
+							shot={s}
+							label={`${t.name} · ${s.label}`}
+							widths={[400, 640]}
+							sizes="(max-width: 1024px) calc(50vw - 24px), 290px"
+							class="rounded-xl sm:rounded-2xl"
+							imgClass="aspect-video object-cover"
+							icon={false}
+						/>
+						<p class="mt-2 truncate text-[0.82rem] text-muted">
+							<span class="font-bold text-ink">{t.name}</span> · {s.label}
+						</p>
+					</li>
+				))
+			}
+			{
+				bar?.s && (
+					<li class="col-span-full" data-reveal="zoom" style="--i:5">
+						<ShotLink
+							shot={bar.s}
+							label={`${bar.t.name} · ${bar.s.label}`}
+							widths={[800, 1200, 1600]}
+							sizes="(max-width: 1232px) calc(100vw - 32px), 1200px"
+							class="rounded-xl sm:rounded-2xl"
+							icon={false}
+						/>
+						<p class="mt-2 text-[0.82rem] text-muted">
+							<span class="font-bold text-ink">{bar.t.name}</span> · {bar.s.label}
+						</p>
+					</li>
+				)
+			}
+		</ul>
+	</div>
+</section>
