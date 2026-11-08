@@ -1,0 +1,314 @@
+---
+import type { ImageMetadata } from 'astro';
+import BaseHead from '../BaseHead.astro';
+import Footer from '../Footer.astro';
+import Header from '../Header.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: ImageMetadata;
+}
+
+const { title, description, image } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+		<script is:inline>document.documentElement.classList.add('js');</script>
+	</head>
+	<body>
+		<Header />
+		<main class="om">
+			<slot />
+			<p class="om-wrap om-legal">
+				Sin relación con Apple ni Microsoft. Temas y hooks con licencia MIT.
+			</p>
+		</main>
+		<Footer />
+		<p id="om-live" class="sr-only" aria-live="polite"></p>
+		<script>
+			const live = document.getElementById('om-live');
+			const announce = (msg: string) => {
+				if (!live) return;
+				live.textContent = '';
+				requestAnimationFrame(() => (live.textContent = msg));
+			};
+
+			async function copy(text: string) {
+				try {
+					await navigator.clipboard.writeText(text);
+					return true;
+				} catch {
+					const ta = document.createElement('textarea');
+					ta.value = text;
+					ta.setAttribute('readonly', '');
+					ta.style.cssText = 'position:fixed;opacity:0';
+					document.body.append(ta);
+					ta.select();
+					const ok = document.execCommand('copy');
+					ta.remove();
+					return ok;
+				}
+			}
+
+			document.addEventListener('click', async (e) => {
+				const btn = (e.target as Element).closest<HTMLButtonElement>('[data-copy], .om-copy');
+				if (!btn) return;
+				const text =
+					btn.dataset.copy ?? btn.closest('.om-cmd')?.querySelector('code')?.textContent ?? '';
+				if (!text.trim()) return;
+				const ok = await copy(text);
+				const what = btn.dataset.copyLabel ?? 'Comando';
+				announce(ok ? `${what} copiado` : 'No se pudo copiar; selecciona el texto');
+				btn.classList.add(ok ? 'is-copied' : 'is-failed');
+				const label = btn.querySelector('.om-copy-label');
+				const prev = label?.textContent;
+				if (label) label.textContent = ok ? 'Copiado' : 'Error';
+				setTimeout(() => {
+					btn.classList.remove('is-copied', 'is-failed');
+					if (label && prev) label.textContent = prev;
+				}, 1600);
+			});
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	main.om {
+		--om-ink: rgb(var(--black));
+		--om-text: rgb(var(--gray-dark));
+		--om-muted: #55627f;
+		--om-line: rgb(var(--gray-light));
+		--om-soft: #f5f6f9;
+		--om-surface: #fff;
+		--om-term: #0f1219;
+		--om-term-text: #e5e9f0;
+		--om-radius: 20px;
+		--om-shadow: 0 1px 2px rgba(15, 18, 25, 0.06), 0 8px 28px rgba(15, 18, 25, 0.08);
+		--om-shadow-lg: 0 2px 6px rgba(15, 18, 25, 0.06), 0 24px 64px rgba(15, 18, 25, 0.16);
+		--om-mono: ui-monospace, 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+		--om-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+		width: auto;
+		max-width: none;
+		margin: 0;
+		padding: 0 0 3rem;
+		font-size: 1.0625rem;
+		line-height: 1.6;
+		color: var(--om-text);
+		overflow-x: clip;
+	}
+	.om *,
+	.om *::before,
+	.om *::after {
+		box-sizing: border-box;
+	}
+	.om img {
+		border-radius: 0;
+	}
+	.om :focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+	}
+	.om code {
+		font-family: var(--om-mono);
+		font-size: 0.88em;
+		background: var(--om-soft);
+		border: 1px solid var(--om-line);
+		border-radius: 6px;
+		padding: 0.05em 0.35em;
+		white-space: nowrap;
+	}
+	html:not(.js) [data-js-only] {
+		display: none !important;
+	}
+	html.js [data-no-js] {
+		display: none !important;
+	}
+
+	.om-wrap {
+		width: min(1200px, 100% - 32px);
+		margin-inline: auto;
+	}
+	.om-section {
+		padding-block: clamp(3.5rem, 8vw, 6rem) 0;
+		scroll-margin-top: 1rem;
+	}
+	.om-eyebrow {
+		margin: 0 0 0.6rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+	.om-h2 {
+		margin: 0 0 0.75rem;
+		font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.6rem);
+		letter-spacing: -0.02em;
+		line-height: 1.1;
+	}
+	.om-lead {
+		margin: 0;
+		max-width: 62ch;
+		color: var(--om-muted);
+		font-size: 1.0625rem;
+	}
+	.om-head {
+		margin-bottom: 2rem;
+	}
+
+	.om-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5em;
+		min-height: 44px;
+		padding: 0.55em 1.15em;
+		border-radius: 999px;
+		border: 1px solid transparent;
+		font: inherit;
+		font-size: 0.95rem;
+		font-weight: 700;
+		line-height: 1.2;
+		text-decoration: none;
+		cursor: pointer;
+		transition:
+			background-color 0.15s,
+			border-color 0.15s,
+			color 0.15s;
+	}
+	.om-btn--primary {
+		background: var(--om-ink);
+		color: #fff;
+	}
+	.om-btn--primary:hover {
+		background: #2a3142;
+		color: #fff;
+	}
+	.om-btn--ghost {
+		background: var(--om-surface);
+		color: var(--om-ink);
+		border-color: var(--om-line);
+	}
+	.om-btn--ghost:hover {
+		border-color: #c3cad8;
+		color: var(--om-ink);
+	}
+
+	.om-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35em;
+		padding: 0.15em 0.6em;
+		border-radius: 999px;
+		font-size: 0.75rem;
+		font-weight: 700;
+		line-height: 1.5;
+		white-space: nowrap;
+		border: 1px solid var(--om-line);
+		background: var(--om-surface);
+		color: var(--om-text);
+	}
+	.om-badge svg {
+		width: 0.95em;
+		height: 0.95em;
+	}
+	.om-badge--dark {
+		background: var(--om-ink);
+		border-color: var(--om-ink);
+		color: #fff;
+	}
+
+	/* Bloques de comandos */
+	.om-cmd {
+		position: relative;
+		min-width: 0;
+		max-width: 100%;
+		border-radius: 14px;
+		background: var(--om-term);
+		color: var(--om-term-text);
+	}
+	.om-cmd pre {
+		margin: 0;
+		padding: 0.35rem 1.1rem 1rem;
+		background: none;
+		border-radius: inherit;
+		font-family: var(--om-mono);
+		font-size: 0.82rem;
+		line-height: 1.7;
+		overflow-x: auto;
+		white-space: pre;
+	}
+	.om-cmd-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: 40px;
+		padding: 0.35rem 0.5rem 0 0.9rem;
+	}
+	.om-cmd-dots {
+		display: flex;
+		gap: 6px;
+	}
+	.om-cmd-dots i {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.18);
+	}
+	.om-cmd pre code {
+		all: unset;
+		font: inherit;
+	}
+	.om-copy {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		min-height: 32px;
+		padding: 0.25em 0.75em;
+		border-radius: 8px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--om-term-text);
+		font: inherit;
+		font-size: 0.8rem;
+		cursor: pointer;
+	}
+	.om-copy:hover {
+		background: rgba(255, 255, 255, 0.14);
+	}
+	.om-copy.is-copied {
+		border-color: #6ee7a8;
+		color: #6ee7a8;
+	}
+	.om-copy svg {
+		width: 1em;
+		height: 1em;
+	}
+	.om-cmd .om-copy:focus-visible {
+		outline-color: #9db0ff;
+	}
+
+	.om-legal {
+		margin-top: 4rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--om-line);
+		font-size: 0.85rem;
+		color: var(--om-muted);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.om *,
+		.om *::before,
+		.om *::after {
+			animation-duration: 0.01ms !important;
+			animation-iteration-count: 1 !important;
+			transition-duration: 0.01ms !important;
+			scroll-behavior: auto !important;
+		}
+	}
+</style>

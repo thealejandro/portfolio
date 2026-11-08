@@ -1,0 +1,245 @@
+---
+import { Image } from 'astro:assets';
+import ModeBadge from './ModeBadge.astro';
+import type { Theme } from './themes';
+
+interface Props {
+	themes: Theme[];
+	initial: string;
+}
+const { themes, initial } = Astro.props;
+const shown = themes.filter((t) => t.cover);
+const counts = {
+	light: themes.filter((t) => t.mode === 'light').length,
+	dark: themes.filter((t) => t.mode === 'dark').length,
+};
+---
+
+<section class="hero" aria-labelledby="hero-title">
+	<div class="om-wrap intro">
+		<p class="om-eyebrow">Omarchy</p>
+		<h1 id="hero-title">Temas para Omarchy</h1>
+		<p class="lead">
+			Once temas minimalistas para <a href="https://omarchy.org" target="_blank" rel="noopener noreferrer"
+				>Omarchy</a
+			>, inspirados en macOS y Windows. Cada uno trae su paleta, iconos, fondos de pantalla y esquinas
+			redondeadas; la terminal, btop, Neovim, VS Code y la barra se adaptan solos.
+		</p>
+		<div class="ctas">
+			<a class="om-btn om-btn--primary" href="#instalar">Arma tu instalación</a>
+			<a class="om-btn om-btn--ghost" href="#temas">Ver los {themes.length} temas</a>
+		</div>
+		<p class="meta">{counts.light} claros · {counts.dark} oscuros · licencia MIT</p>
+	</div>
+
+	<div class="om-wrap stage" data-hero>
+		{
+			shown.map((t) => (
+				<figure
+					class="slide"
+					data-slug={t.slug}
+					hidden={t.slug !== initial}
+					style={`--glow:${t.palette.accent};--bg:${t.palette.background}`}
+				>
+					<div class="screen">
+						<Image
+							src={t.cover!.img}
+							alt={t.cover!.alt}
+							widths={[640, 960, 1280]}
+							sizes="(max-width: 1232px) calc(100vw - 32px), 1200px"
+							loading={t.slug === initial ? 'eager' : 'lazy'}
+							fetchpriority={t.slug === initial ? 'high' : 'auto'}
+						/>
+					</div>
+					<figcaption>
+						<span class="cap-name">{t.name}</span>
+						<span class="cap-tag">{t.tag}</span>
+						<ModeBadge mode={t.mode} />
+						<a class="cap-link" href={`/omarchy/${t.slug}`}>
+							Ver detalles<span class="sr-only"> de {t.name}</span>
+							<span aria-hidden="true">→</span>
+						</a>
+					</figcaption>
+				</figure>
+			))
+		}
+
+		<div class="picker" role="group" aria-label="Vista previa" data-js-only>
+			{
+				shown.map((t) => (
+					<button type="button" data-slug={t.slug} aria-pressed={t.slug === initial ? 'true' : 'false'}>
+						<span class="dot" style={`background:${t.palette.accent}`} aria-hidden="true" />
+						{t.name}
+					</button>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-hero]');
+	if (root) {
+		const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
+		const buttons = [...root.querySelectorAll<HTMLButtonElement>('.picker button')];
+		root.querySelector('.picker')?.addEventListener('click', (e) => {
+			const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-slug]');
+			if (!btn) return;
+			const slug = btn.dataset.slug;
+			for (const b of buttons) b.setAttribute('aria-pressed', String(b === btn));
+			for (const s of slides) s.hidden = s.dataset.slug !== slug;
+		});
+	}
+</script>
+
+<style>
+	.hero {
+		padding-top: clamp(2.5rem, 7vw, 5rem);
+	}
+	.intro {
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	h1 {
+		margin: 0 0 1rem;
+		font-size: clamp(2.4rem, 1.4rem + 4.5vw, 4.5rem);
+		letter-spacing: -0.035em;
+		line-height: 1.02;
+	}
+	.lead {
+		margin: 0 auto 1.75rem;
+		max-width: 46rem;
+		font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+		color: var(--om-muted);
+	}
+	.ctas {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+	}
+	.meta {
+		margin: 1rem 0 0;
+		font-size: 0.85rem;
+		color: var(--om-muted);
+	}
+	.stage {
+		margin-top: clamp(2.5rem, 6vw, 4rem);
+	}
+	.slide {
+		margin: 0;
+		animation: fade 0.45s var(--om-ease);
+	}
+	.screen {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: clamp(12px, 1.6vw, 22px);
+		background: var(--bg);
+		box-shadow:
+			0 0 0 1px rgba(15, 18, 25, 0.08),
+			var(--om-shadow-lg);
+	}
+	.screen::before {
+		content: '';
+		position: absolute;
+		inset: 8% 6% -6%;
+		z-index: -1;
+		background: var(--glow);
+		opacity: 0.28;
+		filter: blur(60px);
+		border-radius: 50%;
+	}
+	.screen img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: inherit;
+	}
+	figcaption {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem 0.75rem;
+		margin-top: 1.25rem;
+		font-size: 0.95rem;
+	}
+	.cap-name {
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	.cap-tag {
+		color: var(--om-muted);
+	}
+	.cap-link {
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.cap-link:hover {
+		text-decoration: underline;
+	}
+	.picker {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
+		max-width: 780px;
+		margin: 1.25rem auto 0;
+	}
+	.picker button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5em;
+		min-height: 40px;
+		padding: 0.35em 0.95em;
+		border-radius: 999px;
+		border: 1px solid var(--om-line);
+		background: var(--om-surface);
+		color: var(--om-ink);
+		font: inherit;
+		font-size: 0.9rem;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			background-color 0.15s,
+			border-color 0.15s,
+			color 0.15s;
+	}
+	.picker button:hover {
+		border-color: #c3cad8;
+	}
+	.picker button[aria-pressed='true'] {
+		background: var(--om-ink);
+		border-color: var(--om-ink);
+		color: #fff;
+	}
+	.dot {
+		width: 0.7em;
+		height: 0.7em;
+		border-radius: 50%;
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+	}
+	@media (max-width: 640px) {
+		.picker {
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			overflow-x: auto;
+			scroll-snap-type: x proximity;
+			padding: 4px 2px 8px;
+			margin-inline: -2px;
+			scrollbar-width: none;
+		}
+		.picker button {
+			scroll-snap-align: start;
+		}
+	}
+	@keyframes fade {
+		from {
+			opacity: 0;
+			transform: translateY(6px);
+		}
+	}
+</style>

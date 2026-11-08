@@ -1,0 +1,311 @@
+---
+import CopyCommand from './CopyCommand.astro';
+import { buildCommands, HOOKS } from './commands';
+import type { Theme } from './themes';
+
+interface Props {
+	themes: Theme[];
+}
+const { themes } = Astro.props;
+const allThemes = themes.map((t) => t.slug);
+const initial = buildCommands({ themes: allThemes, allThemes, hooks: [...HOOKS], island: false });
+
+const hookInfo: Record<string, { name: string; desc: string }> = {
+	'40-theme-shape': { name: 'Esquinas redondeadas', desc: 'Aplica el radio de cada tema a las ventanas.' },
+	'30-tide-colors': { name: 'Colores del prompt', desc: 'Tiñe el prompt Tide de fish con la paleta.' },
+};
+---
+
+<section id="instalar" class="om-section" aria-labelledby="instalar-title">
+	<div class="om-wrap">
+		<div class="om-head">
+			<p class="om-eyebrow">Instalación</p>
+			<h2 id="instalar-title" class="om-h2">Arma tu instalación</h2>
+			<p class="om-lead">
+				Marca lo que quieres y copia los comandos. Los temas se actualizan con
+				<code>omarchy theme update</code> y se quitan con <code>omarchy theme remove</code>.
+			</p>
+		</div>
+
+		<div class="builder" data-builder data-all={allThemes.join(' ')}>
+			<form class="choices" data-js-only aria-label="Qué instalar">
+				<fieldset>
+					<div class="legend-row">
+						<legend>Temas</legend>
+						<div class="quick">
+							<button type="button" data-select="all">Todos</button>
+							<button type="button" data-select="none">Ninguno</button>
+						</div>
+					</div>
+					<div class="opts themes">
+						{
+							themes.map((t) => (
+								<label class="opt">
+									<input type="checkbox" name="theme" value={t.slug} checked />
+									<span class="dot" style={`background:${t.palette.background};--ring:${t.palette.accent}`} aria-hidden="true" />
+									<span class="opt-text">
+										<span class="opt-name">{t.name}</span>
+										<span class="opt-sub">{t.modeLabel}</span>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Hooks</legend>
+					<div class="opts wide">
+						{
+							HOOKS.map((h) => (
+								<label class="opt">
+									<input type="checkbox" name="hook" value={h} checked />
+									<span class="opt-text">
+										<span class="opt-name">{hookInfo[h].name}</span>
+										<span class="opt-sub">
+											<code>{h}</code> · {hookInfo[h].desc}
+										</span>
+									</span>
+								</label>
+							))
+						}
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Plugin</legend>
+					<div class="opts wide">
+						<label class="opt">
+							<input type="checkbox" name="island" value="island" />
+							<span class="opt-text">
+								<span class="opt-name">omarchy-island</span>
+								<span class="opt-sub">Isla dinámica en el centro de la barra.</span>
+							</span>
+						</label>
+					</div>
+				</fieldset>
+			</form>
+
+			<div class="output">
+				<div class="output-inner">
+					<p class="summary" data-summary aria-live="polite">
+						{themes.length} temas y los dos hooks.
+					</p>
+					<CopyCommand command={initial} label="Comandos de instalación" class="out-cmd" />
+					<p class="hint" data-no-js>
+						Este comando instala los hooks y todos los temas. Para uno solo, usa el comando de su página.
+					</p>
+					<p class="hint" data-js-only>
+						Pégalo en una terminal de Omarchy. Si ya clonaste <code>omarchy-themes</code>, omite la línea
+						<code>git clone</code>.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import { buildCommands } from './commands';
+
+	const root = document.querySelector<HTMLElement>('[data-builder]');
+	const form = root?.querySelector<HTMLFormElement>('form');
+	if (root && form) {
+		const allThemes = (root.dataset.all ?? '').split(' ');
+		const code = root.querySelector<HTMLElement>('.out-cmd code')!;
+		const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+		const values = (name: string) =>
+			[...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map((i) => i.value);
+
+		const update = () => {
+			const themes = values('theme');
+			const hooks = values('hook');
+			const island = values('island').length > 0;
+			const cmd = buildCommands({ themes, allThemes, hooks, island });
+			code.textContent = cmd || '# Marca al menos un tema, un hook o el plugin.';
+
+			const parts: string[] = [];
+			if (themes.length) parts.push(themes.length === 1 ? '1 tema' : `${themes.length} temas`);
+			if (hooks.length === 2) parts.push('los dos hooks');
+			else if (hooks.length === 1) parts.push('1 hook');
+			if (island) parts.push('omarchy-island');
+			summary.textContent = parts.length
+				? `${parts.length > 1 ? `${parts.slice(0, -1).join(', ')} y ${parts.at(-1)}` : parts[0]}.`
+				: 'Nada seleccionado.';
+		};
+
+		form.addEventListener('change', update);
+		root.querySelectorAll<HTMLButtonElement>('[data-select]').forEach((b) =>
+			b.addEventListener('click', () => {
+				const on = b.dataset.select === 'all';
+				form.querySelectorAll<HTMLInputElement>('input[name="theme"]').forEach((i) => (i.checked = on));
+				update();
+			}),
+		);
+		update();
+	}
+</script>
+
+<style>
+	.builder {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+		gap: 1.5rem;
+		align-items: start;
+	}
+	html:not(.js) .builder {
+		grid-template-columns: minmax(0, 1fr);
+		max-width: 720px;
+	}
+	.choices {
+		display: grid;
+		gap: 1.25rem;
+		padding: clamp(1rem, 2.5vw, 1.5rem);
+		border-radius: var(--om-radius);
+		background: var(--om-surface);
+		border: 1px solid var(--om-line);
+	}
+	fieldset {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		min-width: 0;
+	}
+	legend {
+		padding: 0;
+		margin-bottom: 0.6rem;
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	.legend-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.legend-row legend {
+		float: left;
+	}
+	.quick {
+		display: flex;
+		gap: 0.25rem;
+	}
+	.quick button {
+		min-height: 32px;
+		padding: 0.2em 0.7em;
+		border: 1px solid var(--om-line);
+		border-radius: 999px;
+		background: var(--om-surface);
+		color: var(--om-ink);
+		font: inherit;
+		font-size: 0.8rem;
+		cursor: pointer;
+	}
+	.quick button:hover {
+		border-color: #c3cad8;
+	}
+	.opts {
+		clear: both;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+		gap: 0.5rem;
+	}
+	.opts.wide {
+		grid-template-columns: 1fr;
+	}
+	.opt {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		min-height: 48px;
+		padding: 0.5rem 0.75rem;
+		border-radius: 12px;
+		border: 1px solid var(--om-line);
+		background: var(--om-surface);
+		cursor: pointer;
+		transition:
+			border-color 0.15s,
+			background-color 0.15s;
+	}
+	.opt:hover {
+		border-color: #c3cad8;
+	}
+	.opt:has(input:checked) {
+		border-color: #9aa4b8;
+		background: var(--om-soft);
+	}
+	.opt:has(input:focus-visible) {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.opt input {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		margin: 0;
+		accent-color: rgb(var(--black));
+	}
+	.opt input:focus-visible {
+		outline: none;
+	}
+	.dot {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		box-shadow:
+			inset 0 0 0 4px var(--ring),
+			0 0 0 1px rgba(15, 18, 25, 0.12);
+	}
+	.opt-text {
+		display: grid;
+		min-width: 0;
+		line-height: 1.3;
+	}
+	.opt-name {
+		font-size: 0.92rem;
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	.opt-sub {
+		font-size: 0.78rem;
+		color: var(--om-muted);
+	}
+	.opt-sub code {
+		font-size: 0.95em;
+	}
+	.output {
+		position: sticky;
+		top: 1rem;
+	}
+	.output-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.75rem;
+		padding: clamp(1rem, 2.5vw, 1.5rem);
+		border-radius: var(--om-radius);
+		background: var(--om-soft);
+		border: 1px solid var(--om-line);
+	}
+	.summary {
+		margin: 0;
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	.hint {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--om-muted);
+	}
+	.out-cmd :global(pre) {
+		min-height: 5.5rem;
+	}
+	@media (max-width: 860px) {
+		.builder {
+			grid-template-columns: minmax(0, 1fr);
+		}
+		.output {
+			position: static;
+		}
+	}
+</style>

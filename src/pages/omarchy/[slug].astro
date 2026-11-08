@@ -1,0 +1,472 @@
+---
+import type { GetStaticPaths } from 'astro';
+import CopyCommand from '../../components/omarchy/CopyCommand.astro';
+import Gallery from '../../components/omarchy/Gallery.astro';
+import ModeBadge from '../../components/omarchy/ModeBadge.astro';
+import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
+import { themeInstall, themeWithHooks } from '../../components/omarchy/commands';
+import { PALETTE_LABELS, themes, type Theme } from '../../components/omarchy/themes';
+import { SITE_TITLE } from '../../consts';
+
+export const getStaticPaths = (() =>
+	themes.map((theme, i) => ({
+		params: { slug: theme.slug },
+		props: {
+			theme,
+			prev: themes[(i - 1 + themes.length) % themes.length],
+			next: themes[(i + 1) % themes.length],
+		},
+	}))) satisfies GetStaticPaths;
+
+interface Props {
+	theme: Theme;
+	prev: Theme;
+	next: Theme;
+}
+const { theme: t, prev, next } = Astro.props;
+
+const title = `${t.name}, tema para Omarchy · ${SITE_TITLE}`;
+const description = `${t.description} Tema ${t.modeLabel.toLowerCase()} para Omarchy inspirado en ${t.tag}.`;
+const swatches = Object.entries(t.palette).map(([key, hex]) => ({
+	key,
+	hex: hex.toLowerCase(),
+	label: PALETTE_LABELS[key] ?? key,
+}));
+const shape = t.roundingPower >= 4 ? 'tipo squircle, como macOS' : 'circulares';
+const windowStyle = [
+	`--bg:${t.palette.background}`,
+	`--fg:${t.palette.foreground}`,
+	`--accent-t:${t.palette.accent}`,
+	`--muted-t:${t.palette.muted}`,
+	`--r:${t.rounding}px`,
+	`--k:${t.roundingPower / 2}`,
+	`--border:${t.borderCss ?? t.palette.muted}`,
+].join(';');
+---
+
+<OmarchyLayout title={title} description={description} image={t.cover?.img}>
+	<article class="theme">
+		<div class="om-wrap">
+			<nav class="crumbs" aria-label="Ruta">
+				<a href="/omarchy#temas"><span aria-hidden="true">←</span> Todos los temas</a>
+			</nav>
+
+			<header class="intro">
+				<div class="intro-text">
+					<p class="om-eyebrow kicker">{t.tag}</p>
+					<h1>{t.name}</h1>
+					<p class="desc">{t.description}</p>
+					<div class="badges">
+						<ModeBadge mode={t.mode} />
+						<span class="om-badge">Esquinas de {t.rounding} px</span>
+						<span class="om-badge">{t.shots.length} {t.shots.length === 1 ? 'captura' : 'capturas'}</span>
+					</div>
+				</div>
+				<div class="intro-install">
+					<p class="label">Instalar solo el tema</p>
+					<CopyCommand command={themeInstall(t.slug)} label={`Comando para instalar ${t.name}`} />
+					<div class="actions">
+						<a class="om-btn om-btn--primary" href="#instalar">Más opciones</a>
+						<a class="om-btn om-btn--ghost" href={t.repo} target="_blank" rel="noopener noreferrer">
+							Ver en GitHub <span aria-hidden="true">↗</span>
+						</a>
+					</div>
+				</div>
+			</header>
+		</div>
+
+		<section class="om-wrap gallery-wrap" aria-label="Capturas">
+			{t.shots.length ? <Gallery shots={t.shots} name={t.name} /> : <p class="om-lead">Aún no hay capturas.</p>}
+		</section>
+
+		<section class="om-section" aria-labelledby="paleta-title">
+			<div class="om-wrap">
+				<div class="om-head">
+					<p class="om-eyebrow">Paleta</p>
+					<h2 id="paleta-title" class="om-h2">Diez colores</h2>
+					<p class="om-lead">
+						De aquí salen la terminal, Neovim, btop y la barra. <span data-js-only>Pulsa un color para copiar su código.</span>
+					</p>
+				</div>
+				<ul class="swatches" role="list">
+					{
+						swatches.map((s) => (
+							<li>
+								<button
+									type="button"
+									class="swatch"
+									data-copy={s.hex}
+									data-copy-label={`${s.label} ${s.hex}`}
+									aria-label={`${s.label}, ${s.hex}. Copiar`}
+								>
+									<span class="chip" style={`background:${s.hex}`} aria-hidden="true" />
+									<span class="sw-name">{s.label}</span>
+									<span class="sw-hex om-copy-label">{s.hex}</span>
+								</button>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<section class="om-section" aria-labelledby="detalles-title">
+			<div class="om-wrap details">
+				<div>
+					<p class="om-eyebrow">Detalles</p>
+					<h2 id="detalles-title" class="om-h2">Forma y acabado</h2>
+					<dl>
+						<div>
+							<dt>Esquinas</dt>
+							<dd>{t.rounding} px, {shape} <span class="mono">(rounding_power {t.roundingPower})</span></dd>
+						</div>
+						<div>
+							<dt>Borde de ventana</dt>
+							<dd>
+								{
+									t.borderCss ? (
+										<>
+											<span class="border-chip" style={`background:${t.borderCss}`} aria-hidden="true" />
+											{t.borderCss.startsWith('linear') ? 'Degradado' : 'Color sólido'}{' '}
+											<span class="mono">{t.border}</span>
+										</>
+									) : (
+										'El de Omarchy por defecto'
+									)
+								}
+							</dd>
+						</div>
+						<div>
+							<dt>Iconos</dt>
+							<dd><span class="mono">{t.icons}</span></dd>
+						</div>
+						<div>
+							<dt>Modo</dt>
+							<dd>{t.modeLabel}</dd>
+						</div>
+					</dl>
+					<p class="note">
+						Las esquinas las aplica el hook <code>40-theme-shape</code>; sin él, las ventanas quedan rectas.
+					</p>
+				</div>
+				<div class="sample-wrap" aria-hidden="true">
+					<div class="sample" style={windowStyle}>
+						<p><span class="p-accent">~/proyecto</span> <span class="p-muted">main</span></p>
+						<p><span class="p-accent">❯</span> omarchy theme set {t.slug}</p>
+						<p class="p-muted">Radio {t.rounding} px</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="instalar" class="om-section" aria-labelledby="instalar-title">
+			<div class="om-wrap">
+				<div class="om-head">
+					<p class="om-eyebrow">Instalación</p>
+					<h2 id="instalar-title" class="om-h2">Instalar {t.name}</h2>
+				</div>
+				<div class="install">
+					<div class="opt">
+						<h3>Solo el tema</h3>
+						<p>Lo instala y lo aplica. Se actualiza con <code>omarchy theme update</code>.</p>
+						<CopyCommand command={themeInstall(t.slug)} label={`Comando para instalar ${t.name}`} />
+					</div>
+					<div class="opt">
+						<h3>Con esquinas y prompt a juego</h3>
+						<p>Instala el tema y los dos hooks: esquinas redondeadas y colores del prompt Tide.</p>
+						<CopyCommand command={themeWithHooks(t.slug)} label={`Comandos para instalar ${t.name} con los hooks`} />
+					</div>
+				</div>
+				<p class="more">
+					¿Varios temas o la isla? Usa <a href="/omarchy#instalar">Arma tu instalación</a>.
+				</p>
+			</div>
+		</section>
+
+		<nav class="om-wrap pager" aria-label="Otros temas">
+			<a class="pg prev" href={`/omarchy/${prev.slug}`} rel="prev">
+				<span class="pg-dir"><span aria-hidden="true">←</span> Anterior</span>
+				<span class="pg-name">{prev.name}</span>
+			</a>
+			<a class="pg next" href={`/omarchy/${next.slug}`} rel="next">
+				<span class="pg-dir">Siguiente <span aria-hidden="true">→</span></span>
+				<span class="pg-name">{next.name}</span>
+			</a>
+		</nav>
+	</article>
+</OmarchyLayout>
+
+<style>
+	.crumbs {
+		padding-top: 1.5rem;
+		font-size: 0.9rem;
+	}
+	.crumbs a {
+		text-decoration: none;
+		font-weight: 700;
+	}
+	.crumbs a:hover {
+		text-decoration: underline;
+	}
+	.intro {
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+		gap: 2rem clamp(2rem, 5vw, 4rem);
+		align-items: end;
+		padding-block: clamp(1.5rem, 4vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+	}
+	h1 {
+		margin: 0 0 0.75rem;
+		font-size: clamp(2.4rem, 1.5rem + 4vw, 4.25rem);
+		letter-spacing: -0.035em;
+		line-height: 1.02;
+	}
+	.desc {
+		margin: 0 0 1rem;
+		max-width: 40rem;
+		font-size: clamp(1.05rem, 1rem + 0.35vw, 1.2rem);
+		color: var(--om-muted);
+	}
+	.kicker {
+		text-transform: none;
+		letter-spacing: 0;
+		font-size: 1rem;
+	}
+	.badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.intro-install {
+		display: grid;
+		gap: 0.75rem;
+	}
+	.label {
+		margin: 0;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.swatches {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 100px), 1fr));
+		gap: 0.75rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	@media (min-width: 900px) {
+		.swatches {
+			grid-template-columns: repeat(5, minmax(0, 1fr));
+		}
+	}
+	.swatch {
+		display: grid;
+		width: 100%;
+		gap: 0.1rem;
+		padding: 0.5rem 0.5rem 0.7rem;
+		border-radius: 16px;
+		border: 1px solid var(--om-line);
+		background: var(--om-surface);
+		color: var(--om-ink);
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			border-color 0.15s,
+			box-shadow 0.2s;
+	}
+	html:not(.js) .swatch {
+		cursor: text;
+		user-select: text;
+	}
+	.swatch:hover {
+		border-color: #c3cad8;
+		box-shadow: var(--om-shadow);
+	}
+	.chip {
+		height: clamp(52px, 8vw, 72px);
+		margin-bottom: 0.5rem;
+		border-radius: 10px;
+		box-shadow: inset 0 0 0 1px rgba(15, 18, 25, 0.1);
+	}
+	.sw-name {
+		padding-inline: 0.25rem;
+		font-size: 0.9rem;
+		font-weight: 700;
+	}
+	.sw-hex {
+		padding-inline: 0.25rem;
+		font-family: var(--om-mono);
+		font-size: 0.82rem;
+		color: var(--om-muted);
+	}
+	.swatch.is-copied .sw-hex {
+		color: #15803d;
+	}
+
+	.details {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: center;
+	}
+	dl {
+		margin: 1.5rem 0 0;
+		border-top: 1px solid var(--om-line);
+	}
+	dl > div {
+		display: grid;
+		grid-template-columns: minmax(8rem, 0.4fr) 1fr;
+		gap: 1rem;
+		padding: 0.8rem 0;
+		border-bottom: 1px solid var(--om-line);
+	}
+	dt {
+		font-weight: 700;
+		color: var(--om-ink);
+	}
+	dd {
+		margin: 0;
+		min-width: 0;
+	}
+	.mono {
+		font-family: var(--om-mono);
+		font-size: 0.85em;
+		color: var(--om-muted);
+		overflow-wrap: anywhere;
+	}
+	.border-chip {
+		display: inline-block;
+		width: 2.2em;
+		height: 0.8em;
+		margin-right: 0.4em;
+		border-radius: 999px;
+		vertical-align: -0.05em;
+	}
+	.note {
+		margin: 1rem 0 0;
+		font-size: 0.9rem;
+		color: var(--om-muted);
+	}
+	.sample-wrap {
+		display: grid;
+		place-items: center;
+		padding: clamp(1.5rem, 5vw, 3.5rem);
+		border-radius: var(--om-radius);
+		background:
+			radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), transparent 60%),
+			var(--om-soft);
+		border: 1px solid var(--om-line);
+	}
+	.sample {
+		width: min(100%, 360px);
+		padding: 1.25rem 1.4rem;
+		border: 3px solid transparent;
+		border-radius: var(--r);
+		corner-shape: superellipse(var(--k));
+		background:
+			linear-gradient(var(--bg), var(--bg)) padding-box,
+			var(--border) border-box;
+		color: var(--fg);
+		font-family: var(--om-mono);
+		font-size: 0.85rem;
+		line-height: 1.8;
+		box-shadow: 0 18px 40px rgba(15, 18, 25, 0.22);
+	}
+	.sample p {
+		margin: 0;
+	}
+	.p-accent {
+		color: var(--accent-t);
+	}
+	.p-muted {
+		color: var(--muted-t);
+	}
+
+	.install {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+		gap: 1.25rem;
+	}
+	.opt {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1.4rem;
+		border-radius: var(--om-radius);
+		background: var(--om-surface);
+		border: 1px solid var(--om-line);
+	}
+	.opt h3 {
+		margin: 0;
+		font-size: 1.15rem;
+	}
+	.opt p {
+		margin: 0;
+		font-size: 0.95rem;
+	}
+	.opt :global(.om-cmd) {
+		margin-top: auto;
+	}
+	.more {
+		margin: 1.25rem 0 0;
+		font-size: 0.95rem;
+		color: var(--om-muted);
+	}
+
+	.pager {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: clamp(3.5rem, 8vw, 5rem);
+	}
+	.pg {
+		display: grid;
+		gap: 0.15rem;
+		padding: 1.1rem 1.3rem;
+		border-radius: var(--om-radius);
+		border: 1px solid var(--om-line);
+		background: var(--om-surface);
+		text-decoration: none;
+		color: var(--om-ink);
+		transition:
+			border-color 0.15s,
+			box-shadow 0.2s;
+	}
+	.pg:hover {
+		color: var(--om-ink);
+		border-color: #c3cad8;
+		box-shadow: var(--om-shadow);
+	}
+	.next {
+		text-align: right;
+	}
+	.pg-dir {
+		font-size: 0.85rem;
+		color: var(--om-muted);
+	}
+	.pg-name {
+		font-size: 1.2rem;
+		font-weight: 700;
+	}
+
+	@media (max-width: 860px) {
+		.intro,
+		.details {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+	@media (max-width: 480px) {
+		dl > div {
+			grid-template-columns: 1fr;
+			gap: 0.1rem;
+		}
+	}
+</style>
