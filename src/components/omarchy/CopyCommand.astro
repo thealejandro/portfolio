@@ -1,0 +1,23 @@
+---
+interface Props {
+	command: string;
+	label?: string;
+	class?: string;
+	id?: string;
+}
+const { command, label = 'Comando', class: cls, id } = Astro.props;
+---
+
+<div class:list={['om-cmd', cls]}>
+	<div class="om-cmd-bar">
+		<span class="om-cmd-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+		<button type="button" class="om-copy" data-copy-label={label} aria-label={`Copiar: ${label}`} data-js-only>
+		<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"
+			><rect x="5" y="5" width="9" height="9" rx="2"></rect><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"
+			></path></svg
+		>
+		<span class="om-copy-label">Copiar</span>
+	</button>
+	</div>
+	<pre tabindex="0"><code id={id}>{command}</code></pre>
+</div>
