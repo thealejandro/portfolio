@@ -46,6 +46,9 @@ const promises = [
 			<figure class="ss-video">
 				<video
 					controls
+					controlslist="nodownload"
+					disablepictureinpicture
+					oncontextmenu="return false"
 					muted
 					playsinline
 					preload="none"
@@ -125,13 +128,15 @@ const promises = [
 				<p class="om-eyebrow">Compártelo</p>
 				<h2 id="reel-title" class="om-h2">También en vertical</h2>
 				<p class="om-lead">
-					Treinta segundos en formato 9:16 para reels, historias y estados de WhatsApp. Lleva una pista de audio en
-					silencio para que le pongas música desde la app.
+					El mismo recorrido en treinta segundos y en formato 9:16, como se ve en reels, historias y estados de
+					WhatsApp.
 				</p>
-				<a class="ss-download" href={`${MEDIA}/reel-es.mp4`} download="screensaver-fx-reel.mp4">Descargar el reel (MP4, 1,5&nbsp;MB)</a>
 			</div>
 			<video
 				controls
+				controlslist="nodownload"
+				disablepictureinpicture
+				oncontextmenu="return false"
 				muted
 				loop
 				playsinline
@@ -336,13 +341,6 @@ const promises = [
 		border-radius: clamp(14px, 2vw, 24px);
 		background: #000;
 		box-shadow: var(--om-shadow-lg);
-	}
-	.ss-download {
-		display: inline-flex;
-		align-items: center;
-		min-height: 44px;
-		margin-top: 1rem;
-		font-weight: 600;
 	}
 	.ss-promises {
 		list-style: none;
