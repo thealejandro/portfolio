@@ -12,9 +12,9 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 <a
 	href={href}
 	class:list={[
-		'relative inline-flex min-h-14 items-center px-1.5 text-[0.9rem] sm:text-[0.95rem] text-ink no-underline sm:px-3',
-		'after:absolute after:inset-x-1.5 after:bottom-0 after:h-[3px] after:rounded-full after:bg-accent after:transition-transform after:duration-300 after:ease-apple sm:after:inset-x-3',
-		isActive ? 'font-bold after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-50',
+		'relative inline-flex min-h-14 items-center px-2 text-[0.92rem] text-ink no-underline sm:px-3 sm:text-[0.95rem]',
+		'after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:bg-accent after:transition-transform after:duration-200 after:ease-rodillo sm:after:inset-x-3',
+		isActive ? 'font-semibold after:scale-x-100' : 'text-muted after:scale-x-0 hover:text-ink',
 		className,
 	]}
 	aria-current={isActive ? 'page' : undefined}
