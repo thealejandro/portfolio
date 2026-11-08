@@ -235,7 +235,7 @@ const island = shotOf(t, 'island');
 							<li data-reveal style={`--i:${i % 5}`}>
 								<button
 									type="button"
-									class="swatch group grid w-full cursor-pointer gap-0.5 rounded-2xl border border-line bg-white px-2 pt-2 pb-3 text-left text-ink transition-[border-color,box-shadow,transform] duration-300 ease-apple hover:-translate-y-0.5 hover:border-line-strong hover:shadow-card active:scale-[0.97]"
+									class="swatch group grid w-full cursor-pointer gap-0.5 rounded-2xl border border-line bg-surface px-2 pt-2 pb-3 text-left text-ink transition-[border-color,box-shadow,transform] duration-300 ease-apple hover:-translate-y-0.5 hover:border-line-strong hover:shadow-card active:scale-[0.97]"
 									data-copy={s.hex}
 									data-copy-label={`${s.label} ${s.hex}`}
 									aria-label={`${s.label}, ${s.hex}. Copiar`}
@@ -246,7 +246,7 @@ const island = shotOf(t, 'island');
 										aria-hidden="true"
 									/>
 									<span class="px-1 text-[0.9rem] font-bold">{s.label}</span>
-									<span class="copy-label px-1 font-mono text-[0.82rem] text-muted group-[.is-copied]:text-[#15803d]">{s.hex}</span>
+									<span class="copy-label px-1 font-mono text-[0.82rem] text-muted group-[.is-copied]:text-accent">{s.hex}</span>
 								</button>
 							</li>
 						))
@@ -301,7 +301,7 @@ const island = shotOf(t, 'island');
 					</p>
 				</div>
 				<div
-					class="grid place-items-center rounded-card border border-line bg-soft bg-[radial-gradient(circle_at_30%_20%,rgb(255_255_255/0.9),transparent_60%)] p-[clamp(1.5rem,5vw,3.5rem)]"
+					class="grid place-items-center rounded-card border border-line bg-soft p-[clamp(1.5rem,5vw,3.5rem)]"
 					aria-hidden="true"
 					data-reveal="zoom"
 					style="--i:1"
@@ -366,7 +366,7 @@ const island = shotOf(t, 'island');
 		overflow-wrap: anywhere;
 	}
 	.pg {
-		@apply grid min-w-0 gap-0.5 rounded-card border border-line bg-white px-5 py-4 text-ink no-underline;
+		@apply grid min-w-0 gap-0.5 rounded-card border border-line bg-surface px-5 py-4 text-ink no-underline;
 		transition:
 			border-color 0.2s,
 			box-shadow 0.3s var(--ease-apple),

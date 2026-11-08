@@ -71,13 +71,7 @@ const filters = [
 			for (const li of items) {
 				const show = match(li, f);
 				li.hidden = !show;
-				if (show) {
-					// Vuelve a animar la tarjeta al aparecer.
-					li.style.setProperty('--i', String(n % 3));
-					li.classList.remove('is-in');
-					requestAnimationFrame(() => requestAnimationFrame(() => li.classList.add('is-in')));
-					n++;
-				}
+				if (show) n++;
 			}
 			status.textContent = `${n} ${n === 1 ? 'tema' : 'temas'}`;
 		});

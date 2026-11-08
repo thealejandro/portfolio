@@ -49,7 +49,7 @@ const code = 'inline-code';
 				los colores de tu tema.
 			</p>
 			<div class="flex flex-wrap justify-center gap-3" data-enter style="--i:3">
-				<a class="btn bg-white text-ink hover:bg-[#e8eaff] hover:text-ink" href="#instalar">Instalar</a>
+				<a class="btn bg-loza text-esmalte hover:bg-white hover:text-esmalte" href="#instalar">Instalar</a>
 				<a class="btn border-white/25 text-white hover:border-white/60 hover:text-white" href={ISLAND_REPO} target="_blank" rel="noopener noreferrer">
 					Ver en GitHub <span aria-hidden="true">↗</span>
 				</a>
@@ -80,11 +80,11 @@ const code = 'inline-code';
 				{
 					ISLAND_FEATURES.map((f, i) => (
 						<li
-							class="card group p-5 transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-[#d5dbe6] hover:shadow-lift"
+							class="card group p-5 transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-line-strong hover:shadow-lift"
 							data-reveal
 							style={`--i:${i % 4}`}
 						>
-							<span class="mb-4 grid size-11 place-items-center rounded-xl bg-[#eef0ff] text-[#3b3fd8] transition-transform duration-500 ease-spring group-hover:scale-110">
+							<span class="mb-4 grid size-11 place-items-center rounded-xl bg-soft text-accent transition-transform duration-500 ease-spring group-hover:scale-110">
 								<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 									<path d={f.icon} />
 								</svg>
@@ -251,7 +251,7 @@ const code = 'inline-code';
 				</div>
 			</div>
 
-			<div class="mt-8 overflow-hidden rounded-card border border-line bg-white" data-reveal>
+			<div class="mt-8 overflow-hidden rounded-card border border-line bg-surface" data-reveal>
 				<table class="settings w-full border-collapse text-left text-[0.92rem]">
 					<caption class="sr-only">Ajustes de omarchy-island</caption>
 					<thead class="bg-soft text-[0.8rem] tracking-[0.04em] text-muted uppercase max-md:sr-only">
@@ -331,7 +331,7 @@ const code = 'inline-code';
 <style>
 	@reference '../../styles/global.css';
 	.step {
-		@apply grid size-8 place-items-center rounded-full bg-ink text-[0.85rem] font-bold text-white;
+		@apply grid size-8 place-items-center rounded-full bg-cobalto text-[0.85rem] font-bold text-loza;
 	}
 	@media (max-width: 767px) {
 		.settings td[data-label]::before {
