@@ -48,6 +48,20 @@ const projects = [
 		desc: 'Sistema de farmacia y punto de venta rescatado de Heroku en 48 horas, con más de 270 mil ventas recuperadas y facturación electrónica FEL (SAT) integrada.',
 		stack: ['Laravel 6', 'MariaDB', 'HestiaCP', 'FEL'],
 	},
+	{
+		name: 'Temas para Omarchy',
+		tag: 'Open source · Linux',
+		url: '/omarchy',
+		desc: 'Once temas minimalistas para Omarchy inspirados en macOS y Windows, en claro y oscuro, con hooks que añaden esquinas redondeadas y un prompt de fish a juego.',
+		stack: ['Hyprland', 'Bash', 'Python', 'fish'],
+	},
+	{
+		name: 'omarchy-island',
+		tag: 'Open source · Linux',
+		url: 'https://github.com/thealejandro/omarchy-island',
+		desc: 'Isla dinámica para la barra de Omarchy: música con controles, calendario, temporizador de enfoque, clima, accesos rápidos y avisos de volumen, brillo y batería.',
+		stack: ['QML', 'Quickshell', 'JavaScript'],
+	},
 ];
 
 const stack = [
@@ -419,7 +433,7 @@ const yearsExp = new Date().getFullYear() - 2018;
 				<div class="projects">
 					{
 						projects.map((p) => (
-							<a class="project" href={p.url} target="_blank" rel="noopener noreferrer">
+							<a class="project" href={p.url} target={p.url.startsWith('/') ? undefined : '_blank'} rel={p.url.startsWith('/') ? undefined : 'noopener noreferrer'}>
 								<div class="project-head">
 									<h3>{p.name}</h3>
 									<span class="tag">{p.tag}</span>
