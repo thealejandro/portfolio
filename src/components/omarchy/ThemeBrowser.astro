@@ -1,0 +1,147 @@
+---
+import ThemeCard from './ThemeCard.astro';
+import type { Theme } from './themes';
+
+interface Props {
+	themes: Theme[];
+}
+const { themes } = Astro.props;
+
+const filters = [
+	{ id: 'all', label: 'Todos', test: () => true },
+	{ id: 'light', label: 'Claros', test: (t: Theme) => t.mode === 'light' },
+	{ id: 'dark', label: 'Oscuros', test: (t: Theme) => t.mode === 'dark' },
+	{ id: 'macos', label: 'macOS', test: (t: Theme) => t.family === 'macos' },
+	{ id: 'windows', label: 'Windows', test: (t: Theme) => t.family === 'windows' },
+	{ id: 'propio', label: 'Diseño propio', test: (t: Theme) => t.family === 'propio' },
+].map((f) => ({ ...f, count: themes.filter(f.test).length }));
+---
+
+<section id="temas" class="om-section" aria-labelledby="temas-title" data-browser>
+	<div class="om-wrap">
+		<div class="head">
+			<div>
+				<p class="om-eyebrow">Galería</p>
+				<h2 id="temas-title" class="om-h2">Elige tu escritorio</h2>
+				<p class="om-lead">Abre cualquier tema para ver todas sus capturas, la paleta completa y cómo instalarlo.</p>
+			</div>
+			<div class="filters" role="group" aria-label="Filtrar temas" data-js-only>
+				{
+					filters.map((f, i) => (
+						<button type="button" data-filter={f.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+							{f.label}
+							<span class="n" aria-hidden="true">{f.count}</span>
+						</button>
+					))
+				}
+			</div>
+		</div>
+		<p class="sr-only" aria-live="polite" data-status></p>
+
+		<ul class="grid" role="list">
+			{
+				themes.map((t, i) => (
+					<li data-mode={t.mode} data-family={t.family}>
+						<ThemeCard theme={t} eager={i < 3} />
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-browser]');
+	if (root) {
+		const items = [...root.querySelectorAll<HTMLLIElement>('.grid > li')];
+		const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+		const grid = root.querySelector<HTMLElement>('.grid')!;
+		const status = root.querySelector('[data-status]')!;
+		const match = (li: HTMLLIElement, f: string) =>
+			f === 'all' || li.dataset.mode === f || li.dataset.family === f;
+
+		root.querySelector('.filters')?.addEventListener('click', (e) => {
+			const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+			if (!btn || btn.getAttribute('aria-pressed') === 'true') return;
+			const f = btn.dataset.filter!;
+			// Reserva la altura actual para que la página no salte al filtrar.
+			grid.style.minHeight = `${Math.max(grid.offsetHeight, parseFloat(grid.style.minHeight) || 0)}px`;
+			for (const b of buttons) b.setAttribute('aria-pressed', String(b === btn));
+			let n = 0;
+			for (const li of items) {
+				const show = match(li, f);
+				li.hidden = !show;
+				if (show) n++;
+			}
+			status.textContent = `${n} ${n === 1 ? 'tema' : 'temas'}`;
+		});
+		addEventListener('resize', () => (grid.style.minHeight = ''), { passive: true });
+	}
+</script>
+
+<style>
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 1.25rem 2rem;
+		margin-bottom: 2rem;
+	}
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		padding: 0.3rem;
+		border-radius: 999px;
+		background: var(--om-soft);
+		border: 1px solid var(--om-line);
+	}
+	.filters button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45em;
+		min-height: 38px;
+		padding: 0.3em 0.9em;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: var(--om-ink);
+		font: inherit;
+		font-size: 0.9rem;
+		white-space: nowrap;
+		cursor: pointer;
+		transition:
+			background-color 0.15s,
+			color 0.15s;
+	}
+	.filters button:hover {
+		background: rgba(15, 18, 25, 0.06);
+	}
+	.filters button[aria-pressed='true'] {
+		background: var(--om-ink);
+		color: #fff;
+	}
+	.n {
+		font-size: 0.75em;
+		font-variant-numeric: tabular-nums;
+		opacity: 0.75;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+		align-content: start;
+		gap: 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.grid > li[hidden] {
+		display: none;
+	}
+	@media (max-width: 640px) {
+		.filters {
+			border-radius: 18px;
+		}
+	}
+</style>
