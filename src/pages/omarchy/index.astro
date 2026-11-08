@@ -1,0 +1,309 @@
+---
+import { Image } from 'astro:assets';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_TITLE } from '../../consts';
+
+import cupertino from '../../assets/omarchy/cupertino.png';
+import cupertinoLight from '../../assets/omarchy/cupertino-light.png';
+import graphite from '../../assets/omarchy/graphite.png';
+import bigSur from '../../assets/omarchy/big-sur.png';
+import ventura from '../../assets/omarchy/ventura.png';
+import tahoe from '../../assets/omarchy/tahoe.png';
+import fluent from '../../assets/omarchy/fluent.png';
+import fluentLight from '../../assets/omarchy/fluent-light.png';
+import obsidiana from '../../assets/omarchy/obsidiana.png';
+import aero from '../../assets/omarchy/aero.png';
+import aeroNight from '../../assets/omarchy/aero-night.png';
+
+const GH = 'https://github.com/thealejandro';
+
+const themes = [
+	{ slug: 'tahoe', name: 'Tahoe', tag: 'macOS Tahoe · claro', img: tahoe, accent: '#0a84ff' },
+	{ slug: 'cupertino', name: 'Cupertino', tag: 'macOS · oscuro', img: cupertino, accent: '#0a84ff' },
+	{ slug: 'cupertino-light', name: 'Cupertino Light', tag: 'macOS · claro', img: cupertinoLight, accent: '#007aff' },
+	{ slug: 'graphite', name: 'Graphite', tag: 'Monocromo · oscuro', img: graphite, accent: '#a1a1a6' },
+	{ slug: 'big-sur', name: 'Big Sur', tag: 'macOS Big Sur · oscuro', img: bigSur, accent: '#ff7eb6' },
+	{ slug: 'ventura', name: 'Ventura', tag: 'macOS Ventura · oscuro', img: ventura, accent: '#ff8a3d' },
+	{ slug: 'fluent', name: 'Fluent', tag: 'Windows 11 · oscuro', img: fluent, accent: '#60cdff' },
+	{ slug: 'fluent-light', name: 'Fluent Light', tag: 'Windows 11 · claro', img: fluentLight, accent: '#005fb8' },
+	{ slug: 'aero', name: 'Aero', tag: 'Windows Vista/7 · claro', img: aero, accent: '#1a8fd4' },
+	{ slug: 'aero-night', name: 'Aero Night', tag: 'Windows Vista/7 · oscuro', img: aeroNight, accent: '#4fc3f7' },
+	{ slug: 'obsidiana', name: 'Obsidiana', tag: 'Diseño propio · oscuro', img: obsidiana, accent: '#3ddc97' },
+];
+
+const title = 'Temas para Omarchy — macOS y Windows, claro y oscuro';
+const description =
+	'Once temas minimalistas para Omarchy inspirados en macOS (Big Sur, Ventura, Tahoe) y Windows (11, Vista/7), con esquinas redondeadas y prompt a juego.';
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={`${title} · ${SITE_TITLE}`} description={description} image={tahoe} />
+		<style>
+			main {
+				width: 1100px;
+				max-width: calc(100% - 2em);
+				padding: 3em 1em 4em;
+			}
+			.intro {
+				max-width: 720px;
+				margin-bottom: 2.5em;
+			}
+			.intro h1 {
+				font-size: 2.6em;
+				margin-bottom: 0.3em;
+			}
+			.lead {
+				color: rgb(var(--gray));
+				font-size: 1.1em;
+				margin: 0 0 1.2em;
+			}
+			pre.cmd {
+				position: relative;
+				margin: 0;
+				padding: 0.9em 3.6em 0.9em 1em;
+				border-radius: 12px;
+				font-size: 0.8em;
+				line-height: 1.6;
+				background: rgb(var(--black));
+				color: #e5e9f0;
+				overflow-x: auto;
+			}
+			pre.cmd code {
+				background: none;
+				padding: 0;
+				color: inherit;
+			}
+			:global(.copy) {
+				position: absolute;
+				top: 0.55em;
+				right: 0.55em;
+				font: inherit;
+				font-size: 0.85em;
+				padding: 0.2em 0.6em;
+				border: 1px solid rgba(255, 255, 255, 0.25);
+				border-radius: 8px;
+				background: transparent;
+				color: #e5e9f0;
+				cursor: pointer;
+			}
+			:global(.copy:hover) {
+				background: rgba(255, 255, 255, 0.1);
+			}
+			.grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+				gap: 1.5em;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.card {
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 16px;
+				background: white;
+				overflow: hidden;
+				transition: box-shadow 0.2s;
+			}
+			.card:hover {
+				box-shadow: var(--box-shadow);
+			}
+			.card img {
+				display: block;
+				width: 100%;
+				height: auto;
+				aspect-ratio: 16 / 9;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			.card-body {
+				padding: 1em 1.1em 1.1em;
+			}
+			.card-head {
+				display: flex;
+				align-items: baseline;
+				justify-content: space-between;
+				gap: 0.5em;
+				margin-bottom: 0.6em;
+			}
+			.card h3 {
+				display: flex;
+				align-items: center;
+				gap: 0.45em;
+				margin: 0;
+				font-size: 1.15em;
+			}
+			.card h3 a {
+				color: rgb(var(--black));
+				text-decoration: none;
+			}
+			.dot {
+				width: 0.7em;
+				height: 0.7em;
+				border-radius: 50%;
+				flex: none;
+			}
+			.tag {
+				font-size: 0.75em;
+				color: rgb(var(--gray));
+				white-space: nowrap;
+			}
+			.card pre.cmd {
+				font-size: 0.68em;
+			}
+			section {
+				margin-top: 3.5em;
+			}
+			.section-title {
+				font-size: 0.8em;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: var(--accent);
+				margin: 0 0 0.4em;
+			}
+			.cols {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 1.5em;
+			}
+			.box {
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 16px;
+				background: white;
+				padding: 1.2em 1.3em;
+				font-size: 0.9em;
+			}
+			.box h3 {
+				font-size: 1.1em;
+			}
+			.box p {
+				margin: 0 0 0.6em;
+			}
+			.note {
+				font-size: 0.8em;
+				color: rgb(var(--gray));
+				margin-top: 3em;
+			}
+			@media (max-width: 720px) {
+				.intro h1 {
+					font-size: 2em;
+				}
+				.grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="intro">
+				<p class="section-title">Omarchy</p>
+				<h1>Temas para Omarchy</h1>
+				<p class="lead">
+					Once temas minimalistas para <a href="https://omarchy.org" target="_blank" rel="noopener noreferrer">Omarchy</a>,
+					inspirados en macOS y Windows, en claro y oscuro. Cada uno trae su paleta, iconos, tres fondos de
+					pantalla y esquinas redondeadas; la terminal, btop, Neovim, VS Code y la barra se tiñen solos.
+				</p>
+				<pre class="cmd"><code>git clone https://github.com/thealejandro/omarchy-themes
+omarchy-themes/install.sh all</code></pre>
+				<p class="lead" style="font-size:0.85em;margin-top:0.8em">
+					Instala los once y los dos hooks que los completan. ¿Solo uno? Usa el comando de su tarjeta.
+					Código en <a href={`${GH}/omarchy-themes`} target="_blank" rel="noopener noreferrer">GitHub</a>.
+				</p>
+			</div>
+
+			<ul class="grid">
+				{
+					themes.map((t, i) => (
+						<li class="card">
+							<a href={`${GH}/omarchy-${t.slug}-theme`} target="_blank" rel="noopener noreferrer">
+								<Image
+									src={t.img}
+									alt={`Escritorio de Omarchy con el tema ${t.name}: terminal, btop, Neovim y el gestor de archivos`}
+									widths={[480, 800, 1280]}
+									sizes="(max-width: 720px) 100vw, 360px"
+									loading={i < 3 ? 'eager' : 'lazy'}
+								/>
+							</a>
+							<div class="card-body">
+								<div class="card-head">
+									<h3>
+										<span class="dot" style={`background:${t.accent}`} aria-hidden="true" />
+										<a href={`${GH}/omarchy-${t.slug}-theme`} target="_blank" rel="noopener noreferrer">{t.name}</a>
+									</h3>
+									<span class="tag">{t.tag}</span>
+								</div>
+								<pre class="cmd"><code>omarchy theme install {GH}/omarchy-{t.slug}-theme</code></pre>
+							</div>
+						</li>
+					))
+				}
+			</ul>
+
+			<section>
+				<p class="section-title">Los hooks</p>
+				<h2>Lo que Omarchy no trae</h2>
+				<div class="cols">
+					<div class="box">
+						<h3>Esquinas redondeadas</h3>
+						<p>
+							Omarchy descarta los archivos <code>.lua</code> de los temas instalados desde un repo, así que el radio de
+							las esquinas se pierde. Estos temas lo guardan en un <code>shape.toml</code> y el hook
+							<code>40-theme-shape</code> lo aplica. Sirve para cualquier tema que lo incluya.
+						</p>
+					</div>
+					<div class="box">
+						<h3>Prompt a juego</h3>
+						<p>
+							El hook <code>30-tide-colors</code> recolorea el prompt <a href="https://github.com/IlanCosman/tide" target="_blank" rel="noopener noreferrer">Tide</a>
+							de fish con la paleta de cada tema. Guarda tus colores originales la primera vez y se quita con
+							<code>install.sh --uninstall</code>.
+						</p>
+					</div>
+					<div class="box">
+						<h3>Ligaduras</h3>
+						<p>
+							Para ver <code>=&gt;</code>, <code>!==</code> o <code>&gt;=</code> como un solo símbolo, usa Ghostty o Kitty con una
+							fuente con ligaduras: <code>omarchy font set "FiraCode Nerd Font"</code>. Alacritty no las soporta.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section>
+				<p class="section-title">También para Omarchy</p>
+				<h2><a href={`${GH}/omarchy-island`} target="_blank" rel="noopener noreferrer">omarchy-island</a></h2>
+				<p>
+					Una isla dinámica que sale del centro de la barra: lo que suena con controles, calendario, temporizador de
+					enfoque, clima, accesos rápidos y avisos de volumen, brillo y batería. Toma los colores y las esquinas del tema
+					que tengas.
+				</p>
+			</section>
+
+			<p class="note">Sin relación con Apple ni Microsoft. Temas y hooks con licencia MIT.</p>
+		</main>
+		<Footer />
+		<script>
+			for (const pre of document.querySelectorAll<HTMLPreElement>('pre.cmd')) {
+				const btn = document.createElement('button');
+				btn.className = 'copy';
+				btn.type = 'button';
+				btn.textContent = 'Copiar';
+				btn.addEventListener('click', async () => {
+					try {
+						await navigator.clipboard.writeText(pre.querySelector('code')?.textContent ?? '');
+						btn.textContent = 'Copiado';
+					} catch {
+						btn.textContent = 'Selecciona y copia';
+					}
+					setTimeout(() => (btn.textContent = 'Copiar'), 1600);
+				});
+				pre.append(btn);
+			}
+		</script>
+	</body>
+</html>
