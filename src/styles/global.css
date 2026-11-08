@@ -381,3 +381,52 @@
 		scroll-behavior: auto !important;
 	}
 }
+
+/* ── Compatibilidad con las clases om-* anteriores ───────────────────────
+   Las usan páginas de la sección escritas antes de la migración
+   (p. ej. /omarchy/screensaver). Se pueden quitar cuando las adopten. */
+@layer components {
+	:root {
+		--om-ink: var(--color-ink);
+		--om-text: var(--color-body);
+		--om-muted: var(--color-muted);
+		--om-line: var(--color-line);
+		--om-soft: var(--color-soft);
+		--om-surface: #fff;
+		--om-term: var(--color-term);
+		--om-term-text: var(--color-term-text);
+		--om-radius: var(--radius-card);
+		--om-shadow: var(--shadow-card);
+		--om-shadow-lg: var(--shadow-lift);
+		--om-mono: var(--font-mono);
+		--om-ease: var(--ease-apple);
+	}
+	.om-wrap {
+		width: min(1200px, 100% - 32px);
+		margin-inline: auto;
+	}
+	.om-section {
+		@apply scroll-mt-20 pt-[clamp(3.5rem,8vw,6.5rem)];
+	}
+	.om-eyebrow {
+		@apply mb-2.5 text-[0.8rem] font-bold tracking-[0.08em] text-accent uppercase;
+	}
+	.om-h2 {
+		@apply mb-3 text-title font-bold text-ink;
+	}
+	.om-lead {
+		@apply m-0 max-w-[62ch] text-lead text-muted;
+	}
+	.om-head {
+		@apply mb-8;
+	}
+	.om-btn {
+		@apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent px-5 py-2 text-[0.95rem] leading-tight font-bold no-underline;
+	}
+	.om-btn--primary {
+		@apply bg-ink text-white hover:bg-[#2a3142] hover:text-white;
+	}
+	.om-btn--ghost {
+		@apply border-line bg-white text-ink hover:border-line-strong hover:text-ink;
+	}
+}
