@@ -127,9 +127,10 @@
 	--animate-fade: fade 0.3s var(--ease-fundido) both;
 	--animate-pulso: pulso 1.6s ease-in-out infinite;
 
+	/* Sin partir de opacidad 0: el texto del hero cuenta como pintado desde el primer frame (LCP). */
 	@keyframes enter {
 		from {
-			opacity: 0;
+			opacity: 0.4;
 			transform: translateY(12px);
 		}
 	}
@@ -504,21 +505,32 @@
 		animation-delay: calc(var(--i, 0) * 60ms);
 	}
 }
+/* La opacidad llega a 1 en el primer tercio del recorrido: el texto que asoma por el borde se lee
+   con su contraste completo; el desplazamiento sigue hasta el final. */
 @keyframes revelar {
-	from {
+	0% {
 		opacity: 0;
 		transform: translateY(16px);
 	}
+	30% {
+		opacity: 1;
+	}
 }
 @keyframes revelar-fundido {
-	from {
+	0% {
 		opacity: 0;
+	}
+	30% {
+		opacity: 1;
 	}
 }
 @keyframes revelar-zoom {
-	from {
+	0% {
 		opacity: 0;
 		transform: scale(0.96);
+	}
+	30% {
+		opacity: 1;
 	}
 }
 @keyframes scroll-zoom {
