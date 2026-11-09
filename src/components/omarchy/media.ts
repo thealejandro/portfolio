@@ -17,12 +17,12 @@ export const PROMO: Video = {
 	id: 'promo',
 	label: 'Temas para Omarchy · vídeo',
 	alt: 'Vídeo promocional de los temas para Omarchy: los once temas, la isla y la instalación',
-	poster: '/omarchy/omarchy-promo-poster.webp',
+	poster: '/omarchy/omarchy-promo-v2-poster.webp',
 	width: 2560,
 	height: 1440,
 	sources: [
-		{ src: '/omarchy/omarchy-promo-720p.mp4', type: 'video/mp4', media: '(max-width: 1024px)' },
-		{ src: '/omarchy/omarchy-promo-1440p.mp4', type: 'video/mp4' },
+		{ src: '/omarchy/omarchy-promo-v2-720p.mp4', type: 'video/mp4', media: '(max-width: 1024px)' },
+		{ src: '/omarchy/omarchy-promo-v2-1440p.mp4', type: 'video/mp4' },
 	],
 };
 
