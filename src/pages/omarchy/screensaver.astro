@@ -53,10 +53,13 @@ const promises = [
 					playsinline
 					preload="none"
 					poster={`${MEDIA}/poster-es.webp`}
-					width="1920"
-					height="1080"
+					width="2560"
+					height="1440"
 					aria-label="Presentación de Screensaver FX: las seis animaciones nuevas y los efectos con los colores del tema"
 				>
+					<!-- 720p en móviles y pantallas pequeñas; 1440p en el resto -->
+					<source src={`${MEDIA}/demo-es-720.webm`} type="video/webm" media="(max-width: 1024px)" />
+					<source src={`${MEDIA}/demo-es-720.mp4`} type="video/mp4" media="(max-width: 1024px)" />
 					<source src={`${MEDIA}/demo-es.webm`} type="video/webm" />
 					<source src={`${MEDIA}/demo-es.mp4`} type="video/mp4" />
 				</video>
