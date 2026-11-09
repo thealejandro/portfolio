@@ -22,7 +22,7 @@ export const ISLAND_LINES = [
 ];
 
 /** Resto de comandos de la isla, copiados de omarchy-island/README.es.md */
-export const ISLAND_VERSION = '0.6.1';
+export const ISLAND_VERSION = '0.6.2';
 export const ISLAND_REMOVE = 'omarchy plugin remove thealejandro.island';
 export const ISLAND_BIND = 'o.bind("SUPER + I", "Island", "omarchy-shell island toggle")';
 export const ISLAND_SET_EXAMPLE = 'omarchy bar set thealejandro.island toggles both';

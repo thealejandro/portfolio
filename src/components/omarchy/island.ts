@@ -1,4 +1,4 @@
-// Contenido de omarchy-island v0.6.1, resumido de README.es.md del plugin.
+// Contenido de omarchy-island v0.6.2, resumido de README.es.md del plugin.
 
 export interface Feature {
 	id: string;
