@@ -11,7 +11,7 @@ export interface Video {
 	theme?: string;
 }
 
-/** Vídeo promocional de los temas (720p comprimido; el original pesa ~38 MB). */
+/** Vídeo promocional de los temas (720p comprimido; el original pesa ~38 MB). Crédito de la música en GalleryTeaser. */
 export const PROMO: Video = {
 	id: 'promo',
 	label: 'Temas para Omarchy · vídeo',
