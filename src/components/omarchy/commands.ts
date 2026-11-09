@@ -22,13 +22,17 @@ export const ISLAND_LINES = [
 ];
 
 /** Resto de comandos de la isla, copiados de omarchy-island/README.es.md */
-export const ISLAND_VERSION = '0.5.0';
+export const ISLAND_VERSION = '0.6.1';
 export const ISLAND_REMOVE = 'omarchy plugin remove thealejandro.island';
 export const ISLAND_BIND = 'o.bind("SUPER + I", "Island", "omarchy-shell island toggle")';
 export const ISLAND_SET_EXAMPLE = 'omarchy bar set thealejandro.island toggles both';
 export const ISLAND_OSD = ['omarchy plugin disable omarchy.osd', 'omarchy bar set thealejandro.island osd true'];
 export const ISLAND_AGENDA =
 	"omarchy bar set thealejandro.island agendaCommand \"khal list --format '{start-date}\\t{start-time}\\t{title}' --day-format '' today 14d\"";
+export const ISLAND_NOTIFICATIONS = [
+	'omarchy-shell island notifications island',
+	'omarchy-shell island notifications off',
+];
 export const ISLAND_JSON = '{ "id": "thealejandro.island", "language": "es", "defaultPage": "calendar" }';
 
 export interface Selection {

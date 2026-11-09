@@ -1,4 +1,4 @@
-// Contenido de omarchy-island v0.5.0, resumido de README.es.md del plugin.
+// Contenido de omarchy-island v0.6.1, resumido de README.es.md del plugin.
 
 export interface Feature {
 	id: string;
@@ -18,13 +18,13 @@ export const ISLAND_FEATURES: Feature[] = [
 	{
 		id: 'reloj',
 		title: 'Un clic en el reloj',
-		text: 'Fija la isla abierta y la cierra con otro clic. Con clockClick ese clic puede abrir el Calendario o dejarle el reloj al calendario de Omarchy.',
+		text: 'Abre la isla en el Calendario y la cierra con otro clic. Con clockClick puede solo fijarla o dejarle el reloj al calendario de Omarchy. La hora mundial y el clima de la barra la abren en Mundo.',
 		icon: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
 	},
 	{
 		id: 'paginas',
-		title: 'Inicio, Calendario, Mundo y Ajustes',
-		text: 'Cuatro páginas en las pestañas de su esquina. Inicio reúne música con controles, calendario, temporizador de enfoque y un dock de toggles y acciones.',
+		title: 'Cinco páginas, con Inicio renovado',
+		text: 'Inicio, Calendario, Mundo, Notificaciones y Ajustes en las pestañas de su esquina. Inicio junta la música con lo próximo de tu agenda, el temporizador de enfoque y un dock de toggles y acciones.',
 		icon: 'M4 5h7v6H4zM13 5h7v3h-7zM13 10h7v9h-7zM4 13h7v6H4z',
 	},
 	{
@@ -36,8 +36,14 @@ export const ISLAND_FEATURES: Feature[] = [
 	{
 		id: 'mundo',
 		title: 'Hora mundial y pronóstico',
-		text: 'Las ciudades de elsewhen con su hora, día y diferencia con la tuya, y el clima de wttr.in con pronóstico de tres días.',
+		text: 'Las ciudades de elsewhen con su hora, día y diferencia con la tuya, y el clima de wttr.in con pronóstico de tres días. Ahora viven solo en la página Mundo, y un clic en la barra te lleva allí.',
 		icon: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z',
+	},
+	{
+		id: 'avisos',
+		title: 'Notificaciones en la isla',
+		text: 'Opcionales: cada aviso baja de la barra como un vistazo. La página las agrupa por app, con botones, respuestas en línea y no molestar, y guarda un historial de 24 horas.',
+		icon: 'M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9ZM10 20a2 2 0 0 0 4 0',
 	},
 	{
 		id: 'ajustes',
@@ -70,13 +76,14 @@ export interface Setting {
 export const ISLAND_SETTINGS: Setting[] = [
 	{ key: 'language', values: '`en`, `es`', def: 'según `LANG`', desc: 'Idioma de la isla' },
 	{ key: 'defaultPage', values: '`home`, `calendar`, `world`', def: '`home`', desc: 'Página con la que se abre' },
-	{ key: 'calendarFirst', values: '`true`, `false`', def: '`false`', desc: 'Calendario a la izquierda en Inicio' },
+	{ key: 'calendarFirst', values: '`true`, `false`', def: '`false`', desc: 'Lo próximo a la izquierda en Inicio' },
 	{
-		key: 'showMedia, showTimer, showDock, showWorld',
+		key: 'showMedia, showTimer, showDock',
 		values: '`true`, `false`',
 		def: '`true`',
 		desc: 'Partes de la página Inicio',
 	},
+	{ key: 'animations', values: '`true`, `false`', def: '`true`', desc: 'Muelle y movimiento de páginas y vistazos' },
 	{ key: 'openWidth', values: '420–800', def: '`560`', desc: 'Ancho de la isla abierta' },
 	{ key: 'blur', values: '`true`, `false`', def: '`true`', desc: 'Desenfoque detrás de la isla con la barra de cristal' },
 	{
@@ -88,8 +95,14 @@ export const ISLAND_SETTINGS: Setting[] = [
 	{
 		key: 'clockClick',
 		values: '`pin`, `calendar`, `omarchy`',
-		def: '`pin`',
+		def: '`calendar`',
 		desc: 'Clic en el reloj: fijar la isla, abrirla en el calendario o el calendario de Omarchy',
+	},
+	{
+		key: 'barClicks',
+		values: '`true`, `false`',
+		def: '`true`',
+		desc: 'Un clic en la hora mundial o el clima de la barra abre la página Mundo',
 	},
 	{
 		key: 'anchor',
@@ -117,6 +130,17 @@ export const ISLAND_SETTINGS: Setting[] = [
 	{ key: 'agendaCommand', values: 'comando', def: '`""`', desc: 'Eventos extra de otro calendario' },
 	{ key: 'osd', values: '`true`, `false`', def: '`false`', desc: 'Mostrar el OSD de Omarchy en la isla' },
 	{ key: 'battery', values: '`true`, `false`', def: '`true`', desc: 'Vistazos de carga y batería baja' },
+	{
+		key: 'notifications',
+		values: '`off`, `island`',
+		def: '`off`',
+		desc: 'Mostrar las notificaciones en la isla en lugar de las tarjetas de Omarchy',
+	},
+	{ key: 'notifyBody', values: '`true`, `false`', def: '`true`', desc: 'El texto en el vistazo (`false`: solo app y título)' },
+	{ key: 'notifyPeekDuration', values: '2000–15000 ms', def: '`6000`', desc: 'Duración del vistazo de una notificación' },
+	{ key: 'notifyHistory', values: '`true`, `false`', def: '`true`', desc: 'Guardar las notificaciones cerradas 24 h' },
+	{ key: 'notifyHistoryLimit', values: '20–500', def: '`100`', desc: 'Notificaciones cerradas que se guardan' },
+	{ key: 'notifyBadge', values: '`true`, `false`', def: '`true`', desc: 'Punto de no leídas bajo el reloj y en la pestaña' },
 ];
 
 /** Convierte `código` en <code> (las celdas solo traen texto y backticks). */
