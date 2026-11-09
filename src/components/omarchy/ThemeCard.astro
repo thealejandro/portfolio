@@ -12,7 +12,7 @@ const strip = ['background', 'foreground', 'accent', 'red', 'yellow', 'green', '
 ---
 
 <a
-	class="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-white text-inherit no-underline transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-[#d5dbe6] hover:text-inherit hover:shadow-lift focus-visible:outline-offset-4 active:scale-[0.985] active:duration-150"
+	class="group flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface text-inherit no-underline transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-[#d5dbe6] hover:text-inherit hover:shadow-lift focus-visible:outline-offset-4 active:scale-[0.985] active:duration-150"
 	href={`/omarchy/${t.slug}`}
 >
 	<div class="relative aspect-video overflow-hidden border-b border-line" style={`background:${t.palette.background}`}>
@@ -31,7 +31,7 @@ const strip = ['background', 'foreground', 'accent', 'red', 'yellow', 'green', '
 		}
 		{
 			t.shots.length > 1 && (
-				<span class="absolute bottom-2.5 left-2.5 rounded-full bg-ink/80 px-2 py-0.5 text-[0.72rem] font-bold text-white backdrop-blur">
+				<span class="absolute bottom-2.5 left-2.5 rounded-full bg-esmalte/85 px-2 py-0.5 text-[0.72rem] font-bold text-loza">
 					{t.shots.length} capturas
 				</span>
 			)

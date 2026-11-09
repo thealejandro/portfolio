@@ -42,7 +42,7 @@ const filters = [
 			{
 				themes.map((t, i) => (
 					<li data-mode={t.mode} data-family={t.family} data-reveal style={`--i:${i % 3}`} class="[&[hidden]]:hidden">
-						<ThemeCard theme={t} eager={i < 3} />
+						<ThemeCard theme={t} />
 					</li>
 				))
 			}
@@ -71,13 +71,7 @@ const filters = [
 			for (const li of items) {
 				const show = match(li, f);
 				li.hidden = !show;
-				if (show) {
-					// Vuelve a animar la tarjeta al aparecer.
-					li.style.setProperty('--i', String(n % 3));
-					li.classList.remove('is-in');
-					requestAnimationFrame(() => requestAnimationFrame(() => li.classList.add('is-in')));
-					n++;
-				}
+				if (show) n++;
 			}
 			status.textContent = `${n} ${n === 1 ? 'tema' : 'temas'}`;
 		});

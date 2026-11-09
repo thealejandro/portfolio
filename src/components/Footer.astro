@@ -1,10 +1,77 @@
 ---
-import SocialIcons from './SocialIcons.astro';
+import { CREDITO_RETRATO, DIRECTO, PERSONA, red } from '../consts';
+import Icono from './Icono.astro';
+import Marca from './marca/Marca.astro';
 
-const today = new Date();
+const year = new Date().getFullYear();
+const sitio = [
+	['/', 'Inicio'],
+	['/omarchy', 'Temas para Omarchy'],
+	['/omarchy/island', 'omarchy-island'],
+	['/omarchy/screensaver', 'Salvapantallas'],
+	['/blog', 'Blog'],
+	['/cv', 'CV'],
+	['/rss.xml', 'RSS'],
+];
+const redes = [red('github'), red('x'), red('instagram'), red('linkedin')];
+const enlace = 'inline-flex min-h-11 items-center gap-2.5 text-body no-underline hover:text-accent';
 ---
 
-<footer class="bg-linear-to-b from-[rgb(229_233_240/0.5)] to-white px-4 pt-8 pb-24 text-center text-[0.95rem] text-[#5d6b8c]">
-	&copy; {today.getFullYear()} José Alejandro Caal Choc · <a href="https://xacode.dev" class="text-inherit underline-offset-2 hover:underline">XACode</a>
-	<SocialIcons class="mt-3 justify-center gap-2" linkClass="text-[#5d6b8c] hover:text-body" />
+<footer class="mt-8 border-t border-line bg-fondo pt-10 pb-12 text-[0.95rem]">
+	<div class="wrap grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+		<div class="grid content-start gap-3">
+			<a href="/" class="flex min-h-11 w-fit items-center text-ink no-underline" aria-label="thealejandro, inicio">
+				<Marca variante="logotipo" tam={18} />
+			</a>
+			<p class="m-0 text-muted">
+				&copy; {`${year} ${PERSONA.nombre}`} · <a href={PERSONA.empresa.url} class="text-muted underline underline-offset-2 hover:text-accent">{PERSONA.empresa.nombre}</a>
+			</p>
+			<p class="m-0 text-sm text-muted">{CREDITO_RETRATO} · Hecho con Astro en {PERSONA.ciudad}.</p>
+		</div>
+		<nav aria-labelledby="pie-sitio">
+			<h2 id="pie-sitio" class="etiqueta mb-2">Sitio</h2>
+			<ul class="m-0 list-none p-0" role="list">
+				{sitio.map(([href, label]) => <li><a class={enlace} href={href}>{label}</a></li>)}
+			</ul>
+		</nav>
+		<section aria-labelledby="pie-directos">
+			<h2 id="pie-directos" class="etiqueta mb-2">Directos</h2>
+			<ul class="m-0 list-none p-0" role="list">
+				{
+					DIRECTO.plataformas.map((r) => (
+						<li>
+							<a class={enlace} href={r.url} target="_blank" rel="noopener noreferrer">
+								<Icono nombre={r.id} class="size-4.5 text-muted" />
+								{r.nombre}
+								<span class="sr-only"> (se abre en otra pestaña)</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<p class="mt-2 mb-0 text-sm text-muted">{DIRECTO.horario}</p>
+		</section>
+		<section aria-labelledby="pie-redes">
+			<h2 id="pie-redes" class="etiqueta mb-2">Redes</h2>
+			<ul class="m-0 list-none p-0" role="list">
+				{
+					redes.map((r) => (
+						<li>
+							<a class={enlace} href={r.url} target="_blank" rel="noopener noreferrer">
+								<Icono nombre={r.id} class="size-4.5 text-muted" />
+								{r.nombre}
+								<span class="sr-only"> (se abre en otra pestaña)</span>
+							</a>
+						</li>
+					))
+				}
+				<li>
+					<a class={`${enlace} [overflow-wrap:anywhere]`} href={`mailto:${PERSONA.email}`}>
+						<Icono nombre="correo" class="size-4.5 text-muted" />
+						{PERSONA.email}
+					</a>
+				</li>
+			</ul>
+		</section>
+	</div>
 </footer>

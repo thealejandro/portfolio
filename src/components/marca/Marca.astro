@@ -1,0 +1,41 @@
+---
+// Marca «Gafas» (MARCA.md §0) dibujada inline desde marca-datos.json (generado por `npm run marca`).
+// Tinta = currentColor. En oscuro, montura con anillo hueco y lente cobalto-claro;
+// en claro, versión mono (disco vacío): la lente nunca va sobre loza. Lo decide global.css.
+import datos from './marca-datos.json';
+
+interface Props {
+	/** simbolo: gafas (desde 32×16 px) · icono: solo la lente encendida · logotipo: gafas + nombre */
+	variante?: 'simbolo' | 'icono' | 'logotipo';
+	/** Alto del símbolo en px (en el logotipo, también la altura de ascendentes del nombre). */
+	tam?: number;
+	/** Texto alternativo; si se omite, es decorativa (aria-hidden). */
+	titulo?: string;
+	class?: string;
+}
+
+const { variante = 'simbolo', tam = 24, titulo, class: cls } = Astro.props;
+const v = datos[variante];
+const k = tam / datos.alto;
+const w = +(v.w * k).toFixed(2);
+const h = +(v.h * k).toFixed(2);
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox={`0 0 ${v.w} ${v.h}`}
+	width={w}
+	height={h}
+	class:list={['marca-svg shrink-0', cls]}
+	fill="currentColor"
+	role={titulo ? 'img' : undefined}
+	aria-label={titulo}
+	aria-hidden={titulo ? undefined : 'true'}
+	focusable="false"
+	shape-rendering="geometricPrecision"
+>
+	<path class="marca-color" d={v.montura}></path>
+	<path class="marca-disco" d={v.disco}></path>
+	<path class="marca-mono" d={v.monturaMono}></path>
+	{v.nombre && <path transform={v.nombre.transform} d={v.nombre.d}></path>}
+</svg>

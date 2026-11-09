@@ -118,7 +118,7 @@ const hookInfo: Record<string, { name: string; desc: string }> = {
 <style>
 	@reference '../../styles/global.css';
 	.opt {
-		@apply flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border border-line bg-white px-3 py-2;
+		@apply flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border border-line bg-surface px-3 py-2;
 		transition:
 			border-color 0.15s,
 			background-color 0.15s,
@@ -131,7 +131,7 @@ const hookInfo: Record<string, { name: string; desc: string }> = {
 		transform: scale(0.98);
 	}
 	.opt:has(input:checked) {
-		@apply border-[#9aa4b8] bg-soft;
+		@apply border-line-strong bg-soft;
 	}
 	.opt:has(input:focus-visible) {
 		@apply outline-2 outline-offset-2 outline-accent;

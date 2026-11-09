@@ -1,0 +1,65 @@
+---
+// Cambia entre tema claro y oscuro. El tema inicial lo pone el script inline de BaseHead
+// (sin parpadeo); sin JS el botón no se muestra y manda prefers-color-scheme.
+import Icono from './Icono.astro';
+---
+
+<button
+	type="button"
+	class="tema-btn grid size-11 cursor-pointer place-items-center rounded-azulejo text-muted transition-colors hover:text-ink"
+	data-js-only
+	data-tema-btn
+	aria-label="Cambiar a tema claro"
+>
+	<Icono nombre="sol" class="tema-sol size-5" />
+	<Icono nombre="luna" class="tema-luna size-5" />
+</button>
+
+<style is:global>
+	.tema-btn .tema-luna,
+	html[data-theme='light'] .tema-btn .tema-sol {
+		display: none;
+	}
+	html[data-theme='light'] .tema-btn .tema-luna {
+		display: block;
+	}
+</style>
+
+<script>
+	const raiz = document.documentElement;
+	const sistema = matchMedia('(prefers-color-scheme: light)');
+	const COLOR = { dark: '#0e0c0b', light: '#f4ecdc' } as const;
+
+	function guardado(): string | null {
+		try {
+			return localStorage.getItem('tema');
+		} catch {
+			return null;
+		}
+	}
+
+	function aplicar(tema: 'dark' | 'light') {
+		raiz.dataset.theme = tema;
+		document.querySelector('meta[name="theme-color"]')?.setAttribute('content', COLOR[tema]);
+		for (const b of document.querySelectorAll<HTMLButtonElement>('[data-tema-btn]')) {
+			b.setAttribute('aria-label', tema === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+		}
+	}
+
+	aplicar(raiz.dataset.theme === 'light' ? 'light' : 'dark');
+
+	document.addEventListener('click', (e) => {
+		if (!(e.target as Element).closest('[data-tema-btn]')) return;
+		const nuevo = raiz.dataset.theme === 'light' ? 'dark' : 'light';
+		aplicar(nuevo);
+		try {
+			localStorage.setItem('tema', nuevo);
+		} catch {}
+	});
+
+	// Si nadie eligió a mano, sigue al sistema también en vivo.
+	sistema.addEventListener('change', (e) => {
+		const g = guardado();
+		if (g !== 'light' && g !== 'dark') aplicar(e.matches ? 'light' : 'dark');
+	});
+</script>

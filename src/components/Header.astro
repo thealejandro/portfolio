@@ -1,18 +1,39 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { red } from '../consts';
 import HeaderLink from './HeaderLink.astro';
-import SocialIcons from './SocialIcons.astro';
+import Icono from './Icono.astro';
+import Marca from './marca/Marca.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const redes = [red('github'), red('x')];
 ---
 
-<header class="relative z-30 bg-white shadow-[0_2px_8px_rgb(15_18_25/0.05)]">
+<header class="relative z-30 border-b border-line bg-fondo">
 	<nav class="wrap flex min-h-14 items-center justify-between gap-2" aria-label="Principal">
-		<a href="/" class="py-3 text-base font-bold text-ink no-underline">{SITE_TITLE}</a>
-		<div class="-mr-2 flex items-center sm:mr-0">
+		<a href="/" class="-ml-1 flex min-h-11 items-center px-1 text-ink no-underline" aria-label="thealejandro, inicio">
+			<Marca variante="simbolo" tam={20} class="sm:hidden" />
+			<Marca variante="logotipo" tam={20} class="max-sm:hidden" />
+		</a>
+		<div class="flex items-center">
 			<HeaderLink href="/" class="max-[379px]:hidden">Inicio</HeaderLink>
 			<HeaderLink href="/omarchy">Omarchy</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/cv">CV</HeaderLink>
+			<span class="mx-1 hidden h-6 w-px bg-line md:block" aria-hidden="true"></span>
+			{
+				redes.map((r) => (
+					<a
+						href={r.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="hidden size-11 place-items-center rounded-azulejo text-muted transition-colors hover:text-ink md:grid"
+					>
+						<span class="sr-only">{`${r.nombre} de thealejandro (se abre en otra pestaña)`}</span>
+						<Icono nombre={r.id} class="size-5" />
+					</a>
+				))
+			}
+			<ThemeToggle />
 		</div>
-		<SocialIcons class="hidden text-ink md:flex" />
 	</nav>
 </header>

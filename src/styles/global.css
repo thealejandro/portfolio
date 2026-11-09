@@ -1,52 +1,137 @@
 @import 'tailwindcss';
 
-/* ── Tokens ─────────────────────────────────────────────────────────── */
+/* ── Fuentes (SIL OFL 1.1; licencias en /fonts/OFL-*.txt) ─────────────
+   Variables con el eje de anchura fijado en 100 (fontTools varLib.instancer wdth=100):
+   el sitio no usa otras anchuras. Tres archivos por familia: español (el único que se
+   precarga), resto de latin-1 y latin-ext; el navegador baja solo los que la página usa. */
+@font-face {
+	font-family: 'Bricolage Grotesque';
+	src: url('/fonts/bricolage-grotesque-var.woff2') format('woff2');
+	font-weight: 200 800;
+	font-display: swap;
+	unicode-range: U+0020-007E, U+00A0-00BF, U+00C1, U+00C9, U+00CD, U+00D1, U+00D3, U+00DA, U+00DC, U+00E1, U+00E9, U+00ED, U+00F1, U+00F3, U+00FA, U+00FC, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026, U+20AC, U+2122, U+2212;
+}
+@font-face {
+	font-family: 'Bricolage Grotesque';
+	src: url('/fonts/bricolage-grotesque-var-latin1.woff2') format('woff2');
+	font-weight: 200 800;
+	font-display: swap;
+	unicode-range: U+0000-001F, U+007F-009F, U+00C0, U+00C2-00C8, U+00CA-00CC, U+00CE-00D0, U+00D2, U+00D4-00D9, U+00DB, U+00DD-00E0, U+00E2-00E8, U+00EA-00EC, U+00EE-00F0, U+00F2, U+00F4-00F9, U+00FB, U+00FD-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-2012, U+2015-2017, U+201A-201B, U+201E-2021, U+2023-2025, U+2027-206F, U+2074, U+2191, U+2193, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'Bricolage Grotesque';
+	src: url('/fonts/bricolage-grotesque-var-ext.woff2') format('woff2');
+	font-weight: 200 800;
+	font-display: swap;
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+	font-family: 'Martian Mono';
+	src: url('/fonts/martian-mono-var.woff2') format('woff2');
+	font-weight: 100 800;
+	font-display: swap;
+	unicode-range: U+0020-007E, U+00A0-00BF, U+00C1, U+00C9, U+00CD, U+00D1, U+00D3, U+00DA, U+00DC, U+00E1, U+00E9, U+00ED, U+00F1, U+00F3, U+00FA, U+00FC, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026, U+20AC, U+2122, U+2212;
+}
+@font-face {
+	font-family: 'Martian Mono';
+	src: url('/fonts/martian-mono-var-latin1.woff2') format('woff2');
+	font-weight: 100 800;
+	font-display: swap;
+	unicode-range: U+0000-001F, U+007F-009F, U+00C0, U+00C2-00C8, U+00CA-00CC, U+00CE-00D0, U+00D2, U+00D4-00D9, U+00DB, U+00DD-00E0, U+00E2-00E8, U+00EA-00EC, U+00EE-00F0, U+00F2, U+00F4-00F9, U+00FB, U+00FD-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-2012, U+2015-2017, U+201A-201B, U+201E-2021, U+2023-2025, U+2027-206F, U+2074, U+2191, U+2193, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'Martian Mono';
+	src: url('/fonts/martian-mono-var-ext.woff2') format('woff2');
+	font-weight: 100 800;
+	font-display: swap;
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ── Tokens (sistema AZULEJO) ───────────────────────────────────────────
+   Colores de marca fijos + colores semánticos que cambian con el tema.
+   Oscuro (esmalte) es el valor por defecto; claro (loza) se aplica con
+   html[data-theme="light"] o, sin JS, con prefers-color-scheme: light. */
 @theme {
-	--font-sans: 'Atkinson', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-	--font-mono: ui-monospace, 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+	--font-sans: 'Bricolage Grotesque', 'Adwaita Sans', 'Liberation Sans', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'Martian Mono', 'Adwaita Mono', 'Liberation Mono', ui-monospace, monospace;
 	--font-cv: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
 	--font-cv-serif: 'DM Serif Display', Georgia, serif;
 
-	--color-ink: #0f1219;
-	--color-body: #222939;
-	--color-muted: #55627f;
-	--color-line: #e5e9f0;
-	--color-line-strong: #c3cad8;
-	--color-soft: #f5f6f9;
-	--color-accent: #2337ff;
-	--color-accent-dark: #000d8a;
-	--color-term: #0f1219;
-	--color-term-text: #e5e9f0;
+	/* Marca (fijos) */
+	--color-esmalte: #0e0c0b;
+	--color-esmalte-2: #171412;
+	--color-esmalte-3: #211d1a;
+	--color-loza: #f4ecdc;
+	--color-manganeso: #9a9184;
+	--color-cobalto: #2648c8;
+	--color-cobalto-hondo: #1f3db0;
+	--color-lente: #7f98f5;
+	--color-ocre: #f2a33a;
+	--color-verdin: #3f8f6e;
+
+	/* Semánticos (tema oscuro por defecto; el claro está más abajo) */
+	--color-fondo: #0e0c0b;
+	--color-superficie: #171412;
+	--color-superficie-2: #211d1a;
+	--color-texto: #f4ecdc;
+	--color-texto-cuerpo: #e6dece;
+	--color-texto-2: #afa99d;
+	--color-meta: #9a9184;
+	--color-acento: #7f98f5;
+	--color-linea: rgb(244 236 220 / 0.12);
+	--color-linea-fuerte: rgb(154 145 132 / 0.5);
+
+	/* Nombres anteriores, ahora alias de los semánticos */
+	--color-ink: var(--color-texto);
+	--color-body: var(--color-texto-cuerpo);
+	--color-muted: var(--color-texto-2);
+	--color-line: var(--color-linea);
+	--color-line-strong: var(--color-linea-fuerte);
+	--color-soft: var(--color-superficie-2);
+	--color-surface: var(--color-superficie);
+	--color-accent: var(--color-acento);
+	--color-accent-dark: var(--color-cobalto);
+	--color-term: #171412;
+	--color-term-text: #f4ecdc;
 
 	--color-cv-bg: #f7f5f2;
 	--color-cv-line: #e8e3dc;
 	--color-cv-muted: #6b6560;
 
 	--ease-apple: cubic-bezier(0.2, 0.7, 0.2, 1);
-	--ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+	--ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-popin: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-fundido: cubic-bezier(0.15, 0, 0.1, 1);
+	--ease-rodillo: cubic-bezier(0.2, 0.7, 0.2, 1);
 
-	--shadow-card: 0 1px 2px rgb(15 18 25 / 0.06), 0 8px 28px rgb(15 18 25 / 0.08);
-	--shadow-lift: 0 2px 6px rgb(15 18 25 / 0.06), 0 24px 64px rgb(15 18 25 / 0.16);
-	--shadow-screen: 0 0 0 1px rgb(15 18 25 / 0.08), 0 2px 6px rgb(15 18 25 / 0.06), 0 30px 80px rgb(15 18 25 / 0.2);
+	--shadow-card: 0 1px 2px rgb(0 0 0 / 0.12);
+	--shadow-lift: 0 12px 32px rgb(0 0 0 / 0.28);
+	--shadow-screen: 0 12px 32px rgb(0 0 0 / 0.35);
+	--shadow-imagen: 0 12px 32px rgb(0 0 0 / 0.35);
 
-	--radius-card: 20px;
+	--radius-card: 12px;
+	--radius-pieza: 6px;
+	--radius-azulejo: 12px;
+	--radius-ventana: 20px;
 
-	--text-display: clamp(2.4rem, 1.3rem + 4.8vw, 4.75rem);
-	--text-display--line-height: 1.02;
-	--text-display--letter-spacing: -0.035em;
-	--text-title: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
-	--text-title--line-height: 1.1;
-	--text-title--letter-spacing: -0.02em;
-	--text-lead: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
-	--text-lead--line-height: 1.6;
+	--text-display: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem);
+	--text-display--line-height: 1;
+	--text-display--letter-spacing: -0.03em;
+	--text-title: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+	--text-title--line-height: 1.08;
+	--text-title--letter-spacing: -0.015em;
+	--text-lead: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+	--text-lead--line-height: 1.55;
 
-	--animate-enter: enter 0.9s var(--ease-apple) both;
-	--animate-fade: fade 0.45s var(--ease-apple) both;
+	--animate-enter: enter 0.6s var(--ease-fundido) both;
+	--animate-fade: fade 0.3s var(--ease-fundido) both;
+	--animate-pulso: pulso 1.6s ease-in-out infinite;
 
+	/* Sin partir de opacidad 0: el texto del hero cuenta como pintado desde el primer frame (LCP). */
 	@keyframes enter {
 		from {
-			opacity: 0;
-			transform: translateY(18px);
+			opacity: 0.4;
+			transform: translateY(12px);
 		}
 	}
 	@keyframes fade {
@@ -55,31 +140,80 @@
 			transform: translateY(6px);
 		}
 	}
+	@keyframes pulso {
+		50% {
+			opacity: 0.55;
+		}
+	}
+}
+
+/* Tema claro (loza). Dos bloques iguales: elección guardada y, sin elección, el sistema. */
+:root[data-theme='light'] {
+	color-scheme: light;
+	--color-fondo: #f4ecdc;
+	--color-superficie: #fbf7ef;
+	--color-superficie-2: #ebe2d0;
+	--color-texto: #0e0c0b;
+	--color-texto-cuerpo: #2b2622;
+	--color-texto-2: #5c554c;
+	--color-meta: #5c554c;
+	--color-acento: #2648c8;
+	--color-linea: rgb(14 12 11 / 0.12);
+	--color-linea-fuerte: rgb(14 12 11 / 0.32);
+	--color-term: #0e0c0b;
+	--shadow-card: 0 1px 2px rgb(14 12 11 / 0.06);
+	--shadow-lift: 0 12px 32px rgb(14 12 11 / 0.14);
+}
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme='dark']) {
+		color-scheme: light;
+		--color-fondo: #f4ecdc;
+		--color-superficie: #fbf7ef;
+		--color-superficie-2: #ebe2d0;
+		--color-texto: #0e0c0b;
+		--color-texto-cuerpo: #2b2622;
+		--color-texto-2: #5c554c;
+		--color-meta: #5c554c;
+		--color-acento: #2648c8;
+		--color-linea: rgb(14 12 11 / 0.12);
+		--color-linea-fuerte: rgb(14 12 11 / 0.32);
+		--color-term: #0e0c0b;
+		--shadow-card: 0 1px 2px rgb(14 12 11 / 0.06);
+		--shadow-lift: 0 12px 32px rgb(14 12 11 / 0.14);
+	}
+}
+:root {
+	color-scheme: dark;
+}
+
+/* Marca: en oscuro, montura loza y lente; en claro, mono oscuro (la lente nunca sobre loza). */
+.marca-mono {
+	display: none;
+}
+.marca-disco {
+	fill: var(--color-lente);
+}
+:root[data-theme='light'] .marca-color,
+:root[data-theme='light'] .marca-disco {
+	display: none;
+}
+:root[data-theme='light'] .marca-mono {
+	display: inline;
+}
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme='dark']) .marca-color,
+	:root:not([data-theme='dark']) .marca-disco {
+		display: none;
+	}
+	:root:not([data-theme='dark']) .marca-mono {
+		display: inline;
+	}
 }
 
 /* Variables antiguas: las usan contenidos del blog en Markdown. */
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-}
-
-@font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-regular.woff') format('woff');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Atkinson';
-	src: url('/fonts/atkinson-bold.woff') format('woff');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
+	--accent: var(--color-acento);
+	--accent-dark: var(--color-cobalto);
 }
 
 /* ── Base ───────────────────────────────────────────────────────────── */
@@ -88,12 +222,11 @@
 		-webkit-text-size-adjust: 100%;
 		text-size-adjust: 100%;
 		scroll-padding-top: 4.5rem;
+		background-color: var(--color-fondo);
 	}
 	body {
-		@apply bg-white font-sans text-[1.0625rem] leading-relaxed text-body antialiased;
-		background-image: linear-gradient(rgb(229 233 240 / 0.5), #fff);
-		background-repeat: no-repeat;
-		background-size: 100% 600px;
+		@apply bg-fondo font-sans text-[1.0625rem] leading-relaxed text-body antialiased;
+		font-optical-sizing: auto;
 		overflow-wrap: break-word;
 	}
 	h1,
@@ -103,22 +236,24 @@
 	h5,
 	h6 {
 		@apply leading-tight font-bold text-ink;
+		font-variation-settings: 'opsz' 36;
 	}
 	a {
 		@apply text-accent;
 	}
 	/* Enlaces dentro de un párrafo: subrayados, no solo por color. */
 	p a:not([class]) {
-		@apply underline decoration-accent/35 underline-offset-[3px] hover:decoration-accent;
+		@apply underline decoration-accent/45 underline-offset-[3px] hover:decoration-accent;
 	}
 	:focus-visible {
 		@apply outline-2 outline-offset-3 outline-accent;
 	}
 	::selection {
-		background: rgb(35 55 255 / 0.18);
+		background: color-mix(in oklab, var(--color-acento) 30%, transparent);
 	}
 	code {
 		@apply font-mono;
+		font-size: 0.9em;
 	}
 	html:not(.js) [data-js-only] {
 		display: none !important;
@@ -137,75 +272,99 @@
 	.section {
 		@apply scroll-mt-20 pt-[clamp(3.5rem,8vw,6.5rem)];
 	}
+
+	/* Roles tipográficos (theme.css de los overlays) */
+	.display {
+		@apply text-display font-extrabold;
+		font-variation-settings: 'opsz' 96;
+	}
+	.titulo {
+		@apply font-bold;
+		font-variation-settings: 'opsz' 36;
+		letter-spacing: -0.01em;
+	}
+	.etiqueta {
+		@apply text-xs font-semibold tracking-[0.08em] text-meta uppercase;
+		font-variation-settings: 'opsz' 14;
+	}
+	.cifra {
+		@apply font-mono font-semibold tabular-nums;
+	}
+	.dato {
+		@apply font-mono font-medium;
+	}
+
 	.eyebrow {
-		@apply mb-2.5 text-[0.8rem] font-bold tracking-[0.08em] text-accent uppercase;
+		@apply mb-2.5 text-[0.8rem] font-semibold tracking-[0.08em] text-accent uppercase;
 	}
 	.title {
 		@apply mb-3 text-title font-bold text-ink;
+		font-variation-settings: 'opsz' 48;
 	}
 	.lead {
 		@apply m-0 max-w-[62ch] text-lead text-muted;
 	}
 	.inline-code {
-		@apply rounded-md border border-line bg-soft px-[0.35em] py-[0.05em] font-mono text-[0.88em] [overflow-wrap:anywhere] box-decoration-clone;
+		@apply rounded-pieza border border-line bg-soft px-[0.35em] py-[0.05em] font-mono text-[0.85em] [overflow-wrap:anywhere] box-decoration-clone;
 	}
 
 	.btn {
-		@apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent px-5 py-2 text-[0.95rem] leading-tight font-bold no-underline select-none;
+		@apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-azulejo border-2 border-transparent px-5 py-2 text-[0.95rem] leading-tight font-semibold no-underline select-none;
 		transition:
-			transform 0.35s var(--ease-spring),
+			transform 0.22s var(--ease-rodillo),
 			background-color 0.2s,
 			border-color 0.2s,
-			color 0.2s,
-			box-shadow 0.3s var(--ease-apple);
+			color 0.2s;
 	}
 	.btn:active {
-		transform: scale(0.96);
+		transform: scale(0.97);
 	}
 	.btn-primary {
-		@apply bg-ink text-white hover:bg-[#2a3142] hover:text-white;
-	}
-	.btn-primary:hover {
-		box-shadow: 0 8px 22px rgb(15 18 25 / 0.22);
+		@apply bg-cobalto text-loza hover:bg-cobalto-hondo hover:text-loza;
 	}
 	.btn-ghost {
-		@apply border-line bg-white text-ink hover:border-line-strong hover:text-ink;
+		@apply border-line-strong bg-transparent text-ink hover:border-accent hover:text-ink;
 	}
 
 	.badge {
-		@apply inline-flex items-center gap-[0.35em] rounded-full border border-line bg-white px-2.5 py-0.5 text-xs leading-normal font-bold whitespace-nowrap text-body;
+		@apply inline-flex items-center gap-[0.35em] rounded-pieza border border-line bg-surface px-2.5 py-0.5 text-xs leading-normal font-semibold whitespace-nowrap text-body;
 	}
 	.badge svg {
 		@apply size-[0.95em];
 	}
 	.badge-dark {
-		@apply border-ink bg-ink text-white;
+		@apply border-ink bg-ink text-fondo;
+	}
+
+	/* Chips: etiquetas no interactivas */
+	.chip {
+		@apply inline-flex min-h-8 items-center gap-2 rounded-azulejo border-2 border-line bg-surface px-3 text-sm text-body;
 	}
 
 	/* Píldoras de filtro y selección (aria-pressed). */
 	.pill {
-		@apply inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-line bg-white px-4 py-1.5 text-[0.92rem] whitespace-nowrap text-ink;
+		@apply inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-azulejo border-2 border-line bg-surface px-4 py-1.5 text-[0.92rem] whitespace-nowrap text-ink;
 		transition:
 			background-color 0.2s,
 			border-color 0.2s,
 			color 0.2s,
-			transform 0.35s var(--ease-spring);
+			transform 0.22s var(--ease-rodillo);
 	}
 	.pill:hover {
 		@apply border-line-strong;
 	}
 	.pill:active {
-		transform: scale(0.96);
+		transform: scale(0.97);
 	}
 	.pill[aria-pressed='true'] {
-		@apply border-ink bg-ink text-white;
+		@apply border-cobalto bg-cobalto text-loza;
 	}
 	.pill .n {
-		@apply text-[0.75em] tabular-nums opacity-75;
+		@apply text-[0.75em] tabular-nums opacity-80;
 	}
 	.pill-dot {
 		@apply size-3 shrink-0 rounded-full;
-		box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6), 0 0 0 2px rgb(15 18 25 / 0.12);
+		box-shadow: 0 0 0 1px rgb(244 236 220 / 0.6), 0 0 0 2px rgb(14 12 11 / 0.2);
 	}
 	/* Fila de píldoras: en móvil se desplaza en horizontal. */
 	.pill-row {
@@ -219,39 +378,39 @@
 		@apply snap-start;
 	}
 
-	/* Bloques de comandos */
+	/* Bloques de comandos: siempre sobre esmalte. */
 	.cmd {
-		@apply relative max-w-full min-w-0 rounded-[14px] bg-term text-term-text;
+		@apply relative max-w-full min-w-0 rounded-azulejo border border-line bg-term text-term-text;
 	}
 	.cmd pre {
-		@apply m-0 overflow-x-auto rounded-[inherit] px-[1.1rem] pt-1.5 pb-4 font-mono text-[0.82rem] leading-[1.7] whitespace-pre;
+		@apply m-0 overflow-x-auto rounded-[inherit] px-[1.1rem] pt-1.5 pb-4 font-mono text-[0.8rem] leading-[1.7] whitespace-pre;
 		scrollbar-width: thin;
-		scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+		scrollbar-color: rgb(244 236 220 / 0.25) transparent;
 	}
 	.cmd pre:focus-visible {
-		@apply outline-2 -outline-offset-2 outline-[#9db0ff];
+		@apply outline-2 -outline-offset-2 outline-lente;
 	}
 	.copy-btn {
-		@apply inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-3 text-[0.8rem] text-term-text hover:bg-white/15;
+		@apply inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-pieza border border-loza/20 bg-loza/5 px-3 text-[0.8rem] text-term-text hover:bg-loza/15;
 		transition:
 			background-color 0.15s,
 			color 0.15s,
 			border-color 0.15s,
-			transform 0.35s var(--ease-spring);
+			transform 0.22s var(--ease-rodillo);
 	}
 	.copy-btn:active {
-		transform: scale(0.94);
+		transform: scale(0.95);
 	}
 	.copy-btn:focus-visible {
-		@apply outline-[#9db0ff];
+		@apply outline-lente;
 	}
 	.copy-btn.is-copied {
-		@apply border-[#6ee7a8] text-[#6ee7a8];
+		@apply border-lente text-lente;
 	}
 
 	/* Tarjeta base */
 	.card {
-		@apply rounded-card border border-line bg-white;
+		@apply rounded-card border border-line bg-surface;
 	}
 
 	/* Contenido de entradas del blog */
@@ -271,7 +430,7 @@
 		@apply mt-7 text-[1.15rem];
 	}
 	.prose a {
-		@apply underline decoration-accent/40 underline-offset-2 hover:decoration-accent;
+		@apply underline decoration-accent/45 underline-offset-2 hover:decoration-accent;
 	}
 	.prose ul {
 		@apply list-disc pl-6;
@@ -283,13 +442,13 @@
 		@apply mt-1.5;
 	}
 	.prose img {
-		@apply h-auto max-w-full rounded-xl;
+		@apply h-auto max-w-full;
 	}
 	.prose :not(pre) > code {
-		@apply rounded bg-line px-1.5 py-0.5 text-[0.88em];
+		@apply rounded-pieza bg-soft px-1.5 py-0.5 text-[0.85em];
 	}
 	.prose pre {
-		@apply overflow-x-auto rounded-xl p-6 text-[0.9rem];
+		@apply overflow-x-auto rounded-azulejo p-6 text-[0.85rem];
 	}
 	.prose blockquote {
 		@apply border-l-4 border-accent pl-5 text-[1.2em];
@@ -308,41 +467,70 @@
 
 /* ── Movimiento ─────────────────────────────────────────────────────── */
 
-/* Aparición al entrar en pantalla: data-reveal (y --i para escalonar). */
+/* Aparición al entrar en pantalla: [data-reveal] (y --i para escalonar).
+   Animación ligada al scroll, sin JS: la mueve el propio scroll (animation-timeline: view()).
+   Donde no hay soporte, o con movimiento reducido, el contenido se ve directamente. */
 @media (prefers-reduced-motion: no-preference) {
-	html.js [data-reveal] {
-		opacity: 0;
-		transform: translateY(28px) scale(0.985);
-		transition:
-			opacity 0.8s var(--ease-apple),
-			transform 1s var(--ease-apple);
-		transition-delay: calc(min(var(--i, 0), 8) * 70ms);
-	}
-	html.js [data-reveal='fade'] {
-		transform: none;
-	}
-	html.js [data-reveal='zoom'] {
-		transform: scale(0.94);
-	}
-	html.js [data-reveal].is-in {
-		opacity: 1;
-		transform: none;
-	}
-
-	/* Entrada escalonada del hero. */
-	html.js [data-enter] {
-		animation: var(--animate-enter);
-		animation-delay: calc(var(--i, 0) * 80ms);
-	}
-
-	/* Zoom suave de la captura al hacer scroll. */
 	@supports (animation-timeline: view()) {
+		/* Solo propiedades sueltas y sin duración: si están todas, el minificador las junta en el
+		   atajo «animation» con view() dentro, que los navegadores descartan entero. */
+		[data-reveal] {
+			animation-name: revelar;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+			animation-timeline: view();
+			animation-range: entry calc(min(var(--i, 0), 6) * 4%) entry calc(70% + min(var(--i, 0), 6) * 4%);
+		}
+		[data-reveal='fade'] {
+			animation-name: revelar-fundido;
+		}
+		[data-reveal='zoom'] {
+			animation-name: revelar-zoom;
+		}
+
+		/* Zoom suave de la captura al hacer scroll. */
 		.scroll-zoom {
-			animation: scroll-zoom linear both;
+			animation-name: scroll-zoom;
+			animation-timing-function: linear;
+			animation-fill-mode: both;
 			animation-timeline: view();
 			animation-range: entry 10% cover 42%;
 			transform-origin: 50% 0;
 		}
+	}
+
+	/* Entrada escalonada del hero (por tiempo, una sola vez). */
+	[data-enter] {
+		animation: var(--animate-enter);
+		animation-delay: calc(var(--i, 0) * 60ms);
+	}
+}
+/* La opacidad llega a 1 en el primer tercio del recorrido: el texto que asoma por el borde se lee
+   con su contraste completo; el desplazamiento sigue hasta el final. */
+@keyframes revelar {
+	0% {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	30% {
+		opacity: 1;
+	}
+}
+@keyframes revelar-fundido {
+	0% {
+		opacity: 0;
+	}
+	30% {
+		opacity: 1;
+	}
+}
+@keyframes revelar-zoom {
+	0% {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+	30% {
+		opacity: 1;
 	}
 }
 @keyframes scroll-zoom {
@@ -360,11 +548,11 @@
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
-	animation-duration: 0.35s;
-	animation-timing-function: var(--ease-apple);
+	animation-duration: 0.22s;
+	animation-timing-function: var(--ease-rodillo);
 }
 ::view-transition-group(*) {
-	animation-duration: 0.55s;
+	animation-duration: 0.41s;
 	animation-timing-function: var(--ease-apple);
 }
 
@@ -387,12 +575,12 @@
    (p. ej. /omarchy/screensaver). Se pueden quitar cuando las adopten. */
 @layer components {
 	:root {
-		--om-ink: var(--color-ink);
+		--om-ink: var(--color-cobalto);
 		--om-text: var(--color-body);
 		--om-muted: var(--color-muted);
 		--om-line: var(--color-line);
 		--om-soft: var(--color-soft);
-		--om-surface: #fff;
+		--om-surface: var(--color-superficie);
 		--om-term: var(--color-term);
 		--om-term-text: var(--color-term-text);
 		--om-radius: var(--radius-card);

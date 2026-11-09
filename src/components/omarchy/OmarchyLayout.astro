@@ -10,14 +10,18 @@ interface Props {
 	description: string;
 	image?: ImageMetadata;
 	/** Enlace activo de la navegación de la sección. */
-	current?: 'temas' | 'galeria' | 'isla' | 'tema';
+	current?: 'temas' | 'galeria' | 'isla' | 'salvapantallas' | 'tema';
 }
 
-const { title, description, image, current } = Astro.props;
+const { title, description, image } = Astro.props;
+// Si la página no lo indica, se deduce de la ruta (p. ej. /omarchy/screensaver).
+const current =
+	Astro.props.current ?? (Astro.url.pathname.startsWith('/omarchy/screensaver') ? 'salvapantallas' : undefined);
 
 const nav = [
 	{ id: 'temas', href: '/omarchy', label: 'Temas' },
 	{ id: 'isla', href: '/omarchy/island', label: 'Isla' },
+	{ id: 'salvapantallas', href: '/omarchy/screensaver', label: 'Salvapantallas' },
 	{ id: 'galeria', href: '/omarchy/galeria', label: 'Galería' },
 	{ id: 'instalar', href: '/omarchy#instalar', label: 'Instalar' },
 ];
@@ -31,7 +35,7 @@ const nav = [
 	<body>
 		<Header />
 		<nav
-			class="sticky top-0 z-20 border-b border-line/80 bg-white/80 backdrop-blur-xl backdrop-saturate-150"
+			class="sticky top-0 z-20 border-b border-line bg-fondo/85 backdrop-blur-md"
 			aria-label="Sección Omarchy"
 		>
 			<div class="wrap flex min-h-12 items-center justify-between gap-3">
