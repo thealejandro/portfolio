@@ -29,13 +29,13 @@ export const PROMO: Video = {
 export const ISLAND_DEMO: Video = {
 	id: 'island-demo',
 	label: 'omarchy-island · demo',
-	alt: 'Demo de omarchy-island: vistazo, volumen y apertura desde el reloj',
-	poster: '/omarchy/island-demo-poster.webp',
-	width: 600,
-	height: 338,
+	alt: 'Demo de omarchy-island: vistazo, calendario con agenda, inicio, notificaciones y ajustes',
+	poster: '/omarchy/island-demo-v2-poster.webp',
+	width: 800,
+	height: 450,
 	sources: [
-		{ src: '/omarchy/island-demo.webm', type: 'video/webm' },
-		{ src: '/omarchy/island-demo.mp4', type: 'video/mp4' },
+		{ src: '/omarchy/island-demo-v2.webm', type: 'video/webm' },
+		{ src: '/omarchy/island-demo-v2.mp4', type: 'video/mp4' },
 	],
 };
 
