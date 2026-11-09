@@ -9,6 +9,7 @@ import {
 	ISLAND_AGENDA,
 	ISLAND_BIND,
 	ISLAND_JSON,
+	ISLAND_NOTIFICATIONS,
 	ISLAND_LINES,
 	ISLAND_OSD,
 	ISLAND_REMOVE,
@@ -28,7 +29,7 @@ const og = initial?.top?.img ?? islandFallback;
 
 const title = `omarchy-island, una isla dinámica para Omarchy · ${SITE_TITLE}`;
 const description =
-	'Plugin para la barra de Omarchy: música, calendario con agenda y recordatorios, hora mundial, clima, temporizador de enfoque y el OSD de volumen y brillo, con los colores de tu tema.';
+	'Plugin para la barra de Omarchy: música, calendario con agenda y recordatorios, hora mundial, clima, temporizador de enfoque, notificaciones y el OSD de volumen y brillo, con los colores de tu tema.';
 const code = 'inline-code';
 ---
 
@@ -45,8 +46,8 @@ const code = 'inline-code';
 			<h1 id="isla-h1" class="mb-4 text-display font-bold text-white" data-enter style="--i:1">omarchy-island</h1>
 			<p class="mx-auto mb-7 max-w-180 text-lead" data-enter style="--i:2">
 				Una isla dinámica que sale de la barra de Omarchy, justo donde está el reloj, en el borde que tenga la barra.
-				Lo que suena, tu agenda, la hora en el mundo, el clima, un temporizador de enfoque y los toggles de Omarchy, con
-				los colores de tu tema.
+				Lo que suena, tu agenda, la hora en el mundo, el clima, un temporizador de enfoque, tus notificaciones y los
+				toggles de Omarchy, con los colores de tu tema.
 			</p>
 			<div class="flex flex-wrap justify-center gap-3" data-enter style="--i:3">
 				<a class="btn bg-loza text-esmalte hover:bg-white hover:text-esmalte" href="#instalar">Instalar</a>
@@ -76,13 +77,13 @@ const code = 'inline-code';
 					procesos extra, y no reemplaza ni modifica nada. Si lo quitas, tu escritorio queda como estaba.
 				</p>
 			</div>
-			<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
+			<ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
 				{
 					ISLAND_FEATURES.map((f, i) => (
 						<li
 							class="card group p-5 transition-[box-shadow,transform,border-color] duration-500 ease-apple hover:-translate-y-1 hover:border-line-strong hover:shadow-lift"
 							data-reveal
-							style={`--i:${i % 4}`}
+							style={`--i:${i % 3}`}
 						>
 							<span class="mb-4 grid size-11 place-items-center rounded-xl bg-soft text-accent transition-transform duration-500 ease-spring group-hover:scale-110">
 								<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -203,7 +204,7 @@ const code = 'inline-code';
 				</li>
 			</ol>
 
-			<div class="mt-5 grid gap-5 lg:grid-cols-3">
+			<div class="mt-5 grid gap-5 lg:grid-cols-2">
 				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal>
 					<h3 class="m-0 text-[1.05rem]">Abrirla con una tecla</h3>
 					<p class="m-0 text-[0.92rem]">En <code class={code}>~/.config/hypr/bindings.lua</code>:</p>
@@ -218,8 +219,18 @@ const code = 'inline-code';
 					<CopyCommand command={ISLAND_OSD.join('\n')} label="Comandos para usar la isla como OSD" class="mt-auto" />
 				</div>
 				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:2">
+					<h3 class="m-0 text-[1.05rem]">Notificaciones en la isla</h3>
+					<p class="m-0 text-[0.92rem]">
+						Desactivadas por defecto; el interruptor de Sistema en Ajustes hace los dos pasos. Desde una terminal:
+					</p>
+					<CopyCommand command={ISLAND_NOTIFICATIONS.join('\n')} label="Comandos para activar o desactivar las notificaciones en la isla" class="mt-auto" />
+				</div>
+				<div class="card flex min-w-0 flex-col gap-2.5 p-[1.4rem]" data-reveal style="--i:3">
 					<h3 class="m-0 text-[1.05rem]">Quitarla</h3>
-					<p class="m-0 text-[0.92rem]">Tu escritorio queda exactamente como estaba.</p>
+					<p class="m-0 text-[0.92rem]">
+						Tu escritorio queda como estaba: si la isla tenía las notificaciones o el OSD, Omarchy los recupera solo a
+						los pocos segundos.
+					</p>
 					<CopyCommand command={ISLAND_REMOVE} label="Comando para quitar omarchy-island" class="mt-auto" />
 				</div>
 			</div>
