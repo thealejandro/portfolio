@@ -6,20 +6,24 @@ export interface Video {
 	poster: string;
 	width: number;
 	height: number;
-	sources: { src: string; type: string }[];
+	/** `media` elige la fuente según la pantalla (la primera que encaje). */
+	sources: { src: string; type: string; media?: string }[];
 	/** Tema al que pertenece, para el filtro de la galería. */
 	theme?: string;
 }
 
-/** Vídeo promocional de los temas (720p comprimido; el original pesa ~38 MB). Crédito de la música en GalleryTeaser. */
+/** Vídeo promocional de los temas (v2): 720p en pantallas pequeñas y 1440p en el resto. Crédito de la música en GalleryTeaser. */
 export const PROMO: Video = {
 	id: 'promo',
 	label: 'Temas para Omarchy · vídeo',
 	alt: 'Vídeo promocional de los temas para Omarchy: los once temas, la isla y la instalación',
 	poster: '/omarchy/omarchy-promo-poster.webp',
-	width: 1280,
-	height: 720,
-	sources: [{ src: '/omarchy/omarchy-promo-720p.mp4', type: 'video/mp4' }],
+	width: 2560,
+	height: 1440,
+	sources: [
+		{ src: '/omarchy/omarchy-promo-720p.mp4', type: 'video/mp4', media: '(max-width: 1024px)' },
+		{ src: '/omarchy/omarchy-promo-1440p.mp4', type: 'video/mp4' },
+	],
 };
 
 export const ISLAND_DEMO: Video = {

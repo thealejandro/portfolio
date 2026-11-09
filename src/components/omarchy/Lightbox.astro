@@ -185,9 +185,13 @@ const icon = 'size-[18px]';
 			video.hidden = true;
 		};
 		const playVideo = (a: HTMLAnchorElement) => {
-			const sources = JSON.parse(a.dataset.video!) as { src: string; type: string }[];
+			const sources = JSON.parse(a.dataset.video!) as { src: string; type: string; media?: string }[];
 			video.replaceChildren(
-				...sources.map((x) => Object.assign(document.createElement('source'), { src: x.src, type: x.type })),
+				...sources.map((x) => {
+					const el = Object.assign(document.createElement('source'), { src: x.src, type: x.type });
+					if (x.media) el.media = x.media;
+					return el;
+				}),
 			);
 			video.poster = a.dataset.poster ?? '';
 			video.setAttribute('aria-label', a.dataset.alt ?? '');
