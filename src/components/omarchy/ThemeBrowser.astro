@@ -42,7 +42,7 @@ const filters = [
 			{
 				themes.map((t, i) => (
 					<li data-mode={t.mode} data-family={t.family} data-reveal style={`--i:${i % 3}`} class="[&[hidden]]:hidden">
-						<ThemeCard theme={t} eager={i < 3} />
+						<ThemeCard theme={t} />
 					</li>
 				))
 			}
