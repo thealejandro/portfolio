@@ -1,225 +1,250 @@
 ---
 import { Image } from 'astro:assets';
-import avatar from '../assets/avatar.jpg';
+import retrato from '../assets/marca/avatar-800.png';
+import temasCaptura from '../assets/omarchy/aero/desktop.png';
+import islaCaptura from '../assets/omarchy/omarchy-island.png';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import cv from '../data/cv.json';
+import Icono from '../components/Icono.astro';
+import { CREDITO_RETRATO, DIRECTO, LEMA, PERSONA, REDES, SITE_DESCRIPTION, SITE_TITLE, TEMAS_DIRECTO } from '../consts';
 
-const projects = [
+// Proyectos abiertos, enlazados a sus páginas del sitio.
+const destacados = [
 	{
-		name: 'xaCare',
-		tag: 'SaaS · Salud',
-		url: 'https://care.xacode.dev',
-		desc: 'Plataforma de gestión hospitalaria: pacientes, ingresos, quirófano (QxLog), honorarios y cotizaciones de cirugía. Multi-hospital, con roles por institución.',
-		stack: ['Laravel 12', 'Livewire', 'Flux UI', 'Tailwind'],
-	},
-	{
-		name: 'xaTiende',
-		tag: 'SaaS · Atención al cliente',
-		url: 'https://xatiende.com',
-		desc: 'Bandeja compartida de WhatsApp para equipos, con bot de menús y flujos, asistente inteligente (Olmar), catálogo y pedidos. En beta con pilotos.',
-		stack: ['Laravel 13', 'Vue 3', 'PostgreSQL', 'Reverb'],
-	},
-	{
-		name: 'xaSeguros',
-		tag: 'SaaS · Salud',
-		url: 'https://seguros.xacode.dev',
-		desc: 'Tablero tipo Kanban para dar seguimiento a reclamos de aseguradoras: etapas, facturas, regla del 25, calculadora de participaciones y consolidaciones FEL.',
-		stack: ['Laravel 13', 'Livewire 4', 'Flux UI', 'Laravel Cloud'],
-	},
-	{
-		name: 'xaPedidos',
-		tag: 'SaaS · Comercio',
-		url: 'https://xacode.dev/es/#products',
-		desc: 'Tienda móvil con marca propia para cada negocio: el cliente arma su pedido, confirma por WhatsApp y le da seguimiento. Panel de comandas para cocina.',
-		stack: ['Laravel 13', 'Livewire 4', 'Tailwind 4'],
-	},
-	{
-		name: 'hospitalcoban.com',
-		tag: 'Web · Cliente',
-		url: 'https://hospitalcoban.com',
-		desc: 'Sitio institucional bilingüe del Hospital Nuestra Señora del Carmen. Migración de WordPress a Astro con CMS editable por el hospital. Lighthouse móvil 37 → 99.',
-		stack: ['Astro', 'Keystatic', 'Tailwind 4', 'Cloudflare'],
-	},
-	{
-		name: 'Pharmasys',
-		tag: 'Rescate · Farmacia',
-		url: 'https://pharmasys.xacode.dev',
-		desc: 'Sistema de farmacia y punto de venta rescatado de Heroku en 48 horas, con más de 270 mil ventas recuperadas y facturación electrónica FEL (SAT) integrada.',
-		stack: ['Laravel 6', 'MariaDB', 'HestiaCP', 'FEL'],
-	},
-	{
-		name: 'Temas para Omarchy',
-		tag: 'Open source · Linux',
+		nombre: 'Temas para Omarchy',
+		etiqueta: 'Open source · Linux',
 		url: '/omarchy',
-		desc: 'Once temas minimalistas para Omarchy inspirados en macOS y Windows, en claro y oscuro, con hooks que añaden esquinas redondeadas y un prompt de fish a juego.',
-		stack: ['Hyprland', 'Bash', 'Python', 'fish'],
+		desc: 'Once temas minimalistas inspirados en macOS y Windows, en claro y oscuro, con esquinas redondeadas y un prompt de fish a juego.',
+		imagen: temasCaptura,
+		alt: 'Escritorio de Omarchy con el tema Aero',
 	},
 	{
-		name: 'omarchy-island',
-		tag: 'Open source · Linux',
+		nombre: 'omarchy-island',
+		etiqueta: 'Open source · Quickshell',
 		url: '/omarchy/island',
-		desc: 'Isla dinámica para la barra de Omarchy: música con controles, calendario, temporizador de enfoque, clima, accesos rápidos y avisos de volumen, brillo y batería.',
-		stack: ['QML', 'Quickshell', 'JavaScript'],
+		desc: 'Isla dinámica para la barra: música con controles, calendario, temporizador de enfoque, clima y avisos de volumen, brillo y batería.',
+		imagen: islaCaptura,
+		alt: 'La isla dinámica desplegada con el reproductor de música',
+	},
+	{
+		nombre: 'Salvapantallas FX',
+		etiqueta: 'Open source · Terminal',
+		url: '/omarchy/screensaver',
+		desc: 'Seis animaciones nuevas para el salvapantallas de Omarchy, con los colores de tu tema y sin romperse con omarchy update.',
+		imagen: null,
+		alt: 'Fotograma del salvapantallas con el nombre en neón',
 	},
 ];
 
-const stack = [
-	'PHP', 'Laravel', 'Livewire', 'Flux UI', 'Blade', 'Tailwind CSS', 'Astro',
-	'Vue 3', 'JavaScript', 'MySQL', 'PostgreSQL', 'Cloudflare', 'Linux', 'Docker',
+// Trabajo con XACode: lista compacta, secundaria frente a lo abierto.
+const xacode = [
+	{ nombre: 'xaCare', etiqueta: 'SaaS · Salud', url: 'https://care.xacode.dev', desc: 'Gestión hospitalaria: pacientes, ingresos, quirófano, honorarios y cotizaciones. Multi-hospital.' },
+	{ nombre: 'xaTiende', etiqueta: 'SaaS · Atención', url: 'https://xatiende.com', desc: 'Bandeja compartida de WhatsApp con bot de menús, asistente inteligente, catálogo y pedidos.' },
+	{ nombre: 'xaSeguros', etiqueta: 'SaaS · Salud', url: 'https://seguros.xacode.dev', desc: 'Seguimiento tipo Kanban de reclamos a aseguradoras, facturas y consolidaciones FEL.' },
+	{ nombre: 'xaPedidos', etiqueta: 'SaaS · Comercio', url: 'https://xacode.dev/es/#products', desc: 'Tienda móvil con marca propia: pedido confirmado por WhatsApp y panel de comandas.' },
+	{ nombre: 'hospitalcoban.com', etiqueta: 'Web · Cliente', url: 'https://hospitalcoban.com', desc: 'Sitio bilingüe migrado de WordPress a Astro con CMS editable. Lighthouse móvil 37 → 99.' },
+	{ nombre: 'Pharmasys', etiqueta: 'Rescate · Farmacia', url: 'https://pharmasys.xacode.dev', desc: 'Farmacia y punto de venta rescatado de Heroku en 48 horas, con facturación FEL integrada.' },
 ];
 
-const yearsExp = new Date().getFullYear() - 2018;
+const stack = ['PHP', 'Laravel', 'Livewire', 'Astro', 'Tailwind CSS', 'Vue 3', 'PostgreSQL', 'MySQL', 'Cloudflare', 'Linux', 'Docker', 'QML'];
+const anios = new Date().getFullYear() - 2018;
+const externo = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={`${SITE_TITLE} — Desarrollador full stack · XACode`} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} — ${LEMA}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
-		<main class="mx-auto w-[min(960px,100%-32px)] pt-[clamp(1.5rem,5vw,3rem)] pb-16">
+		<main class="wrap pb-8">
+			<!-- Hero -->
 			<section
-				class="grid items-start gap-x-10 gap-y-5 border-b border-line pt-6 pb-12 [grid-template-areas:'photo''badge''title''lead''actions''facts'] md:grid-cols-[minmax(0,1fr)_auto] md:[grid-template-areas:'badge_photo''title_photo''lead_photo''actions_photo''facts_facts']"
+				class="grid items-center gap-x-12 gap-y-8 pt-[clamp(2rem,6vw,4.5rem)] md:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]"
 				aria-labelledby="hola"
 			>
-				<Image
-					src={avatar}
-					alt="Foto de José Alejandro Caal Choc"
-					widths={[120, 240, 336]}
-					sizes="(max-width: 767px) 120px, 168px"
-					loading="eager"
-					fetchpriority="high"
-					class="size-30 self-center rounded-full border-4 border-surface object-cover shadow-card [grid-area:photo] md:size-42"
-					data-enter
-					style="--i:0"
-				/>
-				<span
-					class="inline-flex w-fit items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1 text-[0.72rem] font-bold tracking-widest text-body uppercase [grid-area:badge]"
-					data-enter
-					style="--i:1"
-				>
-					<span class="size-1.75 rounded-full bg-verdin" aria-hidden="true"></span>
-					Disponible para proyectos
-				</span>
-				<h1 id="hola" class="m-0 text-[clamp(2.1rem,5vw,3.4rem)] leading-[1.08] tracking-[-0.02em] [grid-area:title]" data-enter style="--i:2">
-					Hola, soy <span class="text-accent">Alejandro</span>.<br />Construyo software que la gente usa todos los días.
-				</h1>
-				<p class="m-0 max-w-160 text-[1.15rem] leading-relaxed text-body [grid-area:lead]" data-enter style="--i:3">
-					Desarrollador full stack con Laravel, Livewire y Astro. Fundador de <a class="font-bold no-underline hover:underline" href="https://xacode.dev">XACode</a>,
-					donde hacemos sistemas a medida y productos SaaS para hospitales, farmacias y negocios en Guatemala.
-				</p>
-				<div class="mt-2 flex flex-wrap gap-2.5 [grid-area:actions]" data-enter style="--i:4">
-					<a href="#proyectos" class="btn btn-primary">Ver proyectos <span aria-hidden="true">→</span></a>
-					<a href="/cv" class="btn btn-ghost">Ver mi CV</a>
+				<div class="grid content-start gap-5">
+					<p class="etiqueta m-0" data-enter style="--i:0">{PERSONA.rol} · {PERSONA.ciudad}, {PERSONA.pais}</p>
+					<h1 id="hola" class="display m-0 text-ink" data-enter style="--i:1">
+						{LEMA}<span class="text-accent">.</span>
+					</h1>
+					<p class="m-0 max-w-[58ch] text-lead text-body" data-enter style="--i:2">
+						Soy Alejandro, <span class="whitespace-nowrap">{PERSONA.alias}</span>. Hago software para hospitales y negocios con{' '}
+						<a href={PERSONA.empresa.url} class="font-semibold text-ink underline underline-offset-3 hover:text-accent">{PERSONA.empresa.nombre}</a>,
+						publico herramientas para el escritorio Linux y lo cuento en directo.
+					</p>
+					<ul class="m-0 flex list-none flex-wrap gap-2 p-0" role="list" aria-label="De qué va el directo" data-enter style="--i:3">
+						{TEMAS_DIRECTO.map((t) => <li class="chip">{t}</li>)}
+					</ul>
+					<div class="flex flex-wrap gap-2.5" data-enter style="--i:4">
+						<a href="#directo" class="btn btn-primary">
+							<Icono nombre="directo" class="size-5" />Ver los directos
+						</a>
+						<a href="#proyectos" class="btn btn-ghost">Proyectos</a>
+					</div>
 				</div>
-				<dl class="mt-2 flex flex-wrap gap-x-10 gap-y-6 text-[0.9rem] text-muted [grid-area:facts]" data-enter style="--i:5">
-					<div class="flex flex-col-reverse"><dt>años desarrollando</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">+{yearsExp}</dd></div>
-					<div class="flex flex-col-reverse"><dt>productos SaaS propios</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">5</dd></div>
-					<div class="flex flex-col-reverse"><dt>Alta Verapaz, Guatemala</dt><dd class="m-0 text-2xl leading-tight font-bold text-ink">Cobán</dd></div>
-				</dl>
+				<figure class="m-0 grid w-[min(100%,22rem)] gap-2 justify-self-center md:justify-self-end" data-enter style="--i:1">
+					<Image
+						src={retrato}
+						alt={`Retrato ilustrado de ${PERSONA.nombre}`}
+						widths={[320, 480, 704]}
+						sizes="(max-width: 767px) min(100vw - 32px, 352px), 352px"
+						loading="eager"
+						fetchpriority="high"
+						class="aspect-square h-auto w-full rounded-ventana bg-esmalte-2 object-cover shadow-imagen"
+					/>
+					<figcaption class="etiqueta text-right">{CREDITO_RETRATO}</figcaption>
+				</figure>
 			</section>
 
-			<section id="que-hago" class="scroll-mt-20 pt-12" aria-labelledby="que-hago-t">
-				<h2 id="que-hago-t" class="label" data-reveal>Qué hago</h2>
-				<div class="grid gap-4 md:grid-cols-3">
-					{
-						[
-							['Sistemas a medida', 'Aplicaciones web con Laravel y Livewire: desde el modelo de datos hasta el despliegue, con pruebas automatizadas y documentación para quien siga.'],
-							['Sitios web rápidos', 'Sitios con Astro y Tailwind que cargan en segundos y que el cliente edita solo. Migraciones desde WordPress sin perder tráfico.'],
-							['Infraestructura y rescates', 'Hosting administrado, Cloudflare, respaldos, correo corporativo y recuperación de sistemas que se quedaron sin servidor.'],
-						].map(([h, p], i) => (
-							<article class="rounded-xl border border-line bg-surface p-5" data-reveal style={`--i:${i}`}>
-								<h3 class="mb-1.5 text-[1.05rem]">{h}</h3>
-								<p class="m-0 text-[0.92rem] leading-normal text-body">{p}</p>
-							</article>
-						))
-					}
-				</div>
-			</section>
-
-			<section id="proyectos" class="scroll-mt-20 pt-12" aria-labelledby="proyectos-t">
-				<p class="label" data-reveal>Proyectos</p>
-				<h2 id="proyectos-t" class="mb-5 text-[1.8rem]" data-reveal>Lo que he construido últimamente</h2>
-				<ul class="grid gap-4 md:grid-cols-2" role="list">
-					{
-						projects.map((p, i) => {
-							const local = p.url.startsWith('/');
-							return (
-								<li class="flex" data-reveal style={`--i:${i % 2}`}>
-									<a
-										class="group flex w-full flex-col gap-2.5 rounded-xl border border-line bg-surface p-5 text-inherit no-underline transition-[box-shadow,transform] duration-500 ease-apple hover:-translate-y-1 hover:text-inherit hover:shadow-lift active:scale-[0.99]"
-										href={p.url}
-										target={local ? undefined : '_blank'}
-										rel={local ? undefined : 'noopener noreferrer'}
-									>
-										<div class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
-											<h3 class="m-0 text-[1.15rem]">
-												{p.name}
-												{!local && <span class="sr-only"> (se abre en otra pestaña)</span>}
-											</h3>
-											<span class="text-[0.7rem] font-bold tracking-[0.06em] text-muted uppercase">{p.tag}</span>
-										</div>
-										<p class="m-0 text-[0.92rem] leading-normal text-body">{p.desc}</p>
-										<div class="mt-auto flex flex-wrap gap-1.5 pt-1.5">
-											{p.stack.map((s) => (
-												<span class="rounded-full border border-line bg-soft px-2.5 py-0.5 text-[0.72rem] text-body">{s}</span>
-											))}
-										</div>
+			<!-- En directo -->
+			<section id="directo" class="section" aria-labelledby="directo-t">
+				<div class="grid gap-6 rounded-ventana border border-line bg-esmalte-2 p-[clamp(1.5rem,4vw,2.5rem)] text-loza md:grid-cols-[minmax(0,1fr)_auto] md:items-end" data-reveal>
+					<div class="grid gap-3">
+						<p class="etiqueta m-0 flex items-center gap-2 !text-loza/80">
+							<span class="size-2 rounded-full bg-ocre" aria-hidden="true"></span>En directo
+						</p>
+						<h2 id="directo-t" class="titulo m-0 text-title text-loza">Directos tres noches por semana</h2>
+						<p class="dato m-0 text-[clamp(1rem,2.6vw,1.25rem)] text-loza">
+							<span class="sr-only">Horario: </span>{DIRECTO.horario}
+						</p>
+						<p class="m-0 max-w-[56ch] text-loza/80">
+							Programo proyectos reales, configuro Linux y macOS, monto redes en el taller y comentamos lo que pasa en tech. De vez en cuando, juegos.
+						</p>
+					</div>
+					<ul class="m-0 flex list-none flex-wrap gap-2.5 p-0" role="list">
+						{
+							DIRECTO.plataformas.map((r) => (
+								<li>
+									<a href={r.url} {...externo} class="btn bg-loza text-esmalte hover:bg-white hover:text-esmalte">
+										<Icono nombre={r.id} class="size-5" />
+										{r.nombre}
+										<span class="sr-only"> ({r.usuario}, se abre en otra pestaña)</span>
 									</a>
 								</li>
-							);
-						})
+							))
+						}
+					</ul>
+				</div>
+			</section>
+
+			<!-- Proyectos abiertos -->
+			<section id="proyectos" class="section" aria-labelledby="proyectos-t">
+				<p class="etiqueta m-0 mb-2" data-reveal>Proyectos</p>
+				<h2 id="proyectos-t" class="titulo m-0 mb-6 text-title text-ink" data-reveal>Para el escritorio Linux</h2>
+				<ul class="m-0 grid list-none gap-5 p-0 md:grid-cols-3" role="list">
+					{
+						destacados.map((p, i) => (
+							<li class="flex" data-reveal style={`--i:${i}`}>
+								<a
+									href={p.url}
+									class="group grid w-full content-start gap-3 rounded-azulejo border border-line bg-surface p-3 pb-5 text-inherit no-underline transition-colors hover:border-line-strong hover:text-inherit"
+								>
+									{p.imagen ? (
+										<Image
+											src={p.imagen}
+											alt={p.alt}
+											widths={[400, 640, 800]}
+											sizes="(max-width: 767px) calc(100vw - 32px), 380px"
+											class="aspect-video h-auto w-full rounded-pieza bg-esmalte-2 object-cover"
+										/>
+									) : (
+										<img
+											src="/omarchy/screensaver/poster-es.webp"
+											alt={p.alt}
+											width="1920"
+											height="1080"
+											loading="lazy"
+											decoding="async"
+											class="aspect-video h-auto w-full rounded-pieza bg-esmalte-2 object-cover"
+										/>
+									)}
+									<div class="grid gap-1.5 px-2">
+										<span class="etiqueta">{p.etiqueta}</span>
+										<h3 class="titulo m-0 flex items-center gap-2 text-[1.2rem] text-ink">
+											{p.nombre}
+											<Icono nombre="flecha" class="size-4.5 text-accent transition-transform duration-300 ease-rodillo group-hover:translate-x-1" />
+										</h3>
+										<p class="m-0 text-[0.95rem] leading-normal text-body">{p.desc}</p>
+									</div>
+								</a>
+							</li>
+						))
 					}
 				</ul>
 			</section>
 
-			<section id="stack" class="scroll-mt-20 pt-12" aria-labelledby="stack-t">
-				<h2 id="stack-t" class="label" data-reveal>Herramientas</h2>
-				<ul class="flex flex-wrap gap-1.5" role="list" data-reveal>
-					{stack.map((s) => <li class="rounded-full bg-soft px-2.5 py-0.5 text-[0.78rem] text-body">{s}</li>)}
+			<!-- XACode -->
+			<section id="xacode" class="section" aria-labelledby="xacode-t">
+				<p class="etiqueta m-0 mb-2" data-reveal>Trabajo</p>
+				<h2 id="xacode-t" class="titulo m-0 mb-3 text-title text-ink" data-reveal>Con XACode</h2>
+				<p class="m-0 mb-6 max-w-[62ch] text-body" data-reveal>
+					Desde 2018 hago sistemas a medida y productos SaaS para hospitales, farmacias y negocios de Guatemala.
+				</p>
+				<dl class="m-0 mb-7 flex flex-wrap gap-x-10 gap-y-4" data-reveal>
+					<div class="flex flex-col-reverse"><dt class="text-sm text-muted">años desarrollando</dt><dd class="cifra m-0 text-2xl text-ink">+{anios}</dd></div>
+					<div class="flex flex-col-reverse"><dt class="text-sm text-muted">productos SaaS propios</dt><dd class="cifra m-0 text-2xl text-ink">5</dd></div>
+					<div class="flex flex-col-reverse"><dt class="text-sm text-muted">{PERSONA.region}</dt><dd class="cifra m-0 text-2xl text-ink">{PERSONA.ciudad}</dd></div>
+				</dl>
+				<ul class="m-0 grid list-none gap-x-8 p-0 md:grid-cols-2" role="list">
+					{
+						xacode.map((p) => (
+							<li class="border-t border-line" data-reveal="fade">
+								<a href={p.url} {...externo} class="group grid gap-1 py-4 text-inherit no-underline hover:text-inherit">
+									<span class="flex flex-wrap items-baseline justify-between gap-x-3">
+										<span class="titulo text-[1.05rem] text-ink group-hover:text-accent">
+											{p.nombre}
+											<span class="sr-only"> (se abre en otra pestaña)</span>
+										</span>
+										<span class="etiqueta">{p.etiqueta}</span>
+									</span>
+									<span class="text-[0.93rem] leading-normal text-body">{p.desc}</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				<h3 class="etiqueta mt-8 mb-3">Herramientas</h3>
+				<ul class="m-0 flex list-none flex-wrap gap-2 p-0" role="list">
+					{stack.map((s) => <li class="chip dato text-[0.8rem]">{s}</li>)}
 				</ul>
 			</section>
 
-			<section id="contacto" class="scroll-mt-20 pt-12" aria-labelledby="contacto-t">
-				<div class="grid gap-3 rounded-2xl bg-esmalte-2 p-[clamp(1.5rem,4vw,2rem)] text-loza" data-reveal="zoom">
-					<h2 id="contacto-t" class="m-0 text-[1.6rem] text-loza">¿Tienes un proyecto?</h2>
-					<p class="m-0 text-[0.98rem] text-loza/75">
-						Escríbeme y platicamos. Respondo en menos de 24 horas hábiles. Para trabajo con
-						empresa, ve a XACode.
-					</p>
-					<div class="mt-2 flex flex-wrap gap-2.5">
+			<!-- Contacto y redes -->
+			<section id="contacto" class="section" aria-labelledby="contacto-t">
+				<div class="grid gap-6 rounded-ventana border border-line bg-surface p-[clamp(1.5rem,4vw,2.5rem)] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]" data-reveal>
+					<div class="grid content-start gap-3">
+						<h2 id="contacto-t" class="titulo m-0 text-title text-ink">Hablemos</h2>
+						<p class="m-0 text-body">¿Un proyecto, una charla o una idea para el directo? Escríbeme.</p>
+						<a href={`mailto:${PERSONA.email}`} class="btn btn-primary w-fit [overflow-wrap:anywhere]">
+							<Icono nombre="correo" class="size-5" />{PERSONA.email}
+						</a>
+					</div>
+					<ul class="m-0 grid list-none gap-2 p-0 sm:grid-cols-2" role="list" aria-label="Redes">
 						{
-							[
-								[`mailto:${cv.basics.email}`, cv.basics.email],
-								['https://xacode.dev', 'xacode.dev'],
-								['https://github.com/thealejandro', 'GitHub'],
-								['https://linkedin.com/in/thealejandro', 'LinkedIn'],
-							].map(([href, label]) => (
-								<a
-									class="inline-flex min-h-11 items-center rounded-lg border border-loza/30 px-3.5 text-[0.9rem] text-loza no-underline transition-colors hover:border-loza hover:text-loza [overflow-wrap:anywhere]"
-									href={href}
-									target={href.startsWith('http') ? '_blank' : undefined}
-									rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-								>
-									{label}
-								</a>
+							REDES.map((r) => (
+								<li>
+									<a
+										href={r.url}
+										{...externo}
+										class="flex min-h-12 items-center gap-3 rounded-azulejo border border-line px-3.5 text-body no-underline transition-colors hover:border-accent hover:text-ink"
+									>
+										<Icono nombre={r.id} class="size-5 shrink-0 text-ink" />
+										<span class="grid leading-tight">
+											<span class="font-semibold text-ink">{r.nombre}</span>
+											<span class="dato text-[0.8rem] text-muted">{r.id === 'linkedin' || r.id === 'kick' ? r.usuario : `@${r.usuario}`}</span>
+										</span>
+										<span class="sr-only"> (se abre en otra pestaña)</span>
+									</a>
+								</li>
 							))
 						}
-					</div>
+					</ul>
 				</div>
 			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
-
-<style>
-	@reference '../styles/global.css';
-	.label {
-		@apply mb-5 text-[0.78rem] font-bold tracking-[0.12em] text-muted uppercase;
-	}
-</style>
