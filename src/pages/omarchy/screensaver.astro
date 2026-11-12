@@ -3,17 +3,17 @@ import CopyCommand from '../../components/omarchy/CopyCommand.astro';
 import OmarchyLayout from '../../components/omarchy/OmarchyLayout.astro';
 import { SITE_TITLE } from '../../consts';
 
-const REPO = 'https://github.com/thealejandro/omarchy-screensaver-fx';
+const REPO = 'https://github.com/thealejandro/screensaver-fx';
 const MEDIA = '/omarchy/screensaver';
 const INSTALL = [
-	`git clone ${REPO} ~/Work/omarchy-screensaver-fx`,
-	'~/Work/omarchy-screensaver-fx/install.sh',
+	`git clone ${REPO} ~/Work/screensaver-fx`,
+	'~/Work/screensaver-fx/linux/install.sh',
 	'omarchy-launch-screensaver force',
 ].join('\n');
 
 const title = `Screensaver FX para Omarchy · ${SITE_TITLE}`;
 const description =
-	'Seis animaciones nuevas para el salvapantallas de Omarchy, los efectos de siempre con los colores de tu tema y sin romperse con omarchy update.';
+	'Seis animaciones nuevas y 35 efectos más para el salvapantallas de Omarchy, los efectos de siempre con los colores de tu tema y sin romperse con omarchy update.';
 
 const animations = [
 	{ id: 'neon', name: 'Neón', text: 'Los trazos se encienden con parpadeos, como tubos de neón, y luego respiran mientras un destello los cruza.' },
@@ -37,6 +37,7 @@ const promises = [
 			<p class="ss-kicker">Para Omarchy</p>
 			<h1 id="ss-title">Screensaver FX</h1>
 			<p class="ss-sub">Todos los efectos que ya te gustan. Y seis nuevos.</p>
+			<p class="ss-sub">Ahora con 35 efectos más y también para Windows y macOS: <a href="/screensaver-fx">pruébalos en vivo</a>.</p>
 			<div class="ss-actions">
 				<a class="om-btn ss-btn" href="#instalar">Instalar</a>
 				<a class="ss-link" href={REPO} target="_blank" rel="noopener noreferrer">Ver en GitHub <span aria-hidden="true">↗</span></a>
