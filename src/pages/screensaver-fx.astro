@@ -1,0 +1,228 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+
+const REPO = 'https://github.com/thealejandro/screensaver-fx';
+const RELEASES = `${REPO}/releases/latest`;
+const GIF = 'https://raw.githubusercontent.com/thealejandro/screensaver-fx/media/fx';
+// La demo es el motor real compilado a WebAssembly; se publica sola desde el repo en GitHub Pages.
+const DEMO = 'https://thealejandro.github.io/screensaver-fx/?embed';
+
+const title = `Screensaver FX · ${SITE_TITLE}`;
+const description =
+	'Salvapantallas nativo y ligero para Windows, macOS y Linux con 41 efectos estilo terminal. Pruébalo en vivo en el navegador.';
+
+const datos = [
+	{ cifra: '41', texto: 'efectos' },
+	{ cifra: '~5 MB', texto: 'de RAM' },
+	{ cifra: '3', texto: 'sistemas' },
+	{ cifra: 'MIT', texto: 'código abierto' },
+];
+
+const ventajas = [
+	{ titulo: 'Nativo de verdad', texto: '.scr en Windows, .saver en macOS y la terminal en Linux. Sin motor web ni Electron: el núcleo está en Rust.' },
+	{ titulo: 'Varios monitores', texto: 'Todas las pantallas van sincronizadas y tres efectos cruzan de un monitor al siguiente.' },
+	{ titulo: 'Se actualiza solo', texto: 'Busca versiones nuevas una vez al día y las comprueba con SHA-256 antes de instalarlas, sin tocar tu configuración.' },
+	{ titulo: 'Cuida tu pantalla', texto: 'Deja de dibujar con la pantalla apagada, baja el ritmo con batería y mueve el rótulo para no marcar paneles OLED.' },
+	{ titulo: 'Tu texto y tus colores', texto: 'Rótulo propio en letras de bloque, 11 temas o el color de acento de Windows, y eliges qué efectos salen.' },
+	{ titulo: 'Para Omarchy', texto: 'En Linux se integra con el salvapantallas de Omarchy sin modificarlo y sobrevive a cada omarchy update.' },
+];
+
+const instalar = [
+	{
+		so: 'Windows 10/11',
+		pasos: [
+			{ como: 'Instalador con vista previa en vivo', cmd: null, enlace: RELEASES, texto: 'Descargar ScreensaverFX-Setup.exe' },
+			{ como: 'Scoop', cmd: 'scoop bucket add screensaver-fx https://github.com/thealejandro/screensaver-fx\nscoop install screensaver-fx/screensaver-fx' },
+			{ como: 'winget (en revisión en el catálogo de Microsoft)', cmd: 'winget install thealejandro.ScreensaverFX' },
+			{ como: 'PowerShell, sin administrador', cmd: 'irm https://raw.githubusercontent.com/thealejandro/screensaver-fx/main/install.ps1 | iex' },
+		],
+	},
+	{
+		so: 'macOS 11 o posterior',
+		pasos: [
+			{ como: 'Homebrew', cmd: 'brew tap thealejandro/screensaver-fx https://github.com/thealejandro/screensaver-fx\nbrew install --cask thealejandro/screensaver-fx/screensaver-fx' },
+			{ como: 'Terminal', cmd: 'curl -fsSL https://raw.githubusercontent.com/thealejandro/screensaver-fx/main/install.sh | bash' },
+			{ como: 'Arrastrar el .dmg o abrir el .pkg', cmd: null, enlace: RELEASES, texto: 'Descargar de GitHub' },
+		],
+	},
+	{
+		so: 'Linux (Omarchy)',
+		pasos: [
+			{ como: 'Integración con el salvapantallas de Omarchy', cmd: 'git clone https://github.com/thealejandro/screensaver-fx ~/Work/screensaver-fx\n~/Work/screensaver-fx/linux/install.sh' },
+		],
+		extra: { href: '/omarchy/screensaver', texto: 'Cómo funciona en Omarchy' },
+	},
+];
+
+const efectos: [string, string][] = [
+	['storm', 'Tormenta'], ['retro', 'Retro'], ['spiral', 'Espiral'], ['radar', 'Radar'],
+	['matrix', 'Matrix'], ['aurora', 'Aurora'], ['fireworks', 'Fuegos artificiales'], ['plasma', 'Plasma'],
+	['comet', 'Cometa'], ['circuit', 'Circuito'], ['dna', 'ADN'], ['ink', 'Tinta'],
+];
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<Header />
+		<main class="wrap pb-8">
+			<section class="pt-[clamp(2.5rem,6vw,4.5rem)]">
+				<p class="eyebrow" data-enter style="--i:0">Open source · Windows, macOS y Linux</p>
+				<h1 class="display mb-4" data-enter style="--i:1">Screensaver FX</h1>
+				<p class="lead mb-6" data-enter style="--i:2">
+					Un salvapantallas nativo y ligero con 41 efectos estilo terminal: neón, lluvia de Matrix, fuegos artificiales,
+					auroras y tu propio texto en letras de bloque.
+				</p>
+				<div class="flex flex-wrap gap-3" data-enter style="--i:3">
+					<a class="btn btn-primary" href="#instalar">Instalar</a>
+					<a class="btn btn-ghost" href={REPO} target="_blank" rel="noopener noreferrer">Ver en GitHub <span aria-hidden="true">↗</span></a>
+				</div>
+			</section>
+
+			<section class="section" aria-labelledby="demo-title">
+				<p class="eyebrow">Demo en vivo</p>
+				<h2 id="demo-title" class="title">Es el motor real, corriendo en tu navegador</h2>
+				<p class="lead mb-5">
+					El mismo código en Rust que usa el salvapantallas, compilado a WebAssembly. Elige un efecto y un tema, o ponlo en
+					pantalla completa.
+				</p>
+				<div class="ssfx-demo card">
+					<iframe
+						src={DEMO}
+						title="Demo en vivo de Screensaver FX"
+						loading="lazy"
+						allow="fullscreen"
+						allowfullscreen
+						referrerpolicy="no-referrer"></iframe>
+				</div>
+			</section>
+
+			<section class="section" aria-label="En cifras">
+				<ul class="grid grid-cols-2 gap-3 sm:grid-cols-4" role="list">
+					{
+						datos.map((d) => (
+							<li class="card p-5">
+								<span class="cifra block text-3xl text-ink">{d.cifra}</span>
+								<span class="etiqueta">{d.texto}</span>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="section" aria-labelledby="ventajas-title">
+				<p class="eyebrow">Por qué</p>
+				<h2 id="ventajas-title" class="title">Bonito, y sin gastar tu equipo</h2>
+				<ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
+					{
+						ventajas.map((v) => (
+							<li class="card p-5">
+								<h3 class="titulo mb-1.5 text-ink">{v.titulo}</h3>
+								<p class="m-0 text-muted">{v.texto}</p>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+
+			<section class="section" aria-labelledby="efectos-title">
+				<p class="eyebrow">Algunos efectos</p>
+				<h2 id="efectos-title" class="title">41 formas de dejar la pantalla</h2>
+				<ul class="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4" role="list">
+					{
+						efectos.map(([id, nombre]) => (
+							<li class="card overflow-hidden">
+								<img class="block aspect-video w-full bg-black object-cover" src={`${GIF}/${id}.gif`} alt={`Efecto ${nombre}`} loading="lazy" decoding="async" width="480" height="270" />
+								<span class="block px-3 py-2 text-sm text-body">{nombre}</span>
+							</li>
+						))
+					}
+				</ul>
+				<p class="mt-4 text-muted">
+					<a href={`${REPO}#effects`} target="_blank" rel="noopener noreferrer">Ver los 41 en GitHub ↗</a>
+				</p>
+			</section>
+
+			<section id="instalar" class="section" aria-labelledby="inst-title">
+				<p class="eyebrow">Instalar</p>
+				<h2 id="inst-title" class="title">Elige tu sistema</h2>
+				<div class="mt-6 grid gap-4 lg:grid-cols-3">
+					{
+						instalar.map((s) => (
+							<div class="card p-5">
+								<h3 class="titulo mb-3 text-ink">{s.so}</h3>
+								{s.pasos.map((p) => (
+									<div class="mb-4">
+										<p class="etiqueta mb-1.5">{p.como}</p>
+										{p.cmd ? (
+											<div class="cmd">
+												<div class="flex min-h-9 items-center justify-end py-1 pr-1.5">
+													<button type="button" class="copy-btn" data-copy={p.cmd} aria-label={`Copiar: ${p.como}`}>
+														<span class="copy-label">Copiar</span>
+													</button>
+												</div>
+												<pre tabindex="0"><code>{p.cmd}</code></pre>
+											</div>
+										) : (
+											<a class="btn btn-ghost" href={p.enlace} target="_blank" rel="noopener noreferrer">{p.texto} <span aria-hidden="true">↗</span></a>
+										)}
+									</div>
+								))}
+								{s.extra && <a href={s.extra.href}>{s.extra.texto} →</a>}
+							</div>
+						))
+					}
+				</div>
+				<p class="mt-5 text-sm text-muted">
+					El instalador de Windows y el paquete de macOS aún no están firmados: SmartScreen o Gatekeeper pueden avisar la
+					primera vez. Con Homebrew, Scoop o la terminal no aparece el aviso.
+				</p>
+			</section>
+		</main>
+		<Footer />
+
+		<style>
+			.ssfx-demo {
+				aspect-ratio: 16 / 9;
+				overflow: hidden;
+				background: #000;
+			}
+			.ssfx-demo iframe {
+				display: block;
+				width: 100%;
+				height: 100%;
+				border: 0;
+			}
+			@media (max-width: 640px) {
+				.ssfx-demo {
+					aspect-ratio: 4 / 3;
+				}
+			}
+		</style>
+		<script>
+			document.addEventListener('click', async (e) => {
+				const btn = (e.target as Element).closest<HTMLButtonElement>('[data-copy]');
+				if (!btn) return;
+				const label = btn.querySelector('.copy-label');
+				let ok = true;
+				try {
+					await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+				} catch {
+					ok = false;
+				}
+				btn.classList.add(ok ? 'is-copied' : 'is-failed');
+				if (label) label.textContent = ok ? 'Copiado' : 'Selecciona el texto';
+				setTimeout(() => {
+					btn.classList.remove('is-copied', 'is-failed');
+					if (label) label.textContent = 'Copiar';
+				}, 1600);
+			});
+		</script>
+	</body>
+</html>
